@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lottery.orm.dao.AccountDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.lottery.orm.bo.AccountDetail" >
+    <id column="Accountid" property="accountid" jdbcType="INTEGER" />
+    <result column="UserID" property="userid" jdbcType="INTEGER" />
+    <result column="UserName" property="username" jdbcType="VARCHAR" />
+    <result column="Limited" property="limited" jdbcType="DOUBLE" />
+    <result column="Ratio" property="ratio" jdbcType="DOUBLE" />
+    <result column="Percentage" property="percentage" jdbcType="DOUBLE" />
+    <result column="State" property="state" jdbcType="CHAR" />
+    <result column="SupUserName" property="supusername" jdbcType="VARCHAR" />
+    <result column="Level" property="level" jdbcType="VARCHAR" />
+    <result column="OffType" property="offtype" jdbcType="CHAR" />
+    <result column="Money" property="money" jdbcType="DECIMAL" />
+    <result column="Attribute1" property="attribute1" jdbcType="VARCHAR" />
+    <result column="Attribute2" property="attribute2" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Accountid, UserID, UserName, Limited, Ratio, Percentage, State, SupUserName, Level, 
+    OffType, Money, Attribute1, Attribute2
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from account_detail
+    where Accountid = #{accountid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from account_detail
+    where Accountid = #{accountid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.lottery.orm.bo.AccountDetail" >
+    <selectKey resultType="java.lang.Integer" keyProperty="accountid" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into account_detail (UserID, UserName, Limited, 
+      Ratio, Percentage, State, 
+      SupUserName, Level, OffType, 
+      Money, Attribute1, Attribute2
+      )
+    values (#{userid,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{limited,jdbcType=DOUBLE}, 
+      #{ratio,jdbcType=DOUBLE}, #{percentage,jdbcType=DOUBLE}, #{state,jdbcType=CHAR}, 
+      #{supusername,jdbcType=VARCHAR}, #{level,jdbcType=VARCHAR}, #{offtype,jdbcType=CHAR}, 
+      #{money,jdbcType=DECIMAL}, #{attribute1,jdbcType=VARCHAR}, #{attribute2,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.lottery.orm.bo.AccountDetail" >
+    <selectKey resultType="java.lang.Integer" keyProperty="accountid" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into account_detail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userid != null" >
+        UserID,
+      </if>
+      <if test="username != null" >
+        UserName,
+      </if>
+      <if test="limited != null" >
+        Limited,
+      </if>
+      <if test="ratio != null" >
+        Ratio,
+      </if>
+      <if test="percentage != null" >
+        Percentage,
+      </if>
+      <if test="state != null" >
+        State,
+      </if>
+      <if test="supusername != null" >
+        SupUserName,
+      </if>
+      <if test="level != null" >
+        Level,
+      </if>
+      <if test="offtype != null" >
+        OffType,
+      </if>
+      <if test="money != null" >
+        Money,
+      </if>
+      <if test="attribute1 != null" >
+        Attribute1,
+      </if>
+      <if test="attribute2 != null" >
+        Attribute2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userid != null" >
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="limited != null" >
+        #{limited,jdbcType=DOUBLE},
+      </if>
+      <if test="ratio != null" >
+        #{ratio,jdbcType=DOUBLE},
+      </if>
+      <if test="percentage != null" >
+        #{percentage,jdbcType=DOUBLE},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=CHAR},
+      </if>
+      <if test="supusername != null" >
+        #{supusername,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        #{level,jdbcType=VARCHAR},
+      </if>
+      <if test="offtype != null" >
+        #{offtype,jdbcType=CHAR},
+      </if>
+      <if test="money != null" >
+        #{money,jdbcType=DECIMAL},
+      </if>
+      <if test="attribute1 != null" >
+        #{attribute1,jdbcType=VARCHAR},
+      </if>
+      <if test="attribute2 != null" >
+        #{attribute2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lottery.orm.bo.AccountDetail" >
+    update account_detail
+    <set >
+      <if test="userid != null" >
+        UserID = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="username != null" >
+        UserName = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="limited != null" >
+        Limited = #{limited,jdbcType=DOUBLE},
+      </if>
+      <if test="ratio != null" >
+        Ratio = #{ratio,jdbcType=DOUBLE},
+      </if>
+      <if test="percentage != null" >
+        Percentage = #{percentage,jdbcType=DOUBLE},
+      </if>
+      <if test="state != null" >
+        State = #{state,jdbcType=CHAR},
+      </if>
+      <if test="supusername != null" >
+        SupUserName = #{supusername,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        Level = #{level,jdbcType=VARCHAR},
+      </if>
+      <if test="offtype != null" >
+        OffType = #{offtype,jdbcType=CHAR},
+      </if>
+      <if test="money != null" >
+        Money = #{money,jdbcType=DECIMAL},
+      </if>
+      <if test="attribute1 != null" >
+        Attribute1 = #{attribute1,jdbcType=VARCHAR},
+      </if>
+      <if test="attribute2 != null" >
+        Attribute2 = #{attribute2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where Accountid = #{accountid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lottery.orm.bo.AccountDetail" >
+    update account_detail
+    set UserID = #{userid,jdbcType=INTEGER},
+      UserName = #{username,jdbcType=VARCHAR},
+      Limited = #{limited,jdbcType=DOUBLE},
+      Ratio = #{ratio,jdbcType=DOUBLE},
+      Percentage = #{percentage,jdbcType=DOUBLE},
+      State = #{state,jdbcType=CHAR},
+      SupUserName = #{supusername,jdbcType=VARCHAR},
+      Level = #{level,jdbcType=VARCHAR},
+      OffType = #{offtype,jdbcType=CHAR},
+      Money = #{money,jdbcType=DECIMAL},
+      Attribute1 = #{attribute1,jdbcType=VARCHAR},
+      Attribute2 = #{attribute2,jdbcType=VARCHAR}
+    where Userid = #{userid,jdbcType=INTEGER}
+  </update>
+  <select id="selectByUserId" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from account_detail
+    where Userid = #{userid,jdbcType=INTEGER} and OffType = #{offtype,jdbcType=VARCHAR}
+  </select>
+</mapper>

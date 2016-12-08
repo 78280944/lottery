@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lottery.orm.dao.LotteryReportMapper">
+  <resultMap id="WinningReportMap" type="com.lottery.orm.dto.WinningReportDto">
+    <result column="ACCOUNTID" jdbcType="INTEGER" property="accountId" />
+    <result column="TRADECOUNT" jdbcType="INTEGER" property="tradeCount" />
+    <result column="ORDERAMOUNT" jdbcType="DECIMAL" property="orderAmount" />
+    <result column="ACTUALAMOUNT" jdbcType="DECIMAL" property="actualAmount" />
+    <result column="RETURNAMOUNT" jdbcType="DECIMAL" property="returnAmount" />
+    <result column="COMMISIONAMOUNT" jdbcType="DECIMAL" property="commisionAmount" />
+  </resultMap>
+  <resultMap id="TradeReportMap" type="com.lottery.orm.dto.TradeReportDto">
+    <result column="ACCOUNTID" jdbcType="INTEGER" property="accountId" />
+    <result column="LOTTERYTERM" jdbcType="VARCHAR" property="lotteryTerm" />
+    <result column="ORDERTIME" jdbcType="TIMESTAMP" property="orderTime" />
+    <result column="ENDTIME" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="ORDERAMOUNT" jdbcType="DECIMAL" property="orderAmount" />
+    <result column="ACTUALAMOUNT" jdbcType="DECIMAL" property="actualAmount" />
+    <result column="ACCOUNTAMOUNT" jdbcType="DECIMAL" property="accountAmount" />
+  </resultMap>
+  <resultMap id="InoutReportMap" type="com.lottery.orm.dto.InoutReportDto">
+    <result column="ACCOUNTID" jdbcType="INTEGER" property="accountId" />
+    <result column="TRADEAMOUNT" jdbcType="DECIMAL" property="tradeAmount" />
+    <result column="ACCOUNTAMOUNT" jdbcType="DECIMAL" property="accountAmount" />
+    <result column="INPUTTIME" jdbcType="TIMESTAMP" property="inputTime" />
+    <result column="REMARK" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  
+  <select id="selectByWinningReport" resultMap="WinningReportMap">
+    select 
+    a.ACCOUNTID, count(*) as TRADECOUNT, SUM(ORDERAMOUNT) as ORDERAMOUNT, SUM(ACTUALAMOUNT) as ACTUALAMOUNT, SUM(PRIZEAMOUNT-ACTUALAMOUNT) as RETURNAMOUNT, SUM(COMMISIONAMOUNT) as COMMISIONAMOUNT 
+    from account_detail a, lottery_order o
+    where a.ACCOUNTID = o.ACCOUNTID and PRIZETIME between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
+    group by a.ACCOUNTID
+  </select>
+  <select id="selectByTradeReport" resultMap="TradeReportMap">
+    select 
+    o.ACCOUNTID, LOTTERYTERM, ORDERTIME, ENDTIME, ORDERAMOUNT, ACTUALAMOUNT, ACCOUNTAMOUNT
+    from lottery_order o, lottery_round r
+    where o.ROUNDID = R.ROUNDID and ENDTIME between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
+	<if test="accountId != null">
+	 and o.ACCOUNTID = #{accountId,jdbcType=INTEGER}
+	</if>
+	 order by ORDERTIME desc
+  </select>
+  <select id="selectByInoutReport" resultMap="InoutReportMap">
+    select 
+    ACCOUNTID, TRADEAMOUNT, ACCOUNTAMOUNT, INPUTTIME, REMARK
+    from trade_info t
+    where TRADETYPE in ('Inout')
+	<if test="accountId != null">
+	 and t.ACCOUNTID = #{accountId,jdbcType=INTEGER}
+	</if>
+	order by INPUTTIME desc
+  </select>
+</mapper>
