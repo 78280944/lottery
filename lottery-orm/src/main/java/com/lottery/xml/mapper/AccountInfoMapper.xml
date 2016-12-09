@@ -190,13 +190,16 @@
     from account_info
     where username = #{username,jdbcType=VARCHAR} and password = #{password,jdbcType=VARCHAR}
   </select>
-  <select id="selectByExample" parameterType="com.lottery.orm.bo.AccountInfo" resultMap="BaseResultMap">  
+  <select id="selectBySupusername" resultMap="BaseResultMap">  
     select 
     <include refid="Base_Column_List" />
     from account_info
     where supusername = #{supusername,jdbcType=VARCHAR}
+	<if test="beginrow != null and pageSize !=null">
+	limit #{beginrow,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+	</if>
   </select>
-  <select id="selectByUser" parameterType="com.lottery.orm.bo.AccountInfo" resultMap="BaseResultMap">  
+  <select id="selectByUsername" parameterType="java.lang.String" resultMap="BaseResultMap">  
     select 
     <include refid="Base_Column_List" />
     from account_info

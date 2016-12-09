@@ -2,6 +2,8 @@ package com.lottery.orm.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.lottery.orm.bo.AccountInfo;
 
 public interface AccountInfoMapper {
@@ -21,9 +23,9 @@ public interface AccountInfoMapper {
     //get account info when login
     AccountInfo selectByLogin(AccountInfo record);
     
-    List<AccountInfo> selectByExample(AccountInfo example);
+    List<AccountInfo> selectBySupusername(@Param("supusername")String supusername, @Param("beginrow")Integer beginrow, @Param("pageSize")Integer pageSize);
     
-    AccountInfo selectByUser(AccountInfo record);
+    AccountInfo selectByUsername(String username);
     
     AccountInfo selectByUserAndId(AccountInfo record);
 }

@@ -1,89 +1,56 @@
 package com.lottery.orm.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import com.lottery.orm.bo.OffAccountInfo;
-import com.lottery.orm.dao.OffAccountInfoMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.lottery.orm.bo.AccountDetail;
+import com.lottery.orm.bo.OffAccountInfo;
+import com.lottery.orm.dao.AccountDetailMapper;
+import com.lottery.orm.dao.OffAccountInfoMapper;
 
 @Service
 @Transactional
 public class OffAccountInfoService {
-	
+
 	@Autowired
 	private OffAccountInfoMapper offAccountInfoMapper;
 
+	@Autowired
+	private AccountDetailMapper accountDetailMapper;
+
 	// 添加帐户
-	public int addOffAccountInfo(OffAccountInfo account) {
-		try {
-			return offAccountInfoMapper.insertSelective(account);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return -1;
+	public void addOffAccountInfo(OffAccountInfo paraInfo) {
+		offAccountInfoMapper.insertSelective(paraInfo);
+		
+		AccountDetail accountDetail = new AccountDetail();
+		accountDetail.setUserid(paraInfo.getUserid());
+		accountDetail.setUsername(paraInfo.getUsername());
+		accountDetail.setLimited(paraInfo.getLimited());
+		accountDetail.setRatio(paraInfo.getRatio());
+		accountDetail.setPercentage(paraInfo.getPercentage());
+		accountDetail.setState(paraInfo.getState());
+		accountDetail.setSupusername(paraInfo.getSupusername());
+		accountDetail.setLevel(paraInfo.getLevel());
+		accountDetail.setOfftype(paraInfo.getOfftype());
+		accountDetailMapper.insertSelective(accountDetail);
 	}
 
-	// 获取帐户
-	public OffAccountInfo getOffAccountInfo(Integer accountId) {
-		try {
-			return offAccountInfoMapper.selectByPrimaryKey(accountId);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	// 获取帐户
-    public OffAccountInfo getOffAccountInfoByLogin(OffAccountInfo account) {
-        try {
-            return offAccountInfoMapper.selectByLogin(account);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-    
-	// 获取帐户
-    public OffAccountInfo getOffAccountInfoByUser(OffAccountInfo account) {
-        try {
-            return offAccountInfoMapper.selectByUser(account);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-    
-	// 获取帐户
-    public OffAccountInfo getOffAccountInfoByUserAndId(OffAccountInfo account) {
-        try {
-            return offAccountInfoMapper.selectByUserAndId(account);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-    
 	// 更新帐户
-	public int updateOffAccountInfo(OffAccountInfo account) {
-		try {
-			return offAccountInfoMapper.updateByPrimaryKey(account);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return -1;
-	}
-	
-	// 获取所有帐户
-    public List<OffAccountInfo> getAllOffAccountInfo(OffAccountInfo account) {
-        try {
-            return offAccountInfoMapper.selectByExample(account);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+	public void updateOffAccountInfo(OffAccountInfo paraInfo) {
+		offAccountInfoMapper.updateByPrimaryKey(paraInfo);
 
-    
+		AccountDetail accountDetail = new AccountDetail();
+		accountDetail.setUserid(paraInfo.getUserid());
+		accountDetail.setUsername(paraInfo.getUsername());
+		accountDetail.setLimited(paraInfo.getLimited());
+		accountDetail.setRatio(paraInfo.getRatio());
+		accountDetail.setPercentage(paraInfo.getPercentage());
+		accountDetail.setState(paraInfo.getState());
+		accountDetail.setSupusername(paraInfo.getSupusername());
+		accountDetail.setLevel(paraInfo.getLevel());
+		accountDetail.setOfftype(paraInfo.getOfftype());
+		accountDetailMapper.updateByPrimaryKeySelective(accountDetail);
+	}
+
 }

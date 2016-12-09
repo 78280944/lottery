@@ -1,11 +1,14 @@
 package com.lottery.orm.service;
 
-import java.util.List;
+import java.math.BigDecimal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.lottery.orm.bo.AccountDetail;
 import com.lottery.orm.bo.AccountInfo;
+import com.lottery.orm.dao.AccountDetailMapper;
 import com.lottery.orm.dao.AccountInfoMapper;
 
 @Service
@@ -15,75 +18,42 @@ public class AccountInfoService {
 	@Autowired
 	private AccountInfoMapper accountInfoMapper;
 
-	// 添加帐户
-	public int addAccountInfo(AccountInfo account) {
-		try {
-			return accountInfoMapper.insertSelective(account);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return -1;
-	}
+	@Autowired
+	private AccountDetailMapper accountDetailMapper;
 
-	// 获取帐户
-	public AccountInfo getAccountInfo(Integer accountId) {
-		try {
-			return accountInfoMapper.selectByPrimaryKey(accountId);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
+	// 添加帐户
+	public void addAccountInfo(AccountInfo paraInfo) {
+		accountInfoMapper.insertSelective(paraInfo);
+
+		AccountDetail accountDetail = new AccountDetail();
+		accountDetail.setUserid(paraInfo.getUserid());
+		accountDetail.setUsername(paraInfo.getUsername());
+		accountDetail.setLimited(paraInfo.getLimited());
+		accountDetail.setRatio(paraInfo.getRatio());
+		accountDetail.setPercentage(0.0);
+		accountDetail.setState("1");
+		accountDetail.setSupusername(paraInfo.getSupusername());
+		accountDetail.setLevel(paraInfo.getLevel());
+		accountDetail.setOfftype("3");
+		accountDetail.setMoney(BigDecimal.valueOf(0.0));
+		accountDetailMapper.insertSelective(accountDetail);
 	}
-	
-	// 获取帐户
-    public AccountInfo getAccountInfoByLogin(AccountInfo account) {
-        try {
-            return accountInfoMapper.selectByLogin(account);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
 	// 更新帐户
-	public int updateAccountInfo(AccountInfo account) {
-		try {
-			return accountInfoMapper.updateByPrimaryKey(account);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return -1;
+	public void updateAccountInfo(AccountInfo paraInfo) {
+		accountInfoMapper.updateByPrimaryKey(paraInfo);
+		
+		AccountDetail accountDetail = new AccountDetail();
+	    accountDetail.setUserid(paraInfo.getUserid());
+	    accountDetail.setUsername(paraInfo.getUsername());
+	    accountDetail.setLimited(paraInfo.getLimited());
+	    accountDetail.setRatio(paraInfo.getRatio());
+	    accountDetail.setPercentage(0.0);
+	    accountDetail.setState(paraInfo.getState());
+	    accountDetail.setSupusername(paraInfo.getSupusername());
+	    accountDetail.setLevel(paraInfo.getLevel());
+	    accountDetail.setOfftype("3");
+	    accountDetailMapper.updateByPrimaryKeySelective(accountDetail);
 	}
-	
-	// 获取所有帐户
-    public List<AccountInfo> getAllAccountInfo(AccountInfo account) {
-        try {
-            return accountInfoMapper.selectByExample(account);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    //用户是否存在
-	public AccountInfo selectByUser(AccountInfo paraInfo) {
-		try {
-			return accountInfoMapper.selectByUser(paraInfo);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-    //用户除了自己以外是否存在
-	public AccountInfo selectByUserAndId(AccountInfo paraInfo) {
-		try {
-			return accountInfoMapper.selectByUserAndId(paraInfo);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
 
 }

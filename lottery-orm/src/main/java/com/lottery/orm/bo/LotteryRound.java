@@ -30,7 +30,7 @@ public class LotteryRound {
     @ApiModelProperty(value = "游戏状态：Open开盘中，Close已封盘，End已结束")
     private String roundstatus;
     
-    @ApiModelProperty(value = "该期游戏下注项信息")
+    @ApiModelProperty(value = "该期游戏投注项信息")
     private List<LotteryRoundItem> roundItemList;
 
     public Integer getRoundid() {

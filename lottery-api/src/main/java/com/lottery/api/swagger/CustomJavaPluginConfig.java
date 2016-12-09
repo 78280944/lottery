@@ -40,7 +40,7 @@ public class CustomJavaPluginConfig extends WebMvcConfigurerAdapter {
 
 	private ApiInfo apiInfo() {
 		ApiInfo apiInfo = new ApiInfo(
-				"抓取后台API接口平台", 
+				"玉米籽后台API接口平台", 
 				"提供详细的后台所有restful接口", 
 				"", 
 				"", 

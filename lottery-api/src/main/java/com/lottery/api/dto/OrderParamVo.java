@@ -3,6 +3,7 @@ package com.lottery.api.dto;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -13,14 +14,15 @@ public class OrderParamVo {
 
     @ApiModelProperty(value = "帐户ID", required = true)
     @NotNull(message = "帐户ID不能为空")
+    @Min(value=0, message = "账户ID格式不正确")
     private Integer accountId;
 
     @ApiModelProperty(value = "游戏ID", required = true)
     @NotNull(message = "游戏ID不能为空")
     private Integer roundId;
 
-    @ApiModelProperty(value = "下注详情", required = true)
-    @NotEmpty(message = "下注详情不能为空")
+    @ApiModelProperty(value = "投注详情", required = true)
+    @NotEmpty(message = "投注详情不能为空")
     @Valid
     private List<OrderDetailVo> orderDetails;
 

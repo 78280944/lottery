@@ -1,6 +1,5 @@
 package com.lottery.api.controller;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,28 +9,29 @@ import org.apache.log4j.Logger;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.lottery.api.dto.AccountInfoVo;
 import com.lottery.api.dto.LoginParamVo;
 import com.lottery.api.util.ToolsUtil;
-import com.lottery.orm.bo.AccountDetail;
 import com.lottery.orm.bo.OffAccountInfo;
+import com.lottery.orm.dao.OffAccountInfoMapper;
 import com.lottery.orm.dto.OffAccountDto;
 import com.lottery.orm.result.OffAccountListResult;
 import com.lottery.orm.result.OffAccountResult;
-import com.lottery.orm.result.RestResult;
-import com.lottery.orm.service.AccountDetailService;
 import com.lottery.orm.service.OffAccountInfoService;
+import com.lottery.orm.util.EnumType;
 import com.lottery.orm.util.MessageTool;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
 
 @RequestMapping(value = "/offAccount", produces = {"application/json;charset=UTF-8"})
-@Api(value = "/offAccount", description = "帐户信息接口")
+@Api(value = "/offAccount", description = "代理帐号信息接口")
 @Controller
 public class OffAccountInfoController {
 	public static final Logger LOG = Logger.getLogger(OffAccountInfoController.class);
@@ -41,13 +41,14 @@ public class OffAccountInfoController {
 	
 	@Autowired
     private OffAccountInfoService OffAccountInfoService;
-	@Autowired
-	private AccountDetailService accountDetailService;
 	
-	@ApiOperation(value = "获取结果", notes = "获取结果", httpMethod = "POST")
+	@Autowired
+	private OffAccountInfoMapper offAccountInfoMapper;
+	
+	@ApiOperation(value = "获取代理信息", notes = "获取代理信息", httpMethod = "POST")
 	@RequestMapping(value = "/getOffAccountInfo", method = RequestMethod.POST)
 	@ResponseBody
-	public OffAccountResult getOffAccountInfo(@ApiParam(value = "Json参数", required = true) @RequestBody LoginParamVo param) throws Exception {
+	public OffAccountResult getOffAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody LoginParamVo param) throws Exception {
 		OffAccountResult result = new OffAccountResult();
 		try {
 			
@@ -62,7 +63,7 @@ public class OffAccountInfoController {
 			}
 			param.setPassword(DigestUtils.md5Hex(password));
 		    OffAccountInfo paraInfo = mapper.map(param, OffAccountInfo.class);
-		    OffAccountInfo OffAccountInfo = OffAccountInfoService.getOffAccountInfoByLogin(paraInfo);
+		    OffAccountInfo OffAccountInfo = offAccountInfoMapper.selectByLogin(paraInfo);
 		    if(OffAccountInfo!=null){
 		      OffAccountDto rAcDto = new OffAccountDto();
 		      rAcDto.setUserid(null==OffAccountInfo.getUserid()||"".equals(OffAccountInfo.getUserid())||0==OffAccountInfo.getUserid() ?0:OffAccountInfo.getUserid());
@@ -80,20 +81,21 @@ public class OffAccountInfoController {
 		      rAcDto.setOfftype(null==OffAccountInfo.getOfftype()||"".equals(OffAccountInfo.getOfftype()) ?"":OffAccountInfo.getOfftype());
 		      result.success(rAcDto);
 		    }else{
-		      result.fail(MessageTool.FailCode);
+		    	result.fail(MessageTool.Code_3001);
 		    }
 			LOG.info(result.getMessage());
 		} catch (Exception e) {
+			result.error();
 			LOG.error(e.getMessage(),e);
 		}
 		return result;
 
 	}
 	
-	@ApiOperation(value = "新增用户", notes = "新增用户", httpMethod = "POST")
+	@ApiOperation(value = "新增代理", notes = "新增代理", httpMethod = "POST")
 	@RequestMapping(value = "/addOffAccountInfo", method = RequestMethod.POST)
 	@ResponseBody
-	public OffAccountResult addOffAccountInfo(@ApiParam(value = "Json参数", required = true) @RequestBody OffAccountInfo param) throws Exception {
+	public OffAccountResult addOffAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody OffAccountInfo param) throws Exception {
 		OffAccountResult result = new OffAccountResult();
 		try {
 			
@@ -174,7 +176,7 @@ public class OffAccountInfoController {
 			
 			OffAccountInfo off = new OffAccountInfo();
 			off.setUsername(supusername);
-			OffAccountInfo OffAccountInfo = OffAccountInfoService.getOffAccountInfoByUser(off);
+			OffAccountInfo OffAccountInfo = offAccountInfoMapper.selectByUsername(off.getUsername());
 		    if(OffAccountInfo!=null){
 				//洗码比逻辑 
 		    	System.out.println("80----"+ratio+"..."+OffAccountInfo.getRatio());
@@ -212,31 +214,19 @@ public class OffAccountInfoController {
 		    paraInfo.setInputdate(new Date());*/
 		    OffAccountInfoService.addOffAccountInfo(paraInfo);
 		    
-		    AccountDetail accountDetail = new AccountDetail();
-		    accountDetail.setUserid(paraInfo.getUserid());
-		    accountDetail.setUsername(paraInfo.getUsername());
-		    accountDetail.setLimited(paraInfo.getLimited());
-		    accountDetail.setRatio(paraInfo.getRatio());
-		    accountDetail.setPercentage(0.0);
-		    accountDetail.setState("1");
-		    accountDetail.setSupusername(paraInfo.getSupusername());
-		    accountDetail.setLevel(paraInfo.getLevel());
-		    accountDetail.setOfftype("1");
-		    accountDetail.setMoney(BigDecimal.valueOf(0.0));
-		    accountDetailService.addAccountDetail(accountDetail);
-		   
 		    result.success();
 			LOG.info(result.getMessage());
 		} catch (Exception e) {
+			result.error();
 			LOG.error(e.getMessage(),e);
 		}
 		return result;
 	}
 	
-	@ApiOperation(value = "修改用户", notes = "修改用户", httpMethod = "POST")
+	@ApiOperation(value = "修改代理", notes = "修改代理", httpMethod = "POST")
 	@RequestMapping(value = "/updateOffAccountInfo", method = RequestMethod.POST)
 	@ResponseBody
-	public OffAccountResult updateOffAccountInfo(@ApiParam(value = "Json参数", required = true) @RequestBody OffAccountInfo param) throws Exception {
+	public OffAccountResult updateOffAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody OffAccountInfo param) throws Exception {
 		OffAccountResult result = new OffAccountResult();
 		try {
 			
@@ -329,74 +319,58 @@ public class OffAccountInfoController {
 			
 			*/
 			
-			OffAccountInfo OffAccountInfo = OffAccountInfoService.getOffAccountInfo(param.getUserid());
+			OffAccountInfo OffAccountInfo = offAccountInfoMapper.selectByPrimaryKey(param.getUserid());
 			if(OffAccountInfo==null){
-			      result.fail(MessageTool.FailCode);
-			      LOG.info(result.getMessage());
-			      return result;
+				result.fail(MessageTool.Code_3001);
+			}else{
+				password = DigestUtils.md5Hex(password);
+			    OffAccountInfo paraInfo = mapper.map(param, OffAccountInfo.class);
+			    OffAccountInfo  offaccountInfocheck = offAccountInfoMapper.selectByUserAndId(paraInfo);
+			    if (offaccountInfocheck!=null){
+				      result.fail(username,MessageTool.Code_2005);
+			    }else{
+				    paraInfo.setUsername(null==param.getUsername()||"".equals(param.getUsername()) ? OffAccountInfo.getUsername():param.getUsername());
+				    paraInfo.setAusername(null==param.getAusername()||"".equals(param.getAusername()) ? OffAccountInfo.getAusername():param.getAusername());
+				    System.out.println("800--"+param.getPassword());
+				    System.out.println("800--"+OffAccountInfo.getPassword());
+				    paraInfo.setPassword(null==param.getPassword()||"".equals(param.getPassword()) ? OffAccountInfo.getPassword():password);
+				    paraInfo.setLimited(null==param.getLimited()||"".equals(param.getLimited())||0.0==param.getLimited() ? OffAccountInfo.getLimited():param.getLimited());
+				    paraInfo.setRatio(null==param.getRatio()||"".equals(param.getRatio())||0.0==param.getRatio() ? OffAccountInfo.getRatio():param.getRatio());
+				    paraInfo.setPercentage(null==param.getPercentage()||"".equals(param.getPercentage())||0.0==param.getPercentage() ? OffAccountInfo.getPercentage():param.getPercentage());
+				    paraInfo.setLevel(null==param.getLevel()||"".equals(param.getLevel()) ? OffAccountInfo.getLevel():OffAccountInfo.getLevel());//代理级别不允许修改
+				    paraInfo.setQuery(null==param.getQuery()||"".equals(param.getQuery()) ? OffAccountInfo.getQuery():OffAccountInfo.getQuery());
+				    paraInfo.setManage(null==param.getManage()||"".equals(param.getManage()) ? OffAccountInfo.getManage():OffAccountInfo.getManage());
+				    paraInfo.setOfftype(null==param.getOfftype()||"".equals(param.getOfftype()) ? OffAccountInfo.getOfftype():OffAccountInfo.getOfftype());
+				    paraInfo.setState(null==param.getState()||"".equals(param.getState()) ?  OffAccountInfo.getState():param.getState());
+				    paraInfo.setUpdateip(null==param.getUpdateip()||"".equals(param.getUpdateip()) ? OffAccountInfo.getUpdateip():param.getUpdateip());
+				    //System.out.println("9-------------d-"+ToolsUtil.getCurrentTime());
+				    paraInfo.setUpdatedate(new Date());
+				    OffAccountInfoService.updateOffAccountInfo(paraInfo);
+				    result.success();
+			    }
 			}
-			
-
-			password = DigestUtils.md5Hex(password);
-		    OffAccountInfo paraInfo = mapper.map(param, OffAccountInfo.class);
-		    OffAccountInfo  offaccountInfocheck = OffAccountInfoService.getOffAccountInfoByUserAndId(paraInfo);
-		    if (offaccountInfocheck!=null){
-			      result.fail(username,MessageTool.Code_2005);
-			      LOG.info(result.getMessage());
-			      return result;	
-		    }
-		    
-		    paraInfo.setUsername(null==param.getUsername()||"".equals(param.getUsername()) ? OffAccountInfo.getUsername():param.getUsername());
-		    paraInfo.setAusername(null==param.getAusername()||"".equals(param.getAusername()) ? OffAccountInfo.getAusername():param.getAusername());
-		    System.out.println("800--"+param.getPassword());
-		    System.out.println("800--"+OffAccountInfo.getPassword());
-		    paraInfo.setPassword(null==param.getPassword()||"".equals(param.getPassword()) ? OffAccountInfo.getPassword():password);
-		    paraInfo.setLimited(null==param.getLimited()||"".equals(param.getLimited())||0.0==param.getLimited() ? OffAccountInfo.getLimited():param.getLimited());
-		    paraInfo.setRatio(null==param.getRatio()||"".equals(param.getRatio())||0.0==param.getRatio() ? OffAccountInfo.getRatio():param.getRatio());
-		    paraInfo.setPercentage(null==param.getPercentage()||"".equals(param.getPercentage())||0.0==param.getPercentage() ? OffAccountInfo.getPercentage():param.getPercentage());
-		    paraInfo.setLevel(null==param.getLevel()||"".equals(param.getLevel()) ? OffAccountInfo.getLevel():OffAccountInfo.getLevel());//代理级别不允许修改
-		    paraInfo.setQuery(null==param.getQuery()||"".equals(param.getQuery()) ? OffAccountInfo.getQuery():OffAccountInfo.getQuery());
-		    paraInfo.setManage(null==param.getManage()||"".equals(param.getManage()) ? OffAccountInfo.getManage():OffAccountInfo.getManage());
-		    paraInfo.setOfftype(null==param.getOfftype()||"".equals(param.getOfftype()) ? OffAccountInfo.getOfftype():OffAccountInfo.getOfftype());
-		    paraInfo.setState(null==param.getState()||"".equals(param.getState()) ?  OffAccountInfo.getState():param.getState());
-		    paraInfo.setUpdateip(null==param.getUpdateip()||"".equals(param.getUpdateip()) ? OffAccountInfo.getUpdateip():param.getUpdateip());
-		    //System.out.println("9-------------d-"+ToolsUtil.getCurrentTime());
-		    paraInfo.setUpdatedate(new Date());
-		    OffAccountInfoService.updateOffAccountInfo(paraInfo);
-		    
-		    AccountDetail accountDetail = new AccountDetail();
-		    accountDetail.setUserid(paraInfo.getUserid());
-		    accountDetail.setUsername(paraInfo.getUsername());
-		    accountDetail.setLimited(paraInfo.getLimited());
-		    accountDetail.setRatio(paraInfo.getRatio());
-		    accountDetail.setPercentage(paraInfo.getPercentage());
-		    accountDetail.setState(paraInfo.getState());
-		    accountDetail.setSupusername(paraInfo.getSupusername());
-		    accountDetail.setLevel(paraInfo.getLevel());
-		    accountDetail.setOfftype(paraInfo.getOfftype());
-		    
-		    accountDetailService.updateAccountDetail(accountDetail);
-		    
-		    result.success();
 			LOG.info(result.getMessage());
 		} catch (Exception e) {
+			result.error();
 			LOG.error(e.getMessage(),e);
 		}
 		return result;
 	}
 
-	@ApiOperation(value = "获取用户列表", notes = "获取用户列表", httpMethod = "POST")
+	@ApiOperation(value = "获取该代理下的代理列表", notes = "获取该代理下的代理列表", httpMethod = "POST")
 	@RequestMapping(value = "/getAllOffAccountInfo", method = RequestMethod.POST)
 	@ResponseBody
-	public OffAccountListResult getAllOffAccountInfo(@ApiParam(value = "Json参数", required = true) @RequestBody OffAccountInfo param) throws Exception {
+	public OffAccountListResult getAllOffAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody AccountInfoVo param) throws Exception {
 	    OffAccountListResult result = new OffAccountListResult();
 		try {
-			List<OffAccountInfo> OffAccountInfos = OffAccountInfoService.getAllOffAccountInfo(param);
-			if(OffAccountInfos==null){
-			      result.fail(MessageTool.FailCode);
+			OffAccountInfo offacount = offAccountInfoMapper.selectByUseridAndType(param.getUserid(), EnumType.OffType.Agency.ID);
+			if(offacount==null){
+				  result.fail(MessageTool.Code_3001);
 			      LOG.info(result.getMessage());
 			      return result;
 			}
+			List<OffAccountInfo> OffAccountInfos = offAccountInfoMapper.selectBySupusername(offacount.getUsername(), param.getBeginRow(), param.getPageSize());
+			
 			List<OffAccountDto> list = new ArrayList<OffAccountDto>();
 			for (int i = 0;i<OffAccountInfos.size();i++){
 			  OffAccountDto rAcDto = new OffAccountDto();		        
@@ -418,6 +392,7 @@ public class OffAccountInfoController {
 		    result.success(list);
 			LOG.info(result.getMessage());
 		} catch (Exception e) {
+			result.error();
 			LOG.error(e.getMessage(),e);
 		}
 		return result;

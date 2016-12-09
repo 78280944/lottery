@@ -10,12 +10,12 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 
 public class OrderDetailVo {
 
-    @ApiModelProperty(value = "下注项编号", required = true)
-    @NotBlank(message = "下注项编号不能为空")
+    @ApiModelProperty(value = "投注项编号", required = true)
+    @NotBlank(message = "投注项编号不能为空")
     private String itemNo;
 
-    @ApiModelProperty(value = "下注金额", required = true)
-    @NotNull(message = "下注金额不能为空")
+    @ApiModelProperty(value = "投注金额", required = true)
+    @NotNull(message = "投注金额不能为空")
     @DecimalMin(value="0.01", message = "金额必须大于零")
     private Double detailAmount;
 

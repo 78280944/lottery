@@ -20,7 +20,6 @@ import com.lottery.orm.bo.LotteryOrderDetail;
 import com.lottery.orm.bo.LotteryRound;
 import com.lottery.orm.dao.LotteryRoundMapper;
 import com.lottery.orm.result.OrderResult;
-import com.lottery.orm.result.RestResult;
 import com.lottery.orm.service.LotteryOrderService;
 import com.lottery.orm.util.EnumType;
 import com.lottery.orm.util.MessageTool;
@@ -29,7 +28,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
 
 @RequestMapping(value = "/order", produces = { "application/json;charset=UTF-8" })
-@Api(value = "/order", description = "下注信息接口")
+@Api(value = "/order", description = "投注信息接口")
 @Controller
 public class LotteryOrderController {
 	public static final Logger LOG = Logger.getLogger(LotteryOrderController.class);
@@ -43,7 +42,7 @@ public class LotteryOrderController {
 	@Autowired
 	private LotteryRoundMapper lotteryRoundMapper;
 
-	@ApiOperation(value = "新增下注记录", notes = "新增资金交易记录", httpMethod = "POST")
+	@ApiOperation(value = "新增投注记录", notes = "新增资金交易记录", httpMethod = "POST")
 	@RequestMapping(value = "/addLotteryOrder", method = RequestMethod.POST)
 	@ResponseBody
 	public OrderResult addLotteryOrder(
@@ -55,7 +54,7 @@ public class LotteryOrderController {
 			if (round == null) {
 				result.fail("不存在该期游戏");
 			} else if (!round.getRoundstatus().equals(EnumType.RoundStatus.Open.ID)) {
-				result.fail("该期游戏目前无法下注");
+				result.fail("该期游戏目前无法投注");
 			} else {
 				List<LotteryOrderDetail> orderDetails = new ArrayList<LotteryOrderDetail>();
 				for (OrderDetailVo orderDetailVo : param.getOrderDetails()) {
@@ -72,14 +71,14 @@ public class LotteryOrderController {
 			}
 			LOG.info(result.getMessage());
 		} catch (Exception e) {
-			result.fail(MessageTool.ErrorCode);
+			result.error();
 			LOG.error(e.getMessage(), e);
 		}
 		return result;
 	}
 
 	/*
-	 * @ApiOperation(value = "更新下注记录", notes = "更新下注记录", httpMethod = "POST")
+	 * @ApiOperation(value = "更新投注记录", notes = "更新投注记录", httpMethod = "POST")
 	 * 
 	 * @RequestMapping(value = "/updateLotteryOrder", method =
 	 * RequestMethod.POST)

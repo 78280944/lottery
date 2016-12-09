@@ -10,6 +10,7 @@ public class TradeParamVo {
 
     @ApiModelProperty(value = "款项ID", required = true)
     @NotNull(message = "款项ID不能为空")
+    @Min(value=0, message = "款项ID格式不正确")
     private Integer accountId;
 
     @ApiModelProperty(value = "金额", required = true)

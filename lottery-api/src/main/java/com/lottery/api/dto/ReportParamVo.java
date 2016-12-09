@@ -2,21 +2,23 @@ package com.lottery.api.dto;
 
 import java.util.Date;
 
-import org.springframework.format.annotation.DateTimeFormat;
+import javax.validation.constraints.Min;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-public class ReportParamVo {
+public class ReportParamVo extends PageParamVo{
 
   @ApiModelProperty(value = "帐户ID")
+  @Min(value=0, message = "账户ID格式不正确")
   private Integer accountId;
   
-  @ApiModelProperty(value = "开始时间")
-  @DateTimeFormat(pattern="yyyy-MM-dd")
+  @ApiModelProperty(value = "开始时间,格式:yyyy-MM-dd")
+  @JsonFormat(pattern="yyyy-MM-dd", timezone="GMT+8")
   private Date startTime;
   
-  @ApiModelProperty(value = "结束时间")
-  @DateTimeFormat(pattern="yyyy-MM-dd")
+  @ApiModelProperty(value = "结束时间,格式:yyyy-MM-dd")
+  @JsonFormat(pattern="yyyy-MM-dd", timezone="GMT+8")
   private Date endTime;
 
 

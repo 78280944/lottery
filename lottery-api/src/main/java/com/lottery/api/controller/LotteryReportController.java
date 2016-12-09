@@ -28,75 +28,66 @@ import com.wordnik.swagger.annotations.ApiParam;
 @Api(value = "/report", description = "报表信息接口")
 @Controller
 public class LotteryReportController {
-    public static final Logger LOG = Logger.getLogger(LotteryReportController.class);
+	public static final Logger LOG = Logger.getLogger(LotteryReportController.class);
 
-    @Autowired
-    LotteryReportMapper lotteryReportMapper;
+	@Autowired
+	LotteryReportMapper lotteryReportMapper;
 
-    @ApiOperation(value = "获取输赢报表", notes = "获取输赢报表", httpMethod = "POST")
-    @RequestMapping(value = "/getWinningReport", method = RequestMethod.POST)
-    @ResponseBody
-    public WinningReportResult getWinningReport(
-	    @ApiParam(value = "Json参数", required = true) @Validated @RequestBody ReportParamVo param) throws Exception {
-	WinningReportResult result = new WinningReportResult();
-	try {
-	    List<WinningReportDto> accountList = lotteryReportMapper.selectByWinningReport(param.getStartTime(),
-		    param.getEndTime());
-	    if (accountList != null) {
-		result.success(accountList);
-	    } else {
-		result.fail(MessageTool.FailCode);
-	    }
-	    LOG.info(result.getMessage());
-	} catch (Exception e) {
-	    LOG.error(e.getMessage(), e);
+	@ApiOperation(value = "获取输赢报表", notes = "获取输赢报表", httpMethod = "POST")
+	@RequestMapping(value = "/getWinningReport", method = RequestMethod.POST)
+	@ResponseBody
+	public WinningReportResult getWinningReport(
+			@ApiParam(value = "Json参数", required = true) @Validated @RequestBody ReportParamVo param) throws Exception {
+		WinningReportResult result = new WinningReportResult();
+		try {
+			List<WinningReportDto> accountList = lotteryReportMapper.selectByWinningReport(param.getStartTime(),
+					param.getEndTime(), param.getBeginRow(), param.getPageSize());
+			result.success(accountList);
+			LOG.info(result.getMessage());
+		} catch (Exception e) {
+			result.error();
+			LOG.error(e.getMessage(), e);
+		}
+		return result;
+
 	}
-	return result;
 
-    }
+	@ApiOperation(value = "获取点数出入报表", notes = "获取点数出入报表", httpMethod = "POST")
+	@RequestMapping(value = "/getInoutReport", method = RequestMethod.POST)
+	@ResponseBody
+	public InoutReportResult getInoutReport(
+			@ApiParam(value = "Json参数", required = true) @Validated @RequestBody ReportParamVo param) throws Exception {
+		InoutReportResult result = new InoutReportResult();
+		try {
+			List<InoutReportDto> accountList = lotteryReportMapper.selectByInoutReport(param.getStartTime(),
+					param.getEndTime(), param.getAccountId(), param.getBeginRow(), param.getPageSize());
+			result.success(accountList);
+			LOG.info(result.getMessage());
+		} catch (Exception e) {
+			result.error();
+			LOG.error(e.getMessage(), e);
+		}
+		return result;
 
-    @ApiOperation(value = "获取点数出入报表", notes = "获取点数出入报表", httpMethod = "POST")
-    @RequestMapping(value = "/getInoutReport", method = RequestMethod.POST)
-    @ResponseBody
-    public InoutReportResult getInoutReport(
-	    @ApiParam(value = "Json参数", required = true) @Validated @RequestBody ReportParamVo param) throws Exception {
-	InoutReportResult result = new InoutReportResult();
-	try {
-	    List<InoutReportDto> accountList = lotteryReportMapper.selectByInoutReport(param.getStartTime(),
-		    param.getEndTime(), param.getAccountId());
-	    if (accountList != null) {
-		result.success(accountList);
-	    } else {
-		result.fail(MessageTool.FailCode);
-	    }
-	    LOG.info(result.getMessage());
-	} catch (Exception e) {
-	    LOG.error(e.getMessage(), e);
 	}
-	return result;
 
-    }
+	@ApiOperation(value = "获取交易报表", notes = "获取交易报表", httpMethod = "POST")
+	@RequestMapping(value = "/getTradeReport", method = RequestMethod.POST)
+	@ResponseBody
+	public TradeReportResult getTradeReport(
+			@ApiParam(value = "Json参数", required = true) @Validated @RequestBody ReportParamVo param) throws Exception {
+		TradeReportResult result = new TradeReportResult();
+		try {
+			List<TradeReportDto> accountList = lotteryReportMapper.selectByTradeReport(param.getStartTime(),
+					param.getEndTime(), param.getAccountId(), param.getBeginRow(), param.getPageSize());
+			result.success(accountList);
+			LOG.info(result.getMessage());
+		} catch (Exception e) {
+			result.error();
+			LOG.error(e.getMessage(), e);
+		}
+		return result;
 
-    @ApiOperation(value = "获取交易报表", notes = "获取交易报表", httpMethod = "POST")
-    @RequestMapping(value = "/getTradeReport", method = RequestMethod.POST)
-    @ResponseBody
-    public TradeReportResult getTradeReport(
-	    @ApiParam(value = "Json参数", required = true) @Validated @RequestBody ReportParamVo param) throws Exception {
-	TradeReportResult result = new TradeReportResult();
-	try {
-	    List<TradeReportDto> accountList = lotteryReportMapper.selectByTradeReport(param.getStartTime(),
-		    param.getEndTime(), param.getAccountId());
-	    if (accountList != null) {
-		result.success(accountList);
-	    } else {
-		result.fail(MessageTool.FailCode);
-	    }
-	    LOG.info(result.getMessage());
-	} catch (Exception e) {
-	    LOG.error(e.getMessage(), e);
 	}
-	return result;
-
-    }
 
 }

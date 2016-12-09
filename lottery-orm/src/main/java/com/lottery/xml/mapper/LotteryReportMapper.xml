@@ -30,27 +30,63 @@
     select 
     a.ACCOUNTID, count(*) as TRADECOUNT, SUM(ORDERAMOUNT) as ORDERAMOUNT, SUM(ACTUALAMOUNT) as ACTUALAMOUNT, SUM(PRIZEAMOUNT-ACTUALAMOUNT) as RETURNAMOUNT, SUM(COMMISIONAMOUNT) as COMMISIONAMOUNT 
     from account_detail a, lottery_order o
-    where a.ACCOUNTID = o.ACCOUNTID and PRIZETIME between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
+    where a.ACCOUNTID = o.ACCOUNTID 
+	<if test="startTime != null and endTime != null">
+	and Date(PRIZETIME) between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
+	</if>
+	<if test="startTime != null and endTime == null">
+	and Date(PRIZETIME) <![CDATA[>=]]> #{startTime,jdbcType=TIMESTAMP}
+	</if>
+	<if test="startTime == null and endTime != null">
+	and Date(PRIZETIME) <![CDATA[<=]]> #{endTime,jdbcType=TIMESTAMP}
+	</if>
     group by a.ACCOUNTID
+	<if test="beginRow != null and pageSize !=null">
+	limit #{beginRow,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+	</if>
   </select>
   <select id="selectByTradeReport" resultMap="TradeReportMap">
     select 
     o.ACCOUNTID, LOTTERYTERM, ORDERTIME, ENDTIME, ORDERAMOUNT, ACTUALAMOUNT, ACCOUNTAMOUNT
     from lottery_order o, lottery_round r
-    where o.ROUNDID = R.ROUNDID and ENDTIME between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
+    where o.ROUNDID = R.ROUNDID 
+	<if test="startTime != null and endTime != null">
+	and Date(ENDTIME) between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
+	</if>
+	<if test="startTime != null and endTime == null">
+	and Date(ENDTIME) <![CDATA[>=]]> #{startTime,jdbcType=TIMESTAMP}
+	</if>
+	<if test="startTime == null and endTime != null">
+	and Date(ENDTIME) <![CDATA[<=]]> #{endTime,jdbcType=TIMESTAMP}
+	</if>
 	<if test="accountId != null">
 	 and o.ACCOUNTID = #{accountId,jdbcType=INTEGER}
 	</if>
 	 order by ORDERTIME desc
+	 <if test="beginRow != null and pageSize !=null">
+	limit #{beginRow,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+	</if>
   </select>
   <select id="selectByInoutReport" resultMap="InoutReportMap">
     select 
     ACCOUNTID, TRADEAMOUNT, ACCOUNTAMOUNT, INPUTTIME, REMARK
     from trade_info t
     where TRADETYPE in ('Inout')
+	<if test="startTime != null and endTime != null">
+		and Date(INPUTTIME) between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
+	</if>
+	<if test="startTime != null and endTime == null">
+	and Date(INPUTTIME) <![CDATA[>=]]> #{startTime,jdbcType=TIMESTAMP}
+	</if>
+	<if test="startTime == null and endTime != null">
+	and Date(INPUTTIME) <![CDATA[<=]]> #{endTime,jdbcType=TIMESTAMP}
+	</if>
 	<if test="accountId != null">
-	 and t.ACCOUNTID = #{accountId,jdbcType=INTEGER}
+		and t.ACCOUNTID = #{accountId,jdbcType=INTEGER}
 	</if>
 	order by INPUTTIME desc
+	<if test="beginRow != null and pageSize !=null">
+	limit #{beginRow,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+	</if>
   </select>
 </mapper>

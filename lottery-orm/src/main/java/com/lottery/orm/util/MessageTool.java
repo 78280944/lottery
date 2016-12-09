@@ -12,21 +12,24 @@ public class MessageTool {
 	public final static int SuccessCode = 2000;
 	public final static int FailCode = 3000;
 	public final static int ErrorCode = 4000;
-	public final static int Code_3001 = 3001;
-	public final static int Code_3002 = 3002;
-	public final static int Code_3003 = 3003;
-	public final static int Code_3004 = 3004;
-	public final static int Code_3005 = 3005;
-	public final static int Code_3010 = 3010;
-	public final static int Code_3011 = 3011;
-	public final static int Code_2002 = 2002;
 	public final static int Code_1004 = 1004;
 	public final static int Code_1005 = 1005;
 	public final static int Code_1006 = 1006;
 	public final static int Code_1007 = 1007;
 	public final static int Code_1008 = 1008;
+	
+	public final static int Code_2002 = 2002;
 	public final static int Code_2004 = 2004;
 	public final static int Code_2005 = 2005;
+	
+	public final static int Code_3001 = 3001;
+	public final static int Code_3002 = 3002;
+	public final static int Code_3003 = 3003;
+	public final static int Code_3004 = 3004;
+	public final static int Code_3005 = 3005;
+	public final static int Code_3006 = 3006;
+	public final static int Code_3007 = 3007;
+	
 	private static Properties prop = new Properties();
 	static{
 		try {

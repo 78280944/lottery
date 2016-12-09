@@ -1,5 +1,7 @@
 package com.lottery.api.controller;
 
+import javax.validation.constraints.Min;
+
 import org.apache.log4j.Logger;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +49,7 @@ public class LotteryRoundController {
 	@Autowired
 	LotteryOrderService lotteryOrderService;
 
-	@ApiOperation(value = "新增游戏记录", notes = "新增游戏记录", httpMethod = "POST")
+	@ApiOperation(value = "新增一期游戏", notes = "新增游戏记录", httpMethod = "POST")
 	@RequestMapping(value = "/addLotteryRound", method = RequestMethod.POST)
 	@ResponseBody
 	public RoundResult addLotteryRound(
@@ -99,7 +101,7 @@ public class LotteryRoundController {
 	@ApiOperation(value = "游戏封盘", notes = "游戏封盘", httpMethod = "POST")
 	@RequestMapping(value = "/closeLotteryRound/{roundId}", method = RequestMethod.POST)
 	@ResponseBody
-	public RoundResult closeLotteryRound(@Validated @PathVariable Integer roundId) throws Exception {
+	public RoundResult closeLotteryRound(@Min(value = 0, message = "ID格式不正确") @PathVariable Integer roundId) throws Exception {
 		RoundResult result = new RoundResult();
 		try {
 			LotteryRound lotteryRound = new LotteryRound();

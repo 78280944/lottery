@@ -21,7 +21,7 @@ public interface EnumType {
 
     public final String ID;
     public final String NAME;
-    public final static String enumDesc = "下注项类型";
+    public final static String enumDesc = "投注项类型";
   }
   
   enum RoundStatus {
@@ -49,7 +49,7 @@ public interface EnumType {
   }
   
   enum RalativeType {
-    In("In", "入金"),Out("Out", "出金"), Commision("Commision", "佣金"), Pay("Pay", "付款"), Order("Order", "下注"), Prize("Prize", "奖金"), Return("Return", "洗码");
+    In("In", "入金"),Out("Out", "出金"), Commision("Commision", "佣金"), Pay("Pay", "付款"), Order("Order", "投注"), Prize("Prize", "奖金"), Return("Return", "洗码");
     private RalativeType(String ID, String NAME) {
       this.ID = ID;
       this.NAME = NAME;
@@ -59,4 +59,16 @@ public interface EnumType {
     public final String NAME;
     public final static String enumDesc = "业务相关类型";
   }
+  
+  enum OffType {
+	    Admin("0", "超级账户"),Agency("1", "代理账户"), Sub("2", "子账户类型"), Play("3", "会员账户");
+	    private OffType(String ID, String NAME) {
+	      this.ID = ID;
+	      this.NAME = NAME;
+	    }
+
+	    public final String ID;
+	    public final String NAME;
+	    public final static String enumDesc = "账户类型";
+	  }
 }
