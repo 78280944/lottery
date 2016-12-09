@@ -4,9 +4,9 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 
 public class LoginParamVo {
 	
-	@ApiModelProperty(value = "帐户名", required = true)
+	@ApiModelProperty(value = "用户名", required = true)
 	protected String username;
-	@ApiModelProperty(value = "帐户密码", required = true)
+	@ApiModelProperty(value = "用户密码", required = true)
     private String password;
 	@ApiModelProperty(value = "IP", required = true)
 	private String ip;

@@ -19,7 +19,7 @@ public class OffAccountInfoService {
 	@Autowired
 	private AccountDetailMapper accountDetailMapper;
 
-	// 添加帐户
+	// 添加账户
 	public void addOffAccountInfo(OffAccountInfo paraInfo) {
 		offAccountInfoMapper.insertSelective(paraInfo);
 		
@@ -36,7 +36,7 @@ public class OffAccountInfoService {
 		accountDetailMapper.insertSelective(accountDetail);
 	}
 
-	// 更新帐户
+	// 更新账户
 	public void updateOffAccountInfo(OffAccountInfo paraInfo) {
 		offAccountInfoMapper.updateByPrimaryKey(paraInfo);
 

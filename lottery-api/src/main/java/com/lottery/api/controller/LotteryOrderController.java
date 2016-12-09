@@ -19,6 +19,7 @@ import com.lottery.orm.bo.LotteryOrder;
 import com.lottery.orm.bo.LotteryOrderDetail;
 import com.lottery.orm.bo.LotteryRound;
 import com.lottery.orm.dao.LotteryRoundMapper;
+import com.lottery.orm.dto.LotteryOrderDto;
 import com.lottery.orm.result.OrderResult;
 import com.lottery.orm.service.LotteryOrderService;
 import com.lottery.orm.util.EnumType;
@@ -42,7 +43,7 @@ public class LotteryOrderController {
 	@Autowired
 	private LotteryRoundMapper lotteryRoundMapper;
 
-	@ApiOperation(value = "新增投注记录", notes = "新增资金交易记录", httpMethod = "POST")
+	@ApiOperation(value = "新增投注记录", notes = "新增投注记录", httpMethod = "POST")
 	@RequestMapping(value = "/addLotteryOrder", method = RequestMethod.POST)
 	@ResponseBody
 	public OrderResult addLotteryOrder(
@@ -64,7 +65,8 @@ public class LotteryOrderController {
 				order.setOrderDetailList(orderDetails);
 				if (lotteryOrderService.checkLotteryOrder(order)) {
 					lotteryOrderService.addLotteryOrder(order);
-					result.success(order);
+					LotteryOrderDto orderDto = mapper.map(order, LotteryOrderDto.class);
+					result.success(orderDto);
 				} else {
 					result.fail(MessageTool.FailCode);
 				}

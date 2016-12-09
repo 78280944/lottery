@@ -111,6 +111,7 @@
     select o.*,d.* 
     from lottery_order o, lottery_order_detail d
     where o.orderId=d.orderId and o.roundId = #{roundId,jdbcType=INTEGER}
+	 order by ordertime
   </select>
 
 </mapper>

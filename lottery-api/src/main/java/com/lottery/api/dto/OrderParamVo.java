@@ -12,8 +12,8 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 
 public class OrderParamVo {
 
-    @ApiModelProperty(value = "帐户ID", required = true)
-    @NotNull(message = "帐户ID不能为空")
+    @ApiModelProperty(value = "账户ID", required = true)
+    @NotNull(message = "账户ID不能为空")
     @Min(value=0, message = "账户ID格式不正确")
     private Integer accountId;
 

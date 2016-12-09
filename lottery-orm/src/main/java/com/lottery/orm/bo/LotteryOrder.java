@@ -5,32 +5,45 @@ import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 public class LotteryOrder {
+    @ApiModelProperty(value = "投注单ID", required = true)
     private Integer orderid;
 
+	@ApiModelProperty(value = "游戏ID", required = true)
     private Integer roundid;
 
+	@ApiModelProperty(value = "账户ID", required = true)
     private Integer accountid;
 
-    private Double orderamount;
-
-    private Double commisionamount;
-    
+	@ApiModelProperty(value = "投注时间", required = true)
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date ordertime;
+	
+	@ApiModelProperty(value = "投注金额", required = true)
+    private Double orderamount;
 
+	@ApiModelProperty(value = "该投注单的代理佣金")
+    private Double commisionamount;
+    
+	@ApiModelProperty(value = "中奖")
     private Double prizeamount;
 
+	@ApiModelProperty(value = "奖金实收")
     private Double actualamount;
 
+	@ApiModelProperty(value = "洗码量")
     private Double returnamount;
     
+	@ApiModelProperty(value = "开奖时间")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date prizetime;
 
+	@ApiModelProperty(value = "账户余额")
     private BigDecimal accountamount;
     
+	@ApiModelProperty(value = "投注单详情")
     List<LotteryOrderDetail> orderDetailList;
 
     public Integer getOrderid() {
@@ -128,5 +141,4 @@ public class LotteryOrder {
     public void setOrderDetailList(List<LotteryOrderDetail> orderDetailList) {
         this.orderDetailList = orderDetailList;
     }
-    
 }

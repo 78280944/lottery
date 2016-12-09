@@ -21,7 +21,7 @@ public class AccountInfoService {
 	@Autowired
 	private AccountDetailMapper accountDetailMapper;
 
-	// 添加帐户
+	// 添加账户
 	public void addAccountInfo(AccountInfo paraInfo) {
 		accountInfoMapper.insertSelective(paraInfo);
 
@@ -39,7 +39,7 @@ public class AccountInfoService {
 		accountDetailMapper.insertSelective(accountDetail);
 	}
 
-	// 更新帐户
+	// 更新账户
 	public void updateAccountInfo(AccountInfo paraInfo) {
 		accountInfoMapper.updateByPrimaryKey(paraInfo);
 		

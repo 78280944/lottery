@@ -2217,7 +2217,7 @@
 					<id>22</id>
 					<referenced_column>78</referenced_column>
 					<relation>1</relation>
-					<description>帐户ID</description>
+					<description>账户ID</description>
 					<unique_key_name></unique_key_name>
 					<logical_name>AccountId</logical_name>
 					<physical_name>AccountId</physical_name>
@@ -3069,7 +3069,7 @@
 					<id>45</id>
 					<referenced_column>78</referenced_column>
 					<relation>3</relation>
-					<description>帐户ID</description>
+					<description>账户ID</description>
 					<unique_key_name></unique_key_name>
 					<logical_name>AccountId</logical_name>
 					<physical_name>AccountId</physical_name>

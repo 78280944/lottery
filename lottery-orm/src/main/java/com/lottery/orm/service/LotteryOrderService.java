@@ -223,14 +223,14 @@ public class LotteryOrderService {
 	 * addTradeInfoByOrder(order); }
 	 */
 
-	// 添加帐户
+	// 添加账户
 	public boolean checkLotteryOrder(LotteryOrder order) {
 		List<Map<String, String>> detailList = customLotteryMapper.selectOrderForCheck(order.getRoundid());
 		Map<String, Double> tempMap = new HashMap<String, Double>();
 		AccountDetail account = accountDetailMapper.selectByPrimaryKey(order.getAccountid());
 		Double topAmount = account.getLimited();
 		for (Map<String, String> detailMap : detailList) {
-			tempMap.put(detailMap.get("ItemNo"), new Double(detailMap.get("Amount")));
+			tempMap.put(detailMap.get("ItemNo"), Double.parseDouble(String.valueOf(detailMap.get("Amount"))));
 		}
 		for (LotteryOrderDetail detail : order.getOrderDetailList()) {
 			String itemNo = detail.getItemno();

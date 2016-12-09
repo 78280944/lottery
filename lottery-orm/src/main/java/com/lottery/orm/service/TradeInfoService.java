@@ -23,7 +23,7 @@ public class TradeInfoService {
     @Autowired
     private AccountDetailMapper accountDetailMapper;
 
-    // 添加出入金款项并更新帐户
+    // 添加出入金款项并更新账户
     public boolean addInoutTradeInfo(TradeInfo tradeInfo) {
 	AccountDetail accountDetail = accountDetailMapper.selectByPrimaryKey(tradeInfo.getAccountid());
 	Double accountAmount = accountDetail.getMoney().doubleValue();

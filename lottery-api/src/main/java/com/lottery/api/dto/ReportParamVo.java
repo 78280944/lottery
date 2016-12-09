@@ -9,7 +9,7 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 
 public class ReportParamVo extends PageParamVo{
 
-  @ApiModelProperty(value = "帐户ID")
+  @ApiModelProperty(value = "账户ID")
   @Min(value=0, message = "账户ID格式不正确")
   private Integer accountId;
   
