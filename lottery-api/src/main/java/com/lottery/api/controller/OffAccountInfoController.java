@@ -17,12 +17,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.lottery.api.dto.AccountInfoVo;
 import com.lottery.api.dto.LoginParamVo;
+import com.lottery.api.dto.OffAccountInfoVo;
+import com.lottery.api.dto.UpdateOffAccountVo;
 import com.lottery.api.util.ToolsUtil;
 import com.lottery.orm.bo.OffAccountInfo;
 import com.lottery.orm.dao.OffAccountInfoMapper;
 import com.lottery.orm.dto.OffAccountDto;
 import com.lottery.orm.result.OffAccountListResult;
 import com.lottery.orm.result.OffAccountResult;
+import com.lottery.orm.result.RestResult;
 import com.lottery.orm.service.OffAccountInfoService;
 import com.lottery.orm.util.EnumType;
 import com.lottery.orm.util.MessageTool;
@@ -95,8 +98,8 @@ public class OffAccountInfoController {
 	@ApiOperation(value = "新增代理", notes = "新增代理", httpMethod = "POST")
 	@RequestMapping(value = "/addOffAccountInfo", method = RequestMethod.POST)
 	@ResponseBody
-	public OffAccountResult addOffAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody OffAccountInfo param) throws Exception {
-		OffAccountResult result = new OffAccountResult();
+	public RestResult addOffAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody OffAccountInfoVo param) throws Exception {
+		RestResult result = new RestResult();
 		try {
 			
 			String username = param.getUsername();
@@ -226,8 +229,8 @@ public class OffAccountInfoController {
 	@ApiOperation(value = "修改代理", notes = "修改代理", httpMethod = "POST")
 	@RequestMapping(value = "/updateOffAccountInfo", method = RequestMethod.POST)
 	@ResponseBody
-	public OffAccountResult updateOffAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody OffAccountInfo param) throws Exception {
-		OffAccountResult result = new OffAccountResult();
+	public RestResult updateOffAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody UpdateOffAccountVo param) throws Exception {
+		RestResult result = new RestResult();
 		try {
 			
 			String username = param.getUsername();
@@ -338,11 +341,11 @@ public class OffAccountInfoController {
 				    paraInfo.setRatio(null==param.getRatio()||"".equals(param.getRatio())||0.0==param.getRatio() ? OffAccountInfo.getRatio():param.getRatio());
 				    paraInfo.setPercentage(null==param.getPercentage()||"".equals(param.getPercentage())||0.0==param.getPercentage() ? OffAccountInfo.getPercentage():param.getPercentage());
 				    paraInfo.setLevel(null==param.getLevel()||"".equals(param.getLevel()) ? OffAccountInfo.getLevel():OffAccountInfo.getLevel());//代理级别不允许修改
-				    paraInfo.setQuery(null==param.getQuery()||"".equals(param.getQuery()) ? OffAccountInfo.getQuery():OffAccountInfo.getQuery());
-				    paraInfo.setManage(null==param.getManage()||"".equals(param.getManage()) ? OffAccountInfo.getManage():OffAccountInfo.getManage());
+				    paraInfo.setQuery("Y1,Y2,Y3,Y4,Y5");
+				    paraInfo.setManage("M1,M2,M3,M4,M5");
 				    paraInfo.setOfftype(null==param.getOfftype()||"".equals(param.getOfftype()) ? OffAccountInfo.getOfftype():OffAccountInfo.getOfftype());
 				    paraInfo.setState(null==param.getState()||"".equals(param.getState()) ?  OffAccountInfo.getState():param.getState());
-				    paraInfo.setUpdateip(null==param.getUpdateip()||"".equals(param.getUpdateip()) ? OffAccountInfo.getUpdateip():param.getUpdateip());
+				    paraInfo.setUpdateip(null==param.getIp()||"".equals(param.getIp()) ? OffAccountInfo.getIp():param.getIp());
 				    //System.out.println("9-------------d-"+ToolsUtil.getCurrentTime());
 				    paraInfo.setUpdatedate(new Date());
 				    OffAccountInfoService.updateOffAccountInfo(paraInfo);

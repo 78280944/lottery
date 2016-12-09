@@ -36,7 +36,13 @@ public class OffAccountInfoService {
 		accountDetailMapper.insertSelective(accountDetail);
 	}
 
-	// 更新账户
+	// 添加子帐户
+	public void addOffAccountInfo(OffAccountInfo paraInfo,String offtype) {
+		if (offtype.equals("2"))
+		    offAccountInfoMapper.insertSelective(paraInfo);
+	}
+	
+	// 更新帐户
 	public void updateOffAccountInfo(OffAccountInfo paraInfo) {
 		offAccountInfoMapper.updateByPrimaryKey(paraInfo);
 
@@ -51,6 +57,12 @@ public class OffAccountInfoService {
 		accountDetail.setLevel(paraInfo.getLevel());
 		accountDetail.setOfftype(paraInfo.getOfftype());
 		accountDetailMapper.updateByPrimaryKeySelective(accountDetail);
+	}
+	
+	// 更新子帐户
+	public void updateOffAccountInfo(OffAccountInfo paraInfo,String offtype) {
+		if (offtype.equals("2"))
+		    offAccountInfoMapper.updateByPrimaryKey(paraInfo);
 	}
 
 }
