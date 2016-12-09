@@ -1,5 +1,6 @@
 package com.lottery.api.controller;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.lottery.api.dto.AccountInfoVo;
 import com.lottery.api.dto.LoginParamVo;
+import com.lottery.api.dto.PlayAccountInfoVo;
+import com.lottery.api.dto.UpdatePalyAccountVo;
 import com.lottery.api.util.ToolsUtil;
 import com.lottery.orm.bo.AccountDetail;
 import com.lottery.orm.bo.AccountInfo;
@@ -27,6 +30,7 @@ import com.lottery.orm.dao.OffAccountInfoMapper;
 import com.lottery.orm.dto.AccountInfoDto;
 import com.lottery.orm.result.AccountListResult;
 import com.lottery.orm.result.AccountResult;
+import com.lottery.orm.result.RestResult;
 import com.lottery.orm.service.AccountInfoService;
 import com.lottery.orm.util.EnumType;
 import com.lottery.orm.util.MessageTool;
@@ -75,7 +79,9 @@ public class AccountInfoController {
 		    AccountInfo paraInfo = mapper.map(param, AccountInfo.class);
 		    AccountInfo accountInfo = accountInfoMapper.selectByLogin(paraInfo);
 		    if(accountInfo!=null){
+		    	System.out.println("9---"+accountInfo.getUserid());
 		    	AccountDetail accountDetail = accountDetailMapper.selectByUserId(accountInfo.getUserid(), "3");
+		    	System.out.println("55---------"+accountDetail+"  ");
 				AccountInfoDto rAcDto = new AccountInfoDto();
 				rAcDto.setUserid(null==accountInfo.getUserid()||"".equals(accountInfo.getUserid())||0.0==accountInfo.getUserid() ?0:accountInfo.getUserid());
 				rAcDto.setUsername(accountInfo.getUsername());
@@ -86,7 +92,8 @@ public class AccountInfoController {
 				rAcDto.setState(null==accountInfo.getState()||"".equals(accountInfo.getState()) ? "":accountInfo.getState());
 				rAcDto.setSupusername(null==accountInfo.getSupusername()||"".equals(accountInfo.getSupusername()) ? "":accountInfo.getSupusername());
 				rAcDto.setLevel(null==accountInfo.getLevel()||"".equals(accountInfo.getLevel()) ? "":accountInfo.getLevel());
-				rAcDto.setAccountAmount(accountDetail.getMoney());
+				System.out.println("55---------"+accountDetail.getMoney());
+				rAcDto.setAccountAmount(null==accountDetail.getMoney()||"".equals(accountDetail.getMoney())||BigDecimal.valueOf(0) == accountDetail.getMoney()?BigDecimal.valueOf(0):accountDetail.getMoney());
 				result.success(rAcDto);
 		    }else{
 		    	result.fail(MessageTool.Code_3001);
@@ -103,8 +110,8 @@ public class AccountInfoController {
 	@ApiOperation(value = "新增玩家", notes = "新增玩家", httpMethod = "POST")
 	@RequestMapping(value = "/addAccountInfo", method = RequestMethod.POST)
 	@ResponseBody
-	public AccountResult addAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody AccountInfo param) throws Exception {
-		AccountResult result = new AccountResult();
+	public RestResult addAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody PlayAccountInfoVo param) throws Exception {
+		RestResult result = new RestResult();
 		try {
 			String username = param.getUsername();
 			String password = param.getPassword();
@@ -190,8 +197,8 @@ public class AccountInfoController {
 	@ApiOperation(value = "修改玩家", notes = "修改玩家", httpMethod = "POST")
 	@RequestMapping(value = "/updateAccountInfo", method = RequestMethod.POST)
 	@ResponseBody
-	public AccountResult updateAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody AccountInfo param) throws Exception {
-		AccountResult result = new AccountResult();
+	public RestResult updateAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody UpdatePalyAccountVo param) throws Exception {
+		RestResult result = new RestResult();
 		try {
 			int serialno = param.getUserid();
 			String username = param.getUsername();
@@ -291,7 +298,7 @@ public class AccountInfoController {
 			    paraInfo.setLimited(null==param.getLimited()||"".equals(param.getLimited())||0.0==param.getLimited() ? accountInfo.getLimited():param.getLimited());
 			    paraInfo.setRatio(null==param.getRatio()||"".equals(param.getRatio())||0.0==param.getRatio() ? accountInfo.getRatio():param.getRatio());
 			    paraInfo.setState(null==param.getState()||"".equals(param.getState()) ?  accountInfo.getState():param.getState());
-			    paraInfo.setUpdateip(null==param.getUpdateip()||"".equals(param.getUpdateip()) ? accountInfo.getUpdateip():param.getUpdateip());
+			    paraInfo.setUpdateip(null==param.getIp()||"".equals(param.getIp()) ? accountInfo.getIp():param.getIp());
 			    paraInfo.setUpdatedate(new Date());
 			    accountInfoService.updateAccountInfo(paraInfo);
 			    result.success();

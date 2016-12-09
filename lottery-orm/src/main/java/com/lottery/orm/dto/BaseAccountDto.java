@@ -3,7 +3,7 @@ package com.lottery.orm.dto;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 public class BaseAccountDto {
-	@ApiModelProperty(value = "流水号", required = true)
+	@ApiModelProperty(value = "(流水号)用户ID", required = true)
 	private Integer userid;
 
 	@ApiModelProperty(value = "用户名", required = true)
@@ -15,13 +15,13 @@ public class BaseAccountDto {
 	@ApiModelProperty(value = "登陆密码", required = true)
 	private String password;
 
-	@ApiModelProperty(value = "状态:0冻结，1正常", required = true)
+	@ApiModelProperty(value = "状态,0:冻结，1:正常", required = true)
 	private String state;
 
-	@ApiModelProperty(value = "所属账户", required = true)
+	@ApiModelProperty(value = "管理账户", required = true)
 	private String supusername;
 
-	@ApiModelProperty(value = "会员级别：0超级管理员，1一级代理，2二级代理，3三级代理", required = true)
+	@ApiModelProperty(value = "管理账户级别，0：超级管理员，1：一级代理，2：二级代理，3：三级代理", required = true)
 	private String level;
 
 	public String getLevel() {

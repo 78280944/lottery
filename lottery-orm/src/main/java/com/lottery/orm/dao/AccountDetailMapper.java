@@ -18,4 +18,5 @@ public interface AccountDetailMapper {
     int updateByPrimaryKey(AccountDetail record);
     
     AccountDetail selectByUserId(@Param("userid")Integer userid, @Param("offtype")String offtype);
+    
 }

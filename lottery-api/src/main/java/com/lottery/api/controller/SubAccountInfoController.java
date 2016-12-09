@@ -17,10 +17,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.lottery.api.dto.AccountInfoVo;
 import com.lottery.api.dto.LoginParamVo;
+import com.lottery.api.dto.SubAccountInfoVo;
+import com.lottery.api.dto.UpdateSubAccountVo;
 import com.lottery.api.util.ToolsUtil;
 import com.lottery.orm.bo.OffAccountInfo;
 import com.lottery.orm.dao.OffAccountInfoMapper;
 import com.lottery.orm.dto.SubAccountDto;
+import com.lottery.orm.result.RestResult;
 import com.lottery.orm.result.SubAccountListResult;
 import com.lottery.orm.result.SubAccountResult;
 import com.lottery.orm.service.OffAccountInfoService;
@@ -45,6 +48,7 @@ public class SubAccountInfoController {
 	@Autowired
 	private OffAccountInfoMapper offAccountInfoMapper;
 	
+	/*
 	@ApiOperation(value = "获取子帐号信息", notes = "获取子帐号信息", httpMethod = "POST")
 	@RequestMapping(value = "/getSubAccountInfo", method = RequestMethod.POST)
 	@ResponseBody
@@ -90,12 +94,12 @@ public class SubAccountInfoController {
 		return result;
 
 	}
-	
+	*/
 	@ApiOperation(value = "新增子帐号", notes = "新增子帐号", httpMethod = "POST")
 	@RequestMapping(value = "/addSubAccountInfo", method = RequestMethod.POST)
 	@ResponseBody
-	public SubAccountResult addSubAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody OffAccountInfo param) throws Exception {
-		SubAccountResult result = new SubAccountResult();
+	public RestResult addSubAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody SubAccountInfoVo param) throws Exception {
+		RestResult result = new RestResult();
 		try {
 			
 			String username = param.getUsername();
@@ -156,7 +160,7 @@ public class SubAccountInfoController {
 		    paraInfo.setOfftype("2");
 		    paraInfo.setInputdate(new Date());
 		    
-		    offAccountInfoService.addOffAccountInfo(paraInfo);
+		    offAccountInfoService.addOffAccountInfo(paraInfo,"2");
 		    
 		    result.success();
 			LOG.info(result.getMessage());
@@ -170,8 +174,8 @@ public class SubAccountInfoController {
 	@ApiOperation(value = "修改子帐号", notes = "修改子帐号", httpMethod = "POST")
 	@RequestMapping(value = "/updateSubAccountInfo", method = RequestMethod.POST)
 	@ResponseBody
-	public SubAccountResult updateSubAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody OffAccountInfo param) throws Exception {
-		SubAccountResult result = new SubAccountResult();
+	public RestResult updateSubAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody UpdateSubAccountVo param) throws Exception {
+		RestResult result = new RestResult();
 		try {
 			String username = param.getUsername();
 			String password = param.getPassword();
@@ -224,9 +228,9 @@ public class SubAccountInfoController {
 			    paraInfo.setLevel(null==param.getLevel()||"".equals(param.getLevel()) ? SubAccountInfo.getLevel():param.getLevel());
 			    paraInfo.setOfftype(SubAccountInfo.getOfftype());   
 			    paraInfo.setState(null==param.getState()||"".equals(param.getState()) ?  SubAccountInfo.getState():param.getState());
-			    paraInfo.setUpdateip(null==param.getUpdateip()||"".equals(param.getUpdateip()) ? SubAccountInfo.getUpdateip():param.getUpdateip());
+			    paraInfo.setUpdateip(null==param.getIp()||"".equals(param.getIp()) ? SubAccountInfo.getIp():param.getIp());
 			    paraInfo.setUpdatedate(new Date());
-			    offAccountInfoService.updateOffAccountInfo(paraInfo);
+			    offAccountInfoService.updateOffAccountInfo(paraInfo,"2");
 			    
 			    result.success();
 			}
