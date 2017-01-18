@@ -27,8 +27,6 @@ public class UpdatePalyAccountVo extends BaseAccountInfoVo{
 	    @ApiModelProperty(value = "状态")
 	    private String state;
 
-
-
 		public int getUserid() {
 			return userid;
 		}

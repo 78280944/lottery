@@ -29,9 +29,29 @@ public class AccountInfo {
     private String supusername;
 
     private String level;
+    
+    private String phone;
+    
+    private String webchat;
 
+    
+	public String getPhone() {
+		return phone;
+	}
 
-    public Integer getUserid() {
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getWebchat() {
+		return webchat;
+	}
+
+	public void setWebchat(String webchat) {
+		this.webchat = webchat;
+	}
+
+	public Integer getUserid() {
 		return userid;
 	}
 

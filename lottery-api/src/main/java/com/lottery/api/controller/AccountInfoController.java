@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.lottery.api.dto.AccountInfoVo;
 import com.lottery.api.dto.LoginParamVo;
 import com.lottery.api.dto.PlayAccountInfoVo;
+import com.lottery.api.dto.UpdateAccountVo;
 import com.lottery.api.dto.UpdatePalyAccountVo;
 import com.lottery.api.util.ToolsUtil;
 import com.lottery.orm.bo.AccountDetail;
@@ -28,8 +29,10 @@ import com.lottery.orm.dao.AccountDetailMapper;
 import com.lottery.orm.dao.AccountInfoMapper;
 import com.lottery.orm.dao.OffAccountInfoMapper;
 import com.lottery.orm.dto.AccountInfoDto;
+import com.lottery.orm.dto.RemarkDto;
 import com.lottery.orm.result.AccountListResult;
 import com.lottery.orm.result.AccountResult;
+import com.lottery.orm.result.RemarkResult;
 import com.lottery.orm.result.RestResult;
 import com.lottery.orm.service.AccountInfoService;
 import com.lottery.orm.util.EnumType;
@@ -58,8 +61,9 @@ public class AccountInfoController {
 	
 	@Autowired
     private OffAccountInfoMapper offAccountInfoMapper;
+
 	
-	@ApiOperation(value = "获取玩家信息", notes = "获取玩家信息", httpMethod = "POST")
+	@ApiOperation(value = "获取玩家或者代理商、子代理商信息", notes = "获取玩家或者代理商、子代理商信息", httpMethod = "POST")
 	@RequestMapping(value = "/getAccountInfo", method = RequestMethod.POST)
 	@ResponseBody
 	public AccountResult getAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody LoginParamVo param) throws Exception {
@@ -92,11 +96,46 @@ public class AccountInfoController {
 				rAcDto.setState(null==accountInfo.getState()||"".equals(accountInfo.getState()) ? "":accountInfo.getState());
 				rAcDto.setSupusername(null==accountInfo.getSupusername()||"".equals(accountInfo.getSupusername()) ? "":accountInfo.getSupusername());
 				rAcDto.setLevel(null==accountInfo.getLevel()||"".equals(accountInfo.getLevel()) ? "":accountInfo.getLevel());
+				rAcDto.setPhone(null==accountInfo.getPhone()||"".equals(accountInfo.getPhone()) ? "":accountInfo.getPhone());
+				rAcDto.setWebchat(null==accountInfo.getWebchat()||"".equals(accountInfo.getWebchat()) ? "":accountInfo.getWebchat());
+				rAcDto.setPercentage(0.0);
+				rAcDto.setQuery("");
+				rAcDto.setManage("");
+				rAcDto.setOfftype("3");
 				System.out.println("55---------"+accountDetail.getMoney());
 				rAcDto.setAccountAmount(null==accountDetail.getMoney()||"".equals(accountDetail.getMoney())||BigDecimal.valueOf(0) == accountDetail.getMoney()?BigDecimal.valueOf(0):accountDetail.getMoney());
 				result.success(rAcDto);
-		    }else{
-		    	result.fail(MessageTool.Code_3001);
+		    }else {
+		    	OffAccountInfo offparaInfo = mapper.map(param, OffAccountInfo.class);
+		    	OffAccountInfo offaccountInfo = offAccountInfoMapper.selectByLogin(offparaInfo);
+		    	String offtype;
+		    	if (offaccountInfo!=null){
+			    	AccountDetail accountDetail = accountDetailMapper.selectByUserId(offaccountInfo.getUserid(), "1");
+			    	offtype = "1";
+			    	if (accountDetail == null){
+			    		accountDetail =  accountDetailMapper.selectByUserId(offaccountInfo.getUserid(), "2");
+			    		offtype = "2";
+			    	}
+					AccountInfoDto rAcDto = new AccountInfoDto();
+					rAcDto.setUserid(null==offaccountInfo.getUserid()||"".equals(offaccountInfo.getUserid())||0.0==offaccountInfo.getUserid() ?0:offaccountInfo.getUserid());
+					rAcDto.setUsername(offaccountInfo.getUsername());
+					rAcDto.setAusername(offaccountInfo.getAusername());
+					rAcDto.setPassword(offaccountInfo.getPassword());
+					rAcDto.setLimited(null==offaccountInfo.getLimited()||"".equals(offaccountInfo.getLimited())||0.0==offaccountInfo.getLimited() ?0.0:offaccountInfo.getLimited());
+					rAcDto.setRatio(null==offaccountInfo.getRatio()||"".equals(offaccountInfo.getRatio())||0.0==offaccountInfo.getRatio() ?0:offaccountInfo.getRatio());
+					rAcDto.setState(null==offaccountInfo.getState()||"".equals(offaccountInfo.getState()) ? "":offaccountInfo.getState());
+					rAcDto.setSupusername(null==offaccountInfo.getSupusername()||"".equals(offaccountInfo.getSupusername()) ? "":offaccountInfo.getSupusername());
+					rAcDto.setLevel(null==offaccountInfo.getLevel()||"".equals(offaccountInfo.getLevel()) ? "":offaccountInfo.getLevel());
+					rAcDto.setPhone("");
+					rAcDto.setWebchat("");
+					rAcDto.setPercentage(null==offaccountInfo.getPercentage()||"".equals(offaccountInfo.getPercentage())||0.0==offaccountInfo.getPercentage() ?0.0:offaccountInfo.getPercentage());
+					rAcDto.setQuery(null==offaccountInfo.getQuery()||"".equals(offaccountInfo.getQuery()) ? "":offaccountInfo.getQuery());
+					rAcDto.setManage(null==offaccountInfo.getManage()||"".equals(offaccountInfo.getManage()) ? "":offaccountInfo.getManage());
+					rAcDto.setOfftype(offtype);
+					rAcDto.setAccountAmount(null==accountDetail.getMoney()||"".equals(accountDetail.getMoney())||BigDecimal.valueOf(0) == accountDetail.getMoney()?BigDecimal.valueOf(0):accountDetail.getMoney());
+					result.success(rAcDto);	
+		    	}else
+		    	   result.fail(MessageTool.Code_3001);
 		    }
 			LOG.info(username+","+result.getMessage()+","+new Date());
 		} catch (Exception e) {
@@ -197,10 +236,74 @@ public class AccountInfoController {
 	@ApiOperation(value = "修改玩家", notes = "修改玩家", httpMethod = "POST")
 	@RequestMapping(value = "/updateAccountInfo", method = RequestMethod.POST)
 	@ResponseBody
+	public RestResult updatePlayAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody UpdateAccountVo param) throws Exception {
+		RestResult result = new RestResult();
+		try {
+			int userid = param.getUserid();
+			String username = param.getUsername();
+			String password = param.getPassword();
+			String state = param.getState();
+			String phone =  param.getPhone();
+			String webchat = param.getWebchat();			
+			
+			//参数合规性校验，必要参数不能为空
+			if (ToolsUtil.isEmptyTrim(username)){
+			      result.fail("用户名",MessageTool.Code_2002);
+			      LOG.info(result.getMessage());
+			      return result;
+			}
+			
+		
+			if (0==userid){
+			      result.fail("用户ID",MessageTool.Code_2002);
+			      LOG.info(result.getMessage());
+			      return result;
+			}
+			
+			System.out.println("--4-------------"+phone);
+			AccountInfo accountInfo = accountInfoMapper.selectByPrimaryKey(param.getUserid());
+			
+			System.out.println("--345-------------"+accountInfo.getPhone());
+			if(accountInfo==null){
+			      result.fail(MessageTool.Code_3001);
+			}else{
+				password = DigestUtils.md5Hex(password);	
+			    AccountInfo paraInfo = mapper.map(param, AccountInfo.class);
+			    AccountInfo accountInfocheck = accountInfoMapper.selectByUserAndId(paraInfo);
+			    if (accountInfocheck!=null){
+				      result.fail(username,MessageTool.Code_2005);
+				      LOG.info(result.getMessage());
+				      return result;	
+			    }
+			    paraInfo.setUsername(null==param.getUsername()||"".equals(param.getUsername()) ? accountInfo.getUsername():param.getUsername());
+			    paraInfo.setAusername(accountInfo.getAusername());
+			    paraInfo.setPassword(null==param.getPassword()||"".equals(param.getPassword()) ? accountInfo.getPassword():password);
+			    paraInfo.setState(null==param.getState()||"".equals(param.getState()) ?  accountInfo.getState():param.getState());
+			    paraInfo.setPhone(null==param.getPhone()||"".equals(param.getPhone()) ?  accountInfo.getPhone():param.getPhone());
+			    paraInfo.setWebchat(null==param.getWebchat()||"".equals(param.getWebchat()) ?  accountInfo.getWebchat():param.getWebchat());
+			    paraInfo.setUpdateip(null==param.getIp()||"".equals(param.getIp()) ? accountInfo.getIp():param.getIp());
+			    paraInfo.setUpdatedate(new Date());
+			    paraInfo.setSupusername(accountInfo.getSupusername());
+			    paraInfo.setLevel(accountInfo.getLevel());
+			    
+			    accountInfoService.updateAccountInfo(paraInfo);
+			    result.success();
+			}
+			LOG.info(result.getMessage());
+		} catch (Exception e) {
+			result.error();
+			LOG.error(e.getMessage(),e);
+		}
+		return result;
+	}
+	
+	@ApiOperation(value = "代理用户修改玩家", notes = "代理用户修改玩家", httpMethod = "POST")
+	@RequestMapping(value = "/updatePlayAccountInfo", method = RequestMethod.POST)
+	@ResponseBody
 	public RestResult updateAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody UpdatePalyAccountVo param) throws Exception {
 		RestResult result = new RestResult();
 		try {
-			int serialno = param.getUserid();
+			int userid = param.getUserid();
 			String username = param.getUsername();
 			String ausername = param.getAusername();
 			String password = param.getPassword();
@@ -229,9 +332,8 @@ public class AccountInfoController {
 			      return result;
 			}
 			
-			System.out.println("9---"+serialno);
-			if (0==serialno){
-			      result.fail("会员流水号",MessageTool.Code_2002);
+			if (0==userid){
+			      result.fail("用户ID",MessageTool.Code_2002);
 			      LOG.info(result.getMessage());
 			      return result;
 			}
@@ -346,6 +448,24 @@ public class AccountInfoController {
 			result.error();
 			LOG.error(e.getMessage(),e);
 		}
+		return result;
+	}
+	
+	@ApiOperation(value = "获取在线客服、分享链接、规则说明", notes = "获取在线客服、分享链接、规则说明", httpMethod = "POST")
+	@RequestMapping(value = "/getRemarkInfo", method = RequestMethod.POST)
+	@ResponseBody
+	public RemarkResult getAllAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody String param) throws Exception {
+		RemarkResult result = new RemarkResult();
+		RemarkDto remark = new RemarkDto();
+		String online = "测试在线客服";
+		String share = "测试分享链接";
+		String rule = "测试规则说明";
+			
+		remark.setOnline(online);
+		remark.setShare(share);
+		remark.setRule(rule);
+		result.success(remark);
+
 		return result;
 	}
 	
