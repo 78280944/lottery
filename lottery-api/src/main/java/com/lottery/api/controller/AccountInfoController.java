@@ -19,8 +19,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.lottery.api.dto.AccountInfoVo;
 import com.lottery.api.dto.LoginParamVo;
 import com.lottery.api.dto.PlayAccountInfoVo;
+import com.lottery.api.dto.RemarkInfoVo;
 import com.lottery.api.dto.UpdateAccountVo;
 import com.lottery.api.dto.UpdatePalyAccountVo;
+import com.lottery.api.dto.UpdatePlayAmountVo;
+import com.lottery.api.dto.UpdatePlayPassVo;
+import com.lottery.api.dto.UpdateSubAccAuserVo;
 import com.lottery.api.util.ToolsUtil;
 import com.lottery.orm.bo.AccountDetail;
 import com.lottery.orm.bo.AccountInfo;
@@ -38,6 +42,7 @@ import com.lottery.orm.service.AccountInfoService;
 import com.lottery.orm.util.EnumType;
 import com.lottery.orm.util.MessageTool;
 import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
 
@@ -102,6 +107,7 @@ public class AccountInfoController {
 				rAcDto.setQuery("");
 				rAcDto.setManage("");
 				rAcDto.setOfftype("3");
+				rAcDto.setAccountID(accountDetail.getAccountid());
 				System.out.println("55---------"+accountDetail.getMoney());
 				rAcDto.setAccountAmount(null==accountDetail.getMoney()||"".equals(accountDetail.getMoney())||BigDecimal.valueOf(0) == accountDetail.getMoney()?BigDecimal.valueOf(0):accountDetail.getMoney());
 				result.success(rAcDto);
@@ -132,6 +138,7 @@ public class AccountInfoController {
 					rAcDto.setQuery(null==offaccountInfo.getQuery()||"".equals(offaccountInfo.getQuery()) ? "":offaccountInfo.getQuery());
 					rAcDto.setManage(null==offaccountInfo.getManage()||"".equals(offaccountInfo.getManage()) ? "":offaccountInfo.getManage());
 					rAcDto.setOfftype(offtype);
+					rAcDto.setAccountID(accountDetail.getAccountid());
 					rAcDto.setAccountAmount(null==accountDetail.getMoney()||"".equals(accountDetail.getMoney())||BigDecimal.valueOf(0) == accountDetail.getMoney()?BigDecimal.valueOf(0):accountDetail.getMoney());
 					result.success(rAcDto);	
 		    	}else
@@ -297,6 +304,11 @@ public class AccountInfoController {
 		return result;
 	}
 	
+	
+	
+	
+	
+	/*
 	@ApiOperation(value = "代理用户修改玩家", notes = "代理用户修改玩家", httpMethod = "POST")
 	@RequestMapping(value = "/updatePlayAccountInfo", method = RequestMethod.POST)
 	@ResponseBody
@@ -322,7 +334,7 @@ public class AccountInfoController {
 			//参数合规性校验，必要参数不能为空
 			if (ToolsUtil.isEmptyTrim(username)){
 			      result.fail("用户名",MessageTool.Code_2002);
-			      LOG.info(result.getMessage());
+			      LOG.info(result.getMessage()); 
 			      return result;
 			}
 			
@@ -380,7 +392,7 @@ public class AccountInfoController {
 			      LOG.info(result.getMessage());
 			      return result;	
 			}
-			*/
+			
 			AccountInfo accountInfo = accountInfoMapper.selectByPrimaryKey(param.getUserid());
 			if(accountInfo==null){
 			      result.fail(MessageTool.Code_3001);
@@ -412,7 +424,9 @@ public class AccountInfoController {
 		}
 		return result;
 	}
-
+      */
+	
+	
 	@ApiOperation(value = "获取玩家列表", notes = "获取该代理下的玩家列表", httpMethod = "POST")
 	@RequestMapping(value = "/getAllAccountInfo", method = RequestMethod.POST)
 	@ResponseBody
@@ -454,7 +468,7 @@ public class AccountInfoController {
 	@ApiOperation(value = "获取在线客服、分享链接、规则说明", notes = "获取在线客服、分享链接、规则说明", httpMethod = "POST")
 	@RequestMapping(value = "/getRemarkInfo", method = RequestMethod.POST)
 	@ResponseBody
-	public RemarkResult getAllAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody String param) throws Exception {
+	public RemarkResult getAllAccountInfo() throws Exception {
 		RemarkResult result = new RemarkResult();
 		RemarkDto remark = new RemarkDto();
 		String online = "测试在线客服";

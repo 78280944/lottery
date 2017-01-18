@@ -12,6 +12,9 @@ public class AccountInfoDto extends BaseAccountDto {
 	@ApiModelProperty(value = "洗码比", required = true)
 	private Double ratio;
 	
+	@ApiModelProperty(value = "账户ID", required = true)
+	private Integer accountID;
+	
 	@ApiModelProperty(value = "账户余额", required = true)
 	private BigDecimal accountAmount;
 	
@@ -34,6 +37,14 @@ public class AccountInfoDto extends BaseAccountDto {
 	private String offtype;
 	
 	
+	public Integer getAccountID() {
+		return accountID;
+	}
+
+	public void setAccountID(Integer accountID) {
+		this.accountID = accountID;
+	}
+
 	public Double getPercentage() {
 		return percentage;
 	}

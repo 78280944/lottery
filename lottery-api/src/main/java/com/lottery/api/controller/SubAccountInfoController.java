@@ -18,8 +18,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.lottery.api.dto.AccountInfoVo;
 import com.lottery.api.dto.LoginParamVo;
 import com.lottery.api.dto.SubAccountInfoVo;
+import com.lottery.api.dto.UpdatePlayPassVo;
+import com.lottery.api.dto.UpdateSubAccAuserVo;
 import com.lottery.api.dto.UpdateSubAccountVo;
 import com.lottery.api.util.ToolsUtil;
+import com.lottery.orm.bo.AccountDetail;
 import com.lottery.orm.bo.OffAccountInfo;
 import com.lottery.orm.dao.OffAccountInfoMapper;
 import com.lottery.orm.dto.SubAccountDto;
@@ -270,6 +273,79 @@ public class SubAccountInfoController {
 				      list.add(rAcDto);
 				}
 			    result.success(list);
+			}
+			LOG.info(result.getMessage());
+		} catch (Exception e) {
+			result.error();
+			LOG.error(e.getMessage(),e);
+		}
+		return result;
+	}
+	
+
+	@ApiOperation(value = "代理用户修改子账户别名", notes = "代理用户修改子账户别名", httpMethod = "POST")
+	@RequestMapping(value = "/updateAccountAmount", method = RequestMethod.POST)
+	@ResponseBody
+	public RestResult updateSubOffAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody UpdateSubAccAuserVo param) throws Exception {
+		RestResult result = new RestResult();
+		try {
+			int userid = param.getUserid();
+			String ausername = param.getAusername();
+            String supusername = param.getSupusername();
+            int offtype = param.getOfftype();
+			String ip = param.getIp();
+			
+			if (0==userid){
+			      result.fail("用户ID",MessageTool.Code_2002);
+			      LOG.info(result.getMessage());
+			      return result;
+			}
+			
+			OffAccountInfo subOffAccountInfo = offAccountInfoMapper.selectByPrimaryKey(param.getUserid());
+			if(subOffAccountInfo==null){
+			      result.fail(MessageTool.Code_3001);
+			}else{
+
+				subOffAccountInfo.setAusername(ausername);
+				offAccountInfoMapper.updateByPrimaryKey(subOffAccountInfo);
+			    LOG.info("修改子账户记录详情为："+" 管理员："+supusername+" 账户类型："+offtype+" IP："+ip+" 修改账户ID"+userid+" 别名修改为"+ausername);
+			    result.success();
+			}
+			LOG.info(result.getMessage());
+		} catch (Exception e) {
+			result.error();
+			LOG.error(e.getMessage(),e);
+		}
+		return result;
+	}
+	
+	
+	@ApiOperation(value = "代理用户修改子账户密码", notes = "代理用户修改子账户密码", httpMethod = "POST")
+	@RequestMapping(value = "/updateSubAccountPass", method = RequestMethod.POST)
+	@ResponseBody
+	public RestResult updateSubAccountPass(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody UpdatePlayPassVo param) throws Exception {
+		RestResult result = new RestResult();
+		try {
+			int userid = param.getUserid();
+			String password = param.getPassword();
+            String supusername = param.getSupusername();
+            int offtype = param.getOfftype();
+			String ip = param.getIp();
+			
+			if (0==userid){
+			      result.fail("用户ID",MessageTool.Code_2002);
+			      LOG.info(result.getMessage());
+			      return result;
+			}
+			
+			OffAccountInfo offAccountInfo = offAccountInfoMapper.selectByPrimaryKey(param.getUserid());
+			if(offAccountInfo==null){
+			      result.fail(MessageTool.Code_3001);
+			}else{
+				offAccountInfo.setPassword(DigestUtils.md5Hex(password));
+				offAccountInfoMapper.updateByPrimaryKey(offAccountInfo);
+			    LOG.info("修改密码记录详情为："+" 管理员："+supusername+" 账户类型："+offtype+" IP："+ip+" 修改下家ID"+userid+" 密码修改为"+offAccountInfo.getPassword());
+			    result.success();
 			}
 			LOG.info(result.getMessage());
 		} catch (Exception e) {

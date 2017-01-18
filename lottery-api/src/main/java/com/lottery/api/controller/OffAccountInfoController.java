@@ -1,5 +1,6 @@
 package com.lottery.api.controller;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,13 +20,20 @@ import com.lottery.api.dto.AccountInfoVo;
 import com.lottery.api.dto.LoginParamVo;
 import com.lottery.api.dto.OffAccountInfoVo;
 import com.lottery.api.dto.UpdateOffAccountVo;
+import com.lottery.api.dto.UpdatePlayAmountVo;
+import com.lottery.api.dto.UpdatePlayPassVo;
 import com.lottery.api.util.ToolsUtil;
+import com.lottery.orm.bo.AccountDetail;
+import com.lottery.orm.bo.AccountInfo;
 import com.lottery.orm.bo.OffAccountInfo;
+import com.lottery.orm.dao.AccountDetailMapper;
+import com.lottery.orm.dao.AccountInfoMapper;
 import com.lottery.orm.dao.OffAccountInfoMapper;
 import com.lottery.orm.dto.OffAccountDto;
 import com.lottery.orm.result.OffAccountListResult;
 import com.lottery.orm.result.OffAccountResult;
 import com.lottery.orm.result.RestResult;
+import com.lottery.orm.service.AccountInfoService;
 import com.lottery.orm.service.OffAccountInfoService;
 import com.lottery.orm.util.EnumType;
 import com.lottery.orm.util.MessageTool;
@@ -43,10 +51,19 @@ public class OffAccountInfoController {
 	private Mapper mapper;
 	
 	@Autowired
+    private AccountInfoService accountInfoService;
+	
+	@Autowired
     private OffAccountInfoService OffAccountInfoService;
 	
 	@Autowired
 	private OffAccountInfoMapper offAccountInfoMapper;
+	
+	@Autowired
+    private AccountInfoMapper accountInfoMapper;
+	
+	@Autowired
+    private AccountDetailMapper accountDetailMapper;
 	
 	@ApiOperation(value = "获取代理信息", notes = "获取代理信息", httpMethod = "POST")
 	@RequestMapping(value = "/getOffAccountInfo", method = RequestMethod.POST)
@@ -400,5 +417,160 @@ public class OffAccountInfoController {
 		}
 		return result;
 	}
+	
+
+	@ApiOperation(value = "代理用户修改玩家剩余点数", notes = "代理用户修改玩家剩余点数", httpMethod = "POST")
+	@RequestMapping(value = "/updatePlayAmount", method = RequestMethod.POST)
+	@ResponseBody
+	public RestResult updateAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody UpdatePlayAmountVo param) throws Exception {
+		RestResult result = new RestResult();
+		try {
+			int userid = param.getUserid();
+			int accountid = param.getAccountid();
+			BigDecimal accountamount = param.getAccountamount();
+            String supusername = param.getSupusername();
+            int offtype = param.getOfftype();
+			String ip = param.getIp();
+			
+			if (0==userid||0==accountid){
+			      result.fail("用户ID或者账户ID",MessageTool.Code_2002);
+			      LOG.info(result.getMessage());
+			      return result;
+			}
+			
+			AccountInfo accountInfo = accountInfoMapper.selectByPrimaryKey(param.getUserid());
+			if(accountInfo==null){
+			      result.fail(MessageTool.Code_3001);
+			}else{
+			    AccountDetail accountDetail = accountDetailMapper.selectByPrimaryKey(accountid);
+			    if (accountDetail==null){
+			    	result.fail(MessageTool.Code_3001);	
+			    }
+			    accountDetail.setMoney(accountamount);
+			    accountInfoService.updateAccountMount(accountDetail);
+			    LOG.info("修改剩余点数记录详情为："+" 管理员："+supusername+" 账户类型："+offtype+" IP："+ip+" 修改玩家ID"+userid+" 剩余点数修改为"+accountamount);
+			    result.success();
+			}
+			LOG.info(result.getMessage());
+		} catch (Exception e) {
+			result.error();
+			LOG.error(e.getMessage(),e);
+		}
+		return result;
+	}
+	
+	
+	@ApiOperation(value = "代理用户修改玩家密码", notes = "代理用户修改玩家密码", httpMethod = "POST")
+	@RequestMapping(value = "/updatePlayPass", method = RequestMethod.POST)
+	@ResponseBody
+	public RestResult updateAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody UpdatePlayPassVo param) throws Exception {
+		RestResult result = new RestResult();
+		try {
+			int userid = param.getUserid();
+			String password = param.getPassword();
+            String supusername = param.getSupusername();
+            int offtype = param.getOfftype();
+			String ip = param.getIp();
+			
+			if (0==userid){
+			      result.fail("用户ID",MessageTool.Code_2002);
+			      LOG.info(result.getMessage());
+			      return result;
+			}
+			
+			AccountInfo accountInfo = accountInfoMapper.selectByPrimaryKey(param.getUserid());
+			if(accountInfo==null){
+			      result.fail(MessageTool.Code_3001);
+			}else{
+				accountInfo.setPassword(DigestUtils.md5Hex(password));
+			    accountInfoService.updateAccountInfo(accountInfo);
+			    LOG.info("修改密码记录详情为："+" 管理员："+supusername+" 账户类型："+offtype+" IP："+ip+" 修改玩家ID"+userid+" 密码修改为"+accountInfo.getPassword());
+			    result.success();
+			}
+			LOG.info(result.getMessage());
+		} catch (Exception e) {
+			result.error();
+			LOG.error(e.getMessage(),e);
+		}
+		return result;
+	}
+	
+	
+	@ApiOperation(value = "代理用户修改下线剩余点数", notes = "代理用户修改下线剩余点数", httpMethod = "POST")
+	@RequestMapping(value = "/updateAccountAmount", method = RequestMethod.POST)
+	@ResponseBody
+	public RestResult updateOffAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody UpdatePlayAmountVo param) throws Exception {
+		RestResult result = new RestResult();
+		try {
+			int userid = param.getUserid();
+			int accountid = param.getAccountid();
+			BigDecimal accountamount = param.getAccountamount();
+            String supusername = param.getSupusername();
+            int offtype = param.getOfftype();
+			String ip = param.getIp();
+			
+			if (0==userid||0==accountid){
+			      result.fail("用户ID或者账户ID",MessageTool.Code_2002);
+			      LOG.info(result.getMessage());
+			      return result;
+			}
+			
+			OffAccountInfo offAccountInfo = offAccountInfoMapper.selectByPrimaryKey(param.getUserid());
+			if(offAccountInfo==null){
+			      result.fail(MessageTool.Code_3001);
+			}else{
+			    AccountDetail accountDetail = accountDetailMapper.selectByPrimaryKey(accountid);
+			    if (accountDetail==null){
+			    	result.fail(MessageTool.Code_3001);	
+			    }
+			    accountDetail.setMoney(accountamount);
+			    accountInfoService.updateAccountMount(accountDetail);
+			    LOG.info("修改剩余点数记录详情为："+" 管理员："+supusername+" 账户类型："+offtype+" IP："+ip+" 修改下线ID"+userid+" 剩余点数修改为"+accountamount);
+			    result.success();
+			}
+			LOG.info(result.getMessage());
+		} catch (Exception e) {
+			result.error();
+			LOG.error(e.getMessage(),e);
+		}
+		return result;
+	}
+	
+	
+	@ApiOperation(value = "代理用户修改下线密码", notes = "代理用户修改下线密码", httpMethod = "POST")
+	@RequestMapping(value = "/updateAccountPass", method = RequestMethod.POST)
+	@ResponseBody
+	public RestResult updateAccountPass(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody UpdatePlayPassVo param) throws Exception {
+		RestResult result = new RestResult();
+		try {
+			int userid = param.getUserid();
+			String password = param.getPassword();
+            String supusername = param.getSupusername();
+            int offtype = param.getOfftype();
+			String ip = param.getIp();
+			
+			if (0==userid){
+			      result.fail("用户ID",MessageTool.Code_2002);
+			      LOG.info(result.getMessage());
+			      return result;
+			}
+			
+			OffAccountInfo offAccountInfo = offAccountInfoMapper.selectByPrimaryKey(param.getUserid());
+			if(offAccountInfo==null){
+			      result.fail(MessageTool.Code_3001);
+			}else{
+				offAccountInfo.setPassword(DigestUtils.md5Hex(password));
+				offAccountInfoMapper.updateByPrimaryKey(offAccountInfo);
+			    LOG.info("修改密码记录详情为："+" 管理员："+supusername+" 账户类型："+offtype+" IP："+ip+" 修改下家ID"+userid+" 密码修改为"+offAccountInfo.getPassword());
+			    result.success();
+			}
+			LOG.info(result.getMessage());
+		} catch (Exception e) {
+			result.error();
+			LOG.error(e.getMessage(),e);
+		}
+		return result;
+	}
+	
 	
 }

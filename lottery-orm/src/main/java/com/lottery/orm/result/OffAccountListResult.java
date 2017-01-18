@@ -15,11 +15,11 @@ public class OffAccountListResult extends BaseRestResult {
 		this.data = data;
 	}
 
-	public List<OffAccountDto> getList() {
+	public List<OffAccountDto> getData() {
 		return data;
 	}
 
-	public void setList(List<OffAccountDto> list) {
+	public void setData(List<OffAccountDto> list) {
 		this.data = list;
 	}
 }

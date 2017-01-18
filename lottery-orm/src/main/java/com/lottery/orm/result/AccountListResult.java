@@ -14,11 +14,11 @@ public class AccountListResult extends BaseRestResult {
 		this.data = data;
 	}
 
-	public List<AccountInfoDto> getList() {
+	public List<AccountInfoDto> getData() {
 		return data;
 	}
 
-	public void setList(List<AccountInfoDto> list) {
+	public void setData(List<AccountInfoDto> list) {
 		this.data = list;
 	}
 

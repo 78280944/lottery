@@ -15,8 +15,8 @@
     <result column="State" jdbcType="CHAR" property="state" />
     <result column="SupUserName" jdbcType="VARCHAR" property="supusername" />
     <result column="Level" jdbcType="VARCHAR" property="level" />
-    <result column="Phone" jdbcType="VARCHAR" property="Phone" />
-    <result column="Webchat" jdbcType="VARCHAR" property="Webchat" />
+    <result column="Phone" jdbcType="VARCHAR" property="phone" />
+    <result column="Webchat" jdbcType="VARCHAR" property="webchat" />
   </resultMap>
   <sql id="Base_Column_List">
     Userid, UserName, AuserName, Password, Limited, Ratio, IP, InputDate, UpdateIP, 

@@ -55,5 +55,10 @@ public class AccountInfoService {
 	    accountDetail.setOfftype("3");
 	    accountDetailMapper.updateByPrimaryKeySelective(accountDetail);
 	}
+	
+	//更新剩余点数
+	public void updateAccountMount(AccountDetail accountDetail) {
+	    accountDetailMapper.updateByPrimaryKeySelective(accountDetail);
+	}
 
 }
