@@ -13,13 +13,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.lottery.api.dto.ReportParamVo;
 import com.lottery.orm.dao.LotteryReportMapper;
+import com.lottery.orm.dto.HistoryOrderDto;
 import com.lottery.orm.dto.InoutReportDto;
 import com.lottery.orm.dto.TradeReportDto;
 import com.lottery.orm.dto.WinningReportDto;
+import com.lottery.orm.result.HistoryOrderResult;
 import com.lottery.orm.result.InoutReportResult;
 import com.lottery.orm.result.TradeReportResult;
 import com.lottery.orm.result.WinningReportResult;
-import com.lottery.orm.util.MessageTool;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
@@ -81,6 +82,25 @@ public class LotteryReportController {
 			List<TradeReportDto> accountList = lotteryReportMapper.selectByTradeReport(param.getStartTime(),
 					param.getEndTime(), param.getAccountId(), param.getBeginRow(), param.getPageSize());
 			result.success(accountList);
+			LOG.info(result.getMessage());
+		} catch (Exception e) {
+			result.error();
+			LOG.error(e.getMessage(), e);
+		}
+		return result;
+
+	}
+	
+	@ApiOperation(value = "获取历史下注单", notes = "获取交易报表", httpMethod = "POST")
+	@RequestMapping(value = "/getHistoryOrder", method = RequestMethod.POST)
+	@ResponseBody
+	public HistoryOrderResult getHistoryOrder(
+			@ApiParam(value = "Json参数", required = true) @Validated @RequestBody ReportParamVo param) throws Exception {
+		HistoryOrderResult result = new HistoryOrderResult();
+		try {
+			List<HistoryOrderDto> orderList = lotteryReportMapper.selectByHistoryOrder(param.getStartTime(),
+					param.getEndTime(), param.getAccountId(), param.getBeginRow(), param.getPageSize());
+			result.success(orderList);
 			LOG.info(result.getMessage());
 		} catch (Exception e) {
 			result.error();

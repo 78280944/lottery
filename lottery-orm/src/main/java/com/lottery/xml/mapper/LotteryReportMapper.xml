@@ -3,9 +3,12 @@
 <mapper namespace="com.lottery.orm.dao.LotteryReportMapper">
   <resultMap id="WinningReportMap" type="com.lottery.orm.dto.WinningReportDto">
     <result column="ACCOUNTID" jdbcType="INTEGER" property="accountId" />
+    <result column="USERNAME" jdbcType="VARCHAR" property="userName" />
+    <result column="SUPUSERNAME" jdbcType="VARCHAR" property="supUserName" />
     <result column="TRADECOUNT" jdbcType="INTEGER" property="tradeCount" />
     <result column="ORDERAMOUNT" jdbcType="DECIMAL" property="orderAmount" />
     <result column="ACTUALAMOUNT" jdbcType="DECIMAL" property="actualAmount" />
+    <result column="RATIO" jdbcType="DECIMAL" property="ratio" />
     <result column="RETURNAMOUNT" jdbcType="DECIMAL" property="returnAmount" />
     <result column="COMMISIONAMOUNT" jdbcType="DECIMAL" property="commisionAmount" />
   </resultMap>
@@ -25,10 +28,18 @@
     <result column="INPUTTIME" jdbcType="TIMESTAMP" property="inputTime" />
     <result column="REMARK" jdbcType="VARCHAR" property="remark" />
   </resultMap>
+  <resultMap id="HistoryOrderMap" type="com.lottery.orm.dto.HistoryOrderDto">
+    <result column="ORDERID" jdbcType="INTEGER" property="orderId" />
+    <result column="ORDERTIME" jdbcType="TIMESTAMP" property="orderTime" />
+    <result column="ROUNDID" jdbcType="INTEGER" property="roundId" />
+    <result column="ITEMNAMECN" jdbcType="VARCHAR" property="itemNameCN" />
+    <result column="DETAILAMOUNT" jdbcType="DECIMAL" property="detailAmount" />
+    <result column="ACTUALAMOUNT" jdbcType="DECIMAL" property="actualAmount" />
+  </resultMap>
   
   <select id="selectByWinningReport" resultMap="WinningReportMap">
     select 
-    a.ACCOUNTID, count(*) as TRADECOUNT, SUM(ORDERAMOUNT) as ORDERAMOUNT, SUM(ACTUALAMOUNT) as ACTUALAMOUNT, SUM(PRIZEAMOUNT-ACTUALAMOUNT) as RETURNAMOUNT, SUM(COMMISIONAMOUNT) as COMMISIONAMOUNT 
+    a.ACCOUNTID, a.USERNAME, a.SUPUSERNAME, count(*) as TRADECOUNT, SUM(ORDERAMOUNT) as ORDERAMOUNT, SUM(ACTUALAMOUNT) as ACTUALAMOUNT, AVG(a.RATIO) as RATIO, SUM(PRIZEAMOUNT-ACTUALAMOUNT) as RETURNAMOUNT, SUM(COMMISIONAMOUNT) as COMMISIONAMOUNT 
     from account_detail a, lottery_order o
     where a.ACCOUNTID = o.ACCOUNTID 
 	<if test="startTime != null and endTime != null">
@@ -85,6 +96,26 @@
 		and t.ACCOUNTID = #{accountId,jdbcType=INTEGER}
 	</if>
 	order by INPUTTIME desc
+	<if test="beginRow != null and pageSize !=null">
+	limit #{beginRow,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+	</if>
+  </select>
+  
+  <select id="selectByHistoryOrder" resultMap="HistoryOrderMap">
+    select 
+    o.ORDERID, ORDERTIME, ROUNDID, i.ITEMNAMECN, d.DETAILAMOUNT, d.ACTUALAMOUNT 
+    from lottery_order o inner join lottery_order_detail d on o.ORDERID=d.ORDERID left join lottery_item i on d.ITEMNO=i.ITEMNO
+    where o.ACCOUNTID = #{accountId,jdbcType=INTEGER}
+	<if test="startTime != null and endTime != null">
+	and Date(ORDERTIME) between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
+	</if>
+	<if test="startTime != null and endTime == null">
+	and Date(ORDERTIME) <![CDATA[>=]]> #{startTime,jdbcType=TIMESTAMP}
+	</if>
+	<if test="startTime == null and endTime != null">
+	and Date(ORDERTIME) <![CDATA[<=]]> #{endTime,jdbcType=TIMESTAMP}
+	</if>
+	order by o.ORDERID, ORDERTIME
 	<if test="beginRow != null and pageSize !=null">
 	limit #{beginRow,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
 	</if>

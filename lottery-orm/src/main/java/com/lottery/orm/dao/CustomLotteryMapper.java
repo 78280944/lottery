@@ -23,4 +23,6 @@ public interface CustomLotteryMapper {
     Integer selectRoundIdByStatus(@Param("lotteryType")String lotteryType, @Param("roundStatus")String roundStatus);
     
     LotteryRound selectRoundByRoundId(@Param("roundId")Integer roundId);
+    
+    LotteryRound selectHistoryOrder(@Param("roundId")Integer roundId);
 }
