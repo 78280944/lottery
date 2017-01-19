@@ -194,9 +194,9 @@ public class OffAccountInfoController {
 				}
 			}
 			
-			OffAccountInfo off = new OffAccountInfo();
-			off.setUsername(supusername);
-			OffAccountInfo OffAccountInfo = offAccountInfoMapper.selectByUsername(off.getUsername());
+			OffAccountInfo paraInfo = mapper.map(param, OffAccountInfo.class);
+			OffAccountInfo OffAccountInfo = offAccountInfoMapper.selectByUsername(paraInfo.getUsername());
+			System.out.println("9--------"+OffAccountInfo+"..."+OffAccountInfo.getUsername());
 		    if(OffAccountInfo!=null){ 	
 		    	result.fail(username,MessageTool.Code_2005);
 		    }else{
@@ -213,29 +213,19 @@ public class OffAccountInfoController {
 				      LOG.info(result.getMessage());
 				      return result;	
 				}
+				param.setPassword(DigestUtils.md5Hex(password));
+			  
+			    paraInfo.setQuery("Y1,Y2,Y3,Y4,Y5");
+			    paraInfo.setManage("M1,M2,M3,M4,M5");
+			    paraInfo.setState("1");//默认状态正常
+			    paraInfo.setLevel(ToolsUtil.decideLevel(level));
+			    paraInfo.setOfftype("1");
+			    paraInfo.setInputdate(new Date());
+			    OffAccountInfoService.addOffAccountInfo(paraInfo);
+			    
+			    result.success();
 		    }
-			param.setPassword(DigestUtils.md5Hex(password));
-		    OffAccountInfo paraInfo = mapper.map(param, OffAccountInfo.class);
-		    paraInfo.setQuery("Y1,Y2,Y3,Y4,Y5");
-		    paraInfo.setManage("M1,M2,M3,M4,M5");
-		    paraInfo.setState("1");//默认状态正常
-		    paraInfo.setLevel(ToolsUtil.decideLevel(level));
-		    paraInfo.setOfftype("1");
-		    paraInfo.setInputdate(new Date());
-		    
-		    /*
-		    //paraInfo.setSerialno(ToolsUtil.getCurrentSerial());
-		    paraInfo.setUsername(param.getUsername());
-		    paraInfo.setAusername(param.getAusername());
-		    paraInfo.setPassword(param.getPassword());
-		    paraInfo.setLimited(param.getLimited());
-		    paraInfo.setRatio(param.getRatio());
-		    paraInfo.setState("1");//默认状态正常
-		    paraInfo.setIp(param.getIp());
-		    paraInfo.setInputdate(new Date());*/
-		    OffAccountInfoService.addOffAccountInfo(paraInfo);
-		    
-		    result.success();
+
 			LOG.info(result.getMessage());
 		} catch (Exception e) {
 			result.error();
