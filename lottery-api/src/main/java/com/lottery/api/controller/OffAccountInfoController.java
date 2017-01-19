@@ -243,6 +243,7 @@ public class OffAccountInfoController {
 		return result;
 	}
 	
+	/*
 	@ApiOperation(value = "修改代理", notes = "修改代理", httpMethod = "POST")
 	@RequestMapping(value = "/updateOffAccountInfo", method = RequestMethod.POST)
 	@ResponseBody
@@ -286,7 +287,7 @@ public class OffAccountInfoController {
 			      return result;
 			}
 			
-			/*
+			
 			//6-14位数字、字母、符号组合
 			if (ToolsUtil.validateSignName(password)){
 			      result.fail("密码",MessageTool.Code_1007);
@@ -294,7 +295,7 @@ public class OffAccountInfoController {
 			      return result;
 			}
 			
-			*/
+			
 			//数字型
 			System.out.println("7----------"+limited);
 			if (null != limited){
@@ -329,7 +330,7 @@ public class OffAccountInfoController {
 				}
 			}
 			
-			/*
+			
 			//状态判断
 			if (ToolsUtil.betweenRange(state)){
 			      result.fail("状态",MessageTool.Code_1005);
@@ -337,7 +338,7 @@ public class OffAccountInfoController {
 			      return result;	
 			}
 			
-			*/
+			
 			
 			OffAccountInfo OffAccountInfo = offAccountInfoMapper.selectByPrimaryKey(param.getUserid());
 			if(OffAccountInfo==null){
@@ -377,6 +378,7 @@ public class OffAccountInfoController {
 		return result;
 	}
 
+	*/
 	@ApiOperation(value = "获取该代理下的代理列表", notes = "获取该代理下的代理列表", httpMethod = "POST")
 	@RequestMapping(value = "/getAllOffAccountInfo", method = RequestMethod.POST)
 	@ResponseBody
@@ -393,6 +395,7 @@ public class OffAccountInfoController {
 			
 			List<OffAccountDto> list = new ArrayList<OffAccountDto>();
 			for (int i = 0;i<OffAccountInfos.size();i++){
+			  AccountDetail accountDetail =  accountDetailMapper.selectByUserId(OffAccountInfos.get(i).getUserid(),OffAccountInfos.get(i).getOfftype());
 			  OffAccountDto rAcDto = new OffAccountDto();		        
 		      rAcDto.setUserid(null==OffAccountInfos.get(i).getUserid()||"".equals(OffAccountInfos.get(i).getUserid())||0==OffAccountInfos.get(i).getUserid() ?0:OffAccountInfos.get(i).getUserid());
 		      rAcDto.setUsername(null==OffAccountInfos.get(i).getUsername()||"".equals(OffAccountInfos.get(i).getUsername()) ?"":OffAccountInfos.get(i).getUsername());
@@ -407,6 +410,8 @@ public class OffAccountInfoController {
 		      rAcDto.setSupusername(null==OffAccountInfos.get(i).getSupusername()||"".equals(OffAccountInfos.get(i).getSupusername()) ?"":OffAccountInfos.get(i).getSupusername());
 		      rAcDto.setLevel(null==OffAccountInfos.get(i).getLevel()||"".equals(OffAccountInfos.get(i).getLevel()) ?"":OffAccountInfos.get(i).getLevel());
 		      rAcDto.setOfftype(null==OffAccountInfos.get(i).getOfftype()||"".equals(OffAccountInfos.get(i).getOfftype()) ?"":OffAccountInfos.get(i).getOfftype());
+		      rAcDto.setAccountID(accountDetail.getAccountid());
+		      rAcDto.setAccountAmount(accountDetail.getMoney());
 		      list.add(rAcDto);  
 			}
 		    result.success(list);

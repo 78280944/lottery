@@ -442,6 +442,7 @@ public class AccountInfoController {
 	
 				List<AccountInfoDto> list = new ArrayList<AccountInfoDto>();
 				for (int i = 0;i<accountInfos.size();i++){
+					AccountDetail accountDetail =  accountDetailMapper.selectByUserId(accountInfos.get(i).getUserid(),"3");
 					AccountInfoDto rAcDto = new AccountInfoDto();
 			        rAcDto.setUserid(null==accountInfos.get(i).getUserid()||"".equals(accountInfos.get(i).getUserid())||0==accountInfos.get(i).getUserid() ?0:accountInfos.get(i).getUserid());
 			        rAcDto.setUsername(null==accountInfos.get(i).getUsername()||"".equals(accountInfos.get(i).getUsername()) ?"":accountInfos.get(i).getUsername());
@@ -452,7 +453,10 @@ public class AccountInfoController {
 			        rAcDto.setLevel(null==accountInfos.get(i).getLevel()||"".equals(accountInfos.get(i).getLevel()) ?"":accountInfos.get(i).getLevel());
 			        rAcDto.setState(null==accountInfos.get(i).getState()||"".equals(accountInfos.get(i).getState()) ?"":accountInfos.get(i).getState());
 			        rAcDto.setSupusername(null==accountInfos.get(i).getSupusername()||"".equals(accountInfos.get(i).getSupusername()) ?"":accountInfos.get(i).getSupusername());
-					list.add(rAcDto);
+			        rAcDto.setOfftype("3");
+			        rAcDto.setAccountID(accountDetail.getAccountid());
+			        rAcDto.setAccountAmount(accountDetail.getMoney());
+			        list.add(rAcDto);
 				}
 				result.success(list);
 			}
@@ -471,9 +475,9 @@ public class AccountInfoController {
 	public RemarkResult getAllAccountInfo() throws Exception {
 		RemarkResult result = new RemarkResult();
 		RemarkDto remark = new RemarkDto();
-		String online = "测试在线客服";
-		String share = "测试分享链接";
-		String rule = "测试规则说明";
+		String online = "9151206965";
+		String share = "https://www.baidu.com";
+		String rule = "http://lottery.puzongsoft.com/lottery-api/rule.html";
 			
 		remark.setOnline(online);
 		remark.setShare(share);

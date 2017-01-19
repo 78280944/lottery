@@ -1,5 +1,7 @@
 package com.lottery.orm.dto;
 
+import java.math.BigDecimal;
+
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 public class SubAccountDto extends BaseAccountDto {
@@ -11,6 +13,28 @@ public class SubAccountDto extends BaseAccountDto {
 	private String manage;
 	@ApiModelProperty(value = "账户类型,0:超级账户，1:代理账户，2:子账户类型", required = true)
 	private String offtype;
+	@ApiModelProperty(value = "账户ID", required = true)
+	private Integer accountID;
+	
+	@ApiModelProperty(value = "账户余额", required = true)
+	private BigDecimal accountAmount;
+	
+
+	public Integer getAccountID() {
+		return accountID;
+	}
+
+	public void setAccountID(Integer accountID) {
+		this.accountID = accountID;
+	}
+
+	public BigDecimal getAccountAmount() {
+		return accountAmount;
+	}
+
+	public void setAccountAmount(BigDecimal accountAmount) {
+		this.accountAmount = accountAmount;
+	}
 
 	public String getOfftype() {
 		return offtype;

@@ -24,6 +24,7 @@ import com.lottery.api.dto.UpdateSubAccountVo;
 import com.lottery.api.util.ToolsUtil;
 import com.lottery.orm.bo.AccountDetail;
 import com.lottery.orm.bo.OffAccountInfo;
+import com.lottery.orm.dao.AccountDetailMapper;
 import com.lottery.orm.dao.OffAccountInfoMapper;
 import com.lottery.orm.dto.SubAccountDto;
 import com.lottery.orm.result.RestResult;
@@ -50,6 +51,9 @@ public class SubAccountInfoController {
 	
 	@Autowired
 	private OffAccountInfoMapper offAccountInfoMapper;
+	
+	@Autowired
+    private AccountDetailMapper accountDetailMapper;
 	
 	/*
 	@ApiOperation(value = "获取子帐号信息", notes = "获取子帐号信息", httpMethod = "POST")
@@ -174,6 +178,7 @@ public class SubAccountInfoController {
 		return result;
 	}
 	
+	/*
 	@ApiOperation(value = "修改子帐号", notes = "修改子帐号", httpMethod = "POST")
 	@RequestMapping(value = "/updateSubAccountInfo", method = RequestMethod.POST)
 	@ResponseBody
@@ -244,7 +249,7 @@ public class SubAccountInfoController {
 		}
 		return result;
 	}
-
+*/
 	@ApiOperation(value = "获取该代理的子账号列表", notes = "获取该代理的子账号列表", httpMethod = "POST")
 	@RequestMapping(value = "/getAllSubAccountInfo", method = RequestMethod.POST)
 	@ResponseBody
@@ -259,6 +264,7 @@ public class SubAccountInfoController {
 				List<OffAccountInfo> SubAccountInfos = offAccountInfoMapper.selectBySupusername(offacount.getUsername(), param.getBeginRow(), param.getPageSize());
 				List<SubAccountDto> list = new ArrayList<SubAccountDto>();
 				for (int i = 0;i<SubAccountInfos.size();i++){
+					  AccountDetail accountDetail =  accountDetailMapper.selectByUserId(SubAccountInfos.get(i).getUserid(),SubAccountInfos.get(i).getOfftype());
 				      SubAccountDto rAcDto = new SubAccountDto();
 				      rAcDto.setUserid(null==SubAccountInfos.get(i).getUserid()||"".equals(SubAccountInfos.get(i).getUserid())||0==SubAccountInfos.get(i).getUserid() ?0:SubAccountInfos.get(i).getUserid());
 				      rAcDto.setUsername(null==SubAccountInfos.get(i).getUsername()||"".equals(SubAccountInfos.get(i).getUsername()) ?"":SubAccountInfos.get(i).getUsername());
@@ -270,6 +276,8 @@ public class SubAccountInfoController {
 				      rAcDto.setSupusername(null==SubAccountInfos.get(i).getSupusername()||"".equals(SubAccountInfos.get(i).getSupusername()) ?"":SubAccountInfos.get(i).getSupusername());
 				      rAcDto.setLevel(null==SubAccountInfos.get(i).getLevel()||"".equals(SubAccountInfos.get(i).getLevel()) ?"":SubAccountInfos.get(i).getLevel());
 				      rAcDto.setOfftype(null==SubAccountInfos.get(i).getOfftype()||"".equals(SubAccountInfos.get(i).getOfftype()) ?"":SubAccountInfos.get(i).getOfftype());	 
+				      rAcDto.setAccountID(accountDetail.getAccountid());
+				      rAcDto.setAccountAmount(accountDetail.getMoney());
 				      list.add(rAcDto);
 				}
 			    result.success(list);
