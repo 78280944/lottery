@@ -38,8 +38,21 @@ public class OffAccountInfoService {
 
 	// 添加子帐户
 	public void addOffAccountInfo(OffAccountInfo paraInfo,String offtype) {
-		if (offtype.equals("2"))
+		if (offtype.equals("2")){
 		    offAccountInfoMapper.insertSelective(paraInfo);
+			AccountDetail accountDetail = new AccountDetail();
+			accountDetail.setUserid(paraInfo.getUserid());
+			accountDetail.setUsername(paraInfo.getUsername());
+			accountDetail.setLimited(paraInfo.getLimited());
+			accountDetail.setRatio(paraInfo.getRatio());
+			accountDetail.setPercentage(paraInfo.getPercentage());
+			accountDetail.setState(paraInfo.getState());
+			accountDetail.setSupusername(paraInfo.getSupusername());
+			accountDetail.setLevel(paraInfo.getLevel());
+			accountDetail.setOfftype("2");
+			accountDetailMapper.insertSelective(accountDetail);  
+		    
+		}
 	}
 	
 	// 更新帐户

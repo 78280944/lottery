@@ -385,13 +385,15 @@ public class OffAccountInfoController {
 	public OffAccountListResult getAllOffAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody AccountInfoVo param) throws Exception {
 	    OffAccountListResult result = new OffAccountListResult();
 		try {
-			OffAccountInfo offacount = offAccountInfoMapper.selectByUseridAndType(param.getUserid(), EnumType.OffType.Agency.ID);
+			
+			OffAccountInfo offacount = offAccountInfoMapper.selectByPrimaryKey(param.getUserid());
+			//OffAccountInfo offacount = offAccountInfoMapper.selectByUseridAndType(param.getUserid(), EnumType.OffType.Agency.ID);
 			if(offacount==null){
 				  result.fail(MessageTool.Code_3001);
 			      LOG.info(result.getMessage());
 			      return result;
 			}
-			List<OffAccountInfo> OffAccountInfos = offAccountInfoMapper.selectBySupusername(offacount.getUsername(), param.getBeginRow(), param.getPageSize());
+			List<OffAccountInfo> OffAccountInfos = offAccountInfoMapper.selectBySupusername(offacount.getUsername(), EnumType.OffType.Agency.ID,param.getBeginRow(), param.getPageSize());
 			
 			List<OffAccountDto> list = new ArrayList<OffAccountDto>();
 			for (int i = 0;i<OffAccountInfos.size();i++){

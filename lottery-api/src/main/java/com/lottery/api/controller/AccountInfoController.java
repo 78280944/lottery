@@ -433,8 +433,8 @@ public class AccountInfoController {
 	public AccountListResult getAllAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody AccountInfoVo param) throws Exception {
 	    AccountListResult result = new AccountListResult();
 		try {
-			OffAccountInfo offacount = offAccountInfoMapper.selectByUseridAndType(param.getUserid(), EnumType.OffType.Agency.ID);
-			
+			//OffAccountInfo offacount = offAccountInfoMapper.selectByUseridAndType(param.getUserid(), EnumType.OffType.Agency.ID);
+			OffAccountInfo offacount = offAccountInfoMapper.selectByPrimaryKey(param.getUserid());
 			if (offacount==null){
 				result.fail(MessageTool.Code_3001);
 			}else{

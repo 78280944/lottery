@@ -256,12 +256,12 @@ public class SubAccountInfoController {
 	public SubAccountListResult getAllSubAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody AccountInfoVo param) throws Exception {
 	    	SubAccountListResult result = new SubAccountListResult();
 		try {
-			
-			OffAccountInfo offacount = offAccountInfoMapper.selectByUseridAndType(param.getUserid(), EnumType.OffType.Agency.ID);
+			OffAccountInfo offacount = offAccountInfoMapper.selectByPrimaryKey(param.getUserid());
+			//OffAccountInfo offacount = offAccountInfoMapper.selectByUseridAndType(param.getUserid(), EnumType.OffType.Sub.ID);
 			if(offacount==null){
 				result.fail(MessageTool.Code_3001);
 			}else{
-				List<OffAccountInfo> SubAccountInfos = offAccountInfoMapper.selectBySupusername(offacount.getUsername(), param.getBeginRow(), param.getPageSize());
+				List<OffAccountInfo> SubAccountInfos = offAccountInfoMapper.selectBySupusername(offacount.getUsername(),EnumType.OffType.Sub.ID,param.getBeginRow(), param.getPageSize());
 				List<SubAccountDto> list = new ArrayList<SubAccountDto>();
 				for (int i = 0;i<SubAccountInfos.size();i++){
 					  AccountDetail accountDetail =  accountDetailMapper.selectByUserId(SubAccountInfos.get(i).getUserid(),SubAccountInfos.get(i).getOfftype());

@@ -267,7 +267,7 @@
     select 
     <include refid="Base_Column_List" />
     from offaccount_info
-    where supusername = #{supusername,jdbcType=VARCHAR}
+    where supusername = #{supusername,jdbcType=VARCHAR} and offtype = #{offtype,jdbcType=VARCHAR}
 	<if test="beginrow != null and pageSize !=null">
 	limit #{beginrow,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
 	</if>
