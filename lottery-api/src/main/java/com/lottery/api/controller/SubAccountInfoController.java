@@ -23,6 +23,7 @@ import com.lottery.api.dto.UpdateSubAccAuserVo;
 import com.lottery.api.dto.UpdateSubAccountVo;
 import com.lottery.api.util.ToolsUtil;
 import com.lottery.orm.bo.AccountDetail;
+import com.lottery.orm.bo.AccountInfo;
 import com.lottery.orm.bo.OffAccountInfo;
 import com.lottery.orm.dao.AccountDetailMapper;
 import com.lottery.orm.dao.OffAccountInfoMapper;
@@ -144,32 +145,22 @@ public class SubAccountInfoController {
 			      return result;
 				 }
 			}
+			//玩家是否存在，用户名不能一致
 			
-			/*
-			//最长14个英文或者数字组合
-			if (ToolsUtil.validatName(username)){
-			      result.fail("用户名",MessageTool.Code_1006);
-			      LOG.info(result.getMessage());
-			      return result;
-			}
-			
-			//6-14位数字、字母、符号组合
-			if (ToolsUtil.validateSignName(password)){
-			      result.fail("密码",MessageTool.Code_1007);
-			      LOG.info(result.getMessage());
-			      return result;
-			}
-			*/
+			OffAccountInfo paraInfo = mapper.map(param, OffAccountInfo.class);
+			OffAccountInfo accountInfo = offAccountInfoMapper.selectByUsername(paraInfo.getUsername());
+		    if (accountInfo!=null){
+			      result.fail(username,MessageTool.Code_2005);
+		    }else{
+		    	param.setPassword(DigestUtils.md5Hex(password));
+				param.setPassword(DigestUtils.md5Hex(password));
+			    paraInfo.setState("1");//默认状态正常
+			    paraInfo.setOfftype("2");
+			    paraInfo.setInputdate(new Date());
+			    offAccountInfoService.addOffAccountInfo(paraInfo,"2");
+			    result.success();
+		    }
 
-			param.setPassword(DigestUtils.md5Hex(password));
-		    OffAccountInfo paraInfo = mapper.map(param, OffAccountInfo.class);
-		    paraInfo.setState("1");//默认状态正常
-		    paraInfo.setOfftype("2");
-		    paraInfo.setInputdate(new Date());
-		    
-		    offAccountInfoService.addOffAccountInfo(paraInfo,"2");
-		    
-		    result.success();
 			LOG.info(result.getMessage());
 		} catch (Exception e) {
 			result.error();

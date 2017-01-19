@@ -197,7 +197,9 @@ public class OffAccountInfoController {
 			OffAccountInfo off = new OffAccountInfo();
 			off.setUsername(supusername);
 			OffAccountInfo OffAccountInfo = offAccountInfoMapper.selectByUsername(off.getUsername());
-		    if(OffAccountInfo!=null){
+		    if(OffAccountInfo!=null){ 	
+		    	result.fail(username,MessageTool.Code_2005);
+		    }else{
 				//洗码比逻辑 
 		    	System.out.println("80----"+ratio+"..."+OffAccountInfo.getRatio());
 				if (ratio>OffAccountInfo.getRatio()){
@@ -211,7 +213,6 @@ public class OffAccountInfoController {
 				      LOG.info(result.getMessage());
 				      return result;	
 				}
-				
 		    }
 			param.setPassword(DigestUtils.md5Hex(password));
 		    OffAccountInfo paraInfo = mapper.map(param, OffAccountInfo.class);
