@@ -15,11 +15,11 @@ public class SubAccountListResult extends BaseRestResult {
 		this.data = data;
 	}
 
-	public List<SubAccountDto> getList() {
+	public List<SubAccountDto> getData() {
 		return data;
 	}
 
-	public void setList(List<SubAccountDto> list) {
+	public void setData(List<SubAccountDto> list) {
 		this.data = list;
 	}
 

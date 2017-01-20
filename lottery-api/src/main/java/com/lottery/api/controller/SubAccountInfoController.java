@@ -152,8 +152,9 @@ public class SubAccountInfoController {
 		    if (accountInfo!=null){
 			      result.fail(username,MessageTool.Code_2005);
 		    }else{
-		    	param.setPassword(DigestUtils.md5Hex(password));
-				param.setPassword(DigestUtils.md5Hex(password));
+		    	System.out.println("0-----"+password);
+		    	paraInfo.setPassword(DigestUtils.md5Hex(password));
+				System.out.println("1-----"+param.getPassword());
 			    paraInfo.setState("1");//默认状态正常
 			    paraInfo.setOfftype("2");
 			    paraInfo.setInputdate(new Date());
