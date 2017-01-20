@@ -283,9 +283,9 @@ public class SubAccountInfoController {
 	
 
 	@ApiOperation(value = "代理用户修改子账户别名", notes = "代理用户修改子账户别名", httpMethod = "POST")
-	@RequestMapping(value = "/updateAccountAmount", method = RequestMethod.POST)
+	@RequestMapping(value = "/updateSubAccountAuser", method = RequestMethod.POST)
 	@ResponseBody
-	public RestResult updateSubOffAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody UpdateSubAccAuserVo param) throws Exception {
+	public RestResult updateSubAccountAuser(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody UpdateSubAccAuserVo param) throws Exception {
 		RestResult result = new RestResult();
 		try {
 			int userid = param.getUserid();
