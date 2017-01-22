@@ -206,7 +206,7 @@ public class OffAccountInfoController {
 		    		result.fail(username,MessageTool.Code_2005);
 		    		return result;
 		    	}
-		    	System.out.println("80----"+ratio+"..."+OffAccountInfo.getRatio());
+		    	//System.out.println("80----"+ratio+"..."+OffAccountInfo.getRatio());
 				if (ratio>OffAccountInfo.getRatio()){
 				      result.fail("洗码比",MessageTool.Code_1008);
 				      LOG.info(result.getMessage());
