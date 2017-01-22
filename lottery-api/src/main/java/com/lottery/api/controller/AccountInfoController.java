@@ -292,7 +292,7 @@ public class AccountInfoController {
 			    paraInfo.setUpdatedate(new Date());
 			    paraInfo.setSupusername(accountInfo.getSupusername());
 			    paraInfo.setLevel(accountInfo.getLevel());
-			    
+			    System.out.println("id.."+paraInfo.getUserid());
 			    accountInfoService.updateAccountInfo(paraInfo);
 			    result.success();
 			}

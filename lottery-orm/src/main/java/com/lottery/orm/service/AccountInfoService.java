@@ -10,6 +10,8 @@ import com.lottery.orm.bo.AccountDetail;
 import com.lottery.orm.bo.AccountInfo;
 import com.lottery.orm.dao.AccountDetailMapper;
 import com.lottery.orm.dao.AccountInfoMapper;
+import com.lottery.orm.result.AccountResult;
+import com.lottery.orm.util.MessageTool;
 
 @Service
 @Transactional
@@ -42,9 +44,9 @@ public class AccountInfoService {
 	// 更新账户
 	public void updateAccountInfo(AccountInfo paraInfo) {
 		accountInfoMapper.updateByPrimaryKey(paraInfo);
-		
-		AccountDetail accountDetail = new AccountDetail();
-	    accountDetail.setUserid(paraInfo.getUserid());
+		//获取accountid
+		AccountDetail accountDetail = accountDetailMapper.selectByUserId(paraInfo.getUserid(), "3");
+		accountDetail.setUserid(paraInfo.getUserid());
 	    accountDetail.setUsername(paraInfo.getUsername());
 	    accountDetail.setLimited(paraInfo.getLimited());
 	    accountDetail.setRatio(paraInfo.getRatio());
