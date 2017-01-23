@@ -9,9 +9,13 @@
     <result column="STARTTIME" jdbcType="TIMESTAMP" property="starttime" />
     <result column="ENDTIME" jdbcType="TIMESTAMP" property="endtime" />
     <result column="ROUNDSTATUS" jdbcType="VARCHAR" property="roundstatus" />
+    <result column="OPENTIME" jdbcType="TIMESTAMP" property="opentime" />
+    <result column="CLOSETIME" jdbcType="TIMESTAMP" property="closetime" />
+    <result column="ORIGINRESULT" jdbcType="VARCHAR" property="originresult" />
   </resultMap>
   <sql id="Base_Column_List">
-    ROUNDID, LOTTERYTYPE, LOTTERYTERM, RESULTSTR, STARTTIME, ENDTIME, ROUNDSTATUS
+    ROUNDID, LOTTERYTYPE, LOTTERYTERM, RESULTSTR, STARTTIME, ENDTIME, ROUNDSTATUS, OPENTIME, 
+    CLOSETIME, ORIGINRESULT
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -28,10 +32,12 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into lottery_round (LOTTERYTYPE, LOTTERYTERM, RESULTSTR, 
-      STARTTIME, ENDTIME, ROUNDSTATUS
+      STARTTIME, ENDTIME, ROUNDSTATUS, 
+      OPENTIME, CLOSETIME, ORIGINRESULT
       )
     values (#{lotterytype,jdbcType=VARCHAR}, #{lotteryterm,jdbcType=VARCHAR}, #{resultstr,jdbcType=VARCHAR}, 
-      #{starttime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP}, #{roundstatus,jdbcType=VARCHAR}
+      #{starttime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP}, #{roundstatus,jdbcType=VARCHAR}, 
+      #{opentime,jdbcType=TIMESTAMP}, #{closetime,jdbcType=TIMESTAMP}, #{originresult,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.lottery.orm.bo.LotteryRound">
@@ -58,6 +64,15 @@
       <if test="roundstatus != null">
         ROUNDSTATUS,
       </if>
+      <if test="opentime != null">
+        OPENTIME,
+      </if>
+      <if test="closetime != null">
+        CLOSETIME,
+      </if>
+      <if test="originresult != null">
+        ORIGINRESULT,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="lotterytype != null">
@@ -77,6 +92,15 @@
       </if>
       <if test="roundstatus != null">
         #{roundstatus,jdbcType=VARCHAR},
+      </if>
+      <if test="opentime != null">
+        #{opentime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="closetime != null">
+        #{closetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="originresult != null">
+        #{originresult,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -101,6 +125,15 @@
       <if test="roundstatus != null">
         ROUNDSTATUS = #{roundstatus,jdbcType=VARCHAR},
       </if>
+      <if test="opentime != null">
+        OPENTIME = #{opentime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="closetime != null">
+        CLOSETIME = #{closetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="originresult != null">
+        ORIGINRESULT = #{originresult,jdbcType=VARCHAR},
+      </if>
     </set>
     where ROUNDID = #{roundid,jdbcType=INTEGER}
   </update>
@@ -111,7 +144,10 @@
       RESULTSTR = #{resultstr,jdbcType=VARCHAR},
       STARTTIME = #{starttime,jdbcType=TIMESTAMP},
       ENDTIME = #{endtime,jdbcType=TIMESTAMP},
-      ROUNDSTATUS = #{roundstatus,jdbcType=VARCHAR}
+      ROUNDSTATUS = #{roundstatus,jdbcType=VARCHAR},
+      OPENTIME = #{opentime,jdbcType=TIMESTAMP},
+      CLOSETIME = #{closetime,jdbcType=TIMESTAMP},
+      ORIGINRESULT = #{originresult,jdbcType=VARCHAR}
     where ROUNDID = #{roundid,jdbcType=INTEGER}
   </update>
 </mapper>

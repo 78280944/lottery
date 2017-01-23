@@ -16,6 +16,9 @@ public class LotteryRound {
     @ApiModelProperty(value = "期次", required = true)
     private String lotteryterm;
     
+    @ApiModelProperty(value = "广西快乐十分开奖结果")
+    private String originresult;
+    
     @ApiModelProperty(value = "开出之号码")
     private String resultstr;
     
@@ -23,7 +26,15 @@ public class LotteryRound {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date starttime;
     
+    @ApiModelProperty(value = "游戏封盘时间")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
+   	private Date closetime;
+    
     @ApiModelProperty(value = "游戏开奖时间")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
+    private Date opentime;
+    
+    @ApiModelProperty(value = "游戏结束时间")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date endtime;
 
@@ -97,5 +108,27 @@ public class LotteryRound {
         this.roundItemList = roundItemList;
     }
     
-    
+   	public Date getOpentime() {
+   		return opentime;
+   	}
+
+   	public void setOpentime(Date opentime) {
+   		this.opentime = opentime;
+   	}
+
+   	public Date getClosetime() {
+   		return closetime;
+   	}
+
+   	public void setClosetime(Date closetime) {
+   		this.closetime = closetime;
+   	}
+
+	public String getOriginresult() {
+		return originresult;
+	}
+
+	public void setOriginresult(String originresult) {
+		this.originresult = originresult == null ? null : originresult.trim();
+	}
 }

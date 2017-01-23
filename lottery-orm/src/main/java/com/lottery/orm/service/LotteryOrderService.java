@@ -162,8 +162,13 @@ public class LotteryOrderService {
 	// 根据中奖结果判断是否中奖
 	private boolean isWinPrize(LotteryRound round, LotteryItem item) {
 		String[] orderNumbers = item.getItemname().split(",");
-		int prizeNumber = Integer.parseInt(round.getResultstr());
-		int cronNumber = prizeNumber % 4 == 0 ? 4 : prizeNumber % 4;
+		String[] prizeNumbers = round.getOriginresult().split(",");
+		int prizeNumber = Integer.parseInt(prizeNumbers[prizeNumbers.length-1]);
+		int cronNumber = Integer.parseInt(round.getResultstr());
+		
+		//int prizeNumber = Integer.parseInt(round.getOriginresult());
+		//int cronNumber = prizeNumber % 4 == 0 ? 4 : prizeNumber % 4;
+		
 
 		// String[] prizeNumbers = round.getResultstr().split(",");
 		if (item.getItemtype().equals(EnumType.ItemType.Type_01.ID)) {
@@ -225,7 +230,7 @@ public class LotteryOrderService {
 
 	// 添加账户
 	public boolean checkLotteryOrder(LotteryOrder order) {
-		List<Map<String, String>> detailList = customLotteryMapper.selectOrderForCheck(order.getRoundid());
+		List<Map<String, String>> detailList = customLotteryMapper.selectOrderForCheck(order.getRoundid(), order.getAccountid());
 		Map<String, Double> tempMap = new HashMap<String, Double>();
 		AccountDetail account = accountDetailMapper.selectByPrimaryKey(order.getAccountid());
 		Double topAmount = account.getLimited();

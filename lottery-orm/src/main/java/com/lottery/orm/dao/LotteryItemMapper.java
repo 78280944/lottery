@@ -5,13 +5,14 @@ import com.lottery.orm.bo.LotteryItem;
 public interface LotteryItemMapper {
     int deleteByPrimaryKey(Integer itemid);
 
-    int insert(LotteryItem record);
+	int insert(LotteryItem record);
 
-    int insertSelective(LotteryItem record);
+	int insertSelective(LotteryItem record);
 
-    LotteryItem selectByPrimaryKey(Integer itemid);
+	LotteryItem selectByPrimaryKey(Integer itemid);
 
-    int updateByPrimaryKeySelective(LotteryItem record);
+	int updateByPrimaryKeySelective(LotteryItem record);
 
-    int updateByPrimaryKey(LotteryItem record);
+	int updateByPrimaryKey(LotteryItem record);
+
 }

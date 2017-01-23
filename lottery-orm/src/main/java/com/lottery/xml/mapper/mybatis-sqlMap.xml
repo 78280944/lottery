@@ -17,6 +17,7 @@
 		<typeAlias type="com.lottery.orm.bo.OffAccountInfo" alias="OffAccountInfo" />
 		<typeAlias type="com.lottery.orm.bo.AccountDetail" alias="AccountDetail" />
 		<typeAlias type="com.lottery.orm.bo.LotteryRoundItem" alias="LotteryRoundItem" />
+		<typeAlias type="com.lottery.orm.bo.ScheduleJob" alias="ScheduleJob" />
 	</typeAliases>
 	<mappers>
 		<mapper resource="com/lottery/xml/mapper/ApiUserMapper.xml" />
@@ -31,5 +32,6 @@
 		<mapper resource="com/lottery/xml/mapper/AccountDetailMapper.xml" />
 		<mapper resource="com/lottery/xml/mapper/CustomLotteryMapper.xml" />
 		<mapper resource="com/lottery/xml/mapper/LotteryRoundItemMapper.xml" />
+		<mapper resource="com/lottery/xml/mapper/ScheduleJobMapper.xml" />
 	</mappers>
 </configuration>

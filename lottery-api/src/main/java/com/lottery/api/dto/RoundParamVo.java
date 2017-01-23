@@ -15,10 +15,10 @@ public class RoundParamVo {
     @NotBlank(message = "游戏期次不能为空")
     private String lotteryTerm;
 
-    @ApiModelProperty(value = "游戏开始时间, 格式:yyyy-MM-dd HH:mm:ss")
-    @NotNull(message = "游戏开始时间不能为空")
+    @ApiModelProperty(value = "游戏开奖时间, 格式:yyyy-MM-dd HH:mm:ss")
+    @NotNull(message = "游戏开奖时间不能为空")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
-    private Date startTime;
+    private Date openTime;
 
     public String getLotteryTerm() {
 	return lotteryTerm;
@@ -28,12 +28,12 @@ public class RoundParamVo {
 	this.lotteryTerm = lotteryTerm;
     }
 
-    public Date getStartTime() {
-	return startTime;
-    }
+	public Date getOpenTime() {
+		return openTime;
+	}
 
-    public void setStartTime(Date startTime) {
-	this.startTime = startTime;
-    }
+	public void setOpenTime(Date openTime) {
+		this.openTime = openTime;
+	}
 
 }

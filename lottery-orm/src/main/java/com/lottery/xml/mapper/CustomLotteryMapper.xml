@@ -61,9 +61,13 @@
     <result column="STARTTIME" jdbcType="TIMESTAMP" property="starttime" />
     <result column="ENDTIME" jdbcType="TIMESTAMP" property="endtime" />
     <result column="ROUNDSTATUS" jdbcType="VARCHAR" property="roundstatus" />
+    <result column="OPENTIME" jdbcType="TIMESTAMP" property="opentime" />
+    <result column="CLOSETIME" jdbcType="TIMESTAMP" property="closetime" />
+    <result column="ORIGINRESULT" jdbcType="VARCHAR" property="originresult" />
 	<collection property="roundItemList" ofType="com.lottery.orm.bo.LotteryRoundItem" column="ROUNDID">  
 		<id column="ROUNDID" jdbcType="INTEGER" property="roundid" />
 		<id column="ITEMNO" jdbcType="VARCHAR" property="itemno" />
+		<result column="ItemNameCN" jdbcType="VARCHAR" property="itemnamecn" />
 		<result column="ITEMSCALE" jdbcType="DOUBLE" property="itemscale" />
 		<result column="ITEMODDS" jdbcType="DOUBLE" property="itemodds" />
 		<result column="ITEMBONUS" jdbcType="DOUBLE" property="itembonus" />
@@ -93,7 +97,7 @@
 	<select id="selectOrderForCheck" resultMap="DetailSumInfo">
 	select sum(d.DETAILAMOUNT) as DETAILAMOUNT,d.ITEMNO 
 	from lottery_order_detail d, lottery_order o 
-	where d.ORDERID = o.ORDERID and o.ROUNDID = #{roundId,jdbcType=INTEGER} and d.ITEMNO in ('RED','BLUE','GREEN','BIG','SMALL','SINGLE','DOUBLE') 
+	where d.ORDERID = o.ORDERID and o.ROUNDID = #{roundId,jdbcType=INTEGER} and o.accountId = #{accountId,jdbcType=INTEGER} and d.ITEMNO in ('RED','BLUE','GREEN','BIG','SMALL','SINGLE','DOUBLE') 
 	group by d.ITEMNO
 	</select>
 	
@@ -112,6 +116,28 @@
     from lottery_order o, lottery_order_detail d
     where o.orderId=d.orderId and o.roundId = #{roundId,jdbcType=INTEGER}
 	 order by ordertime
+  </select>
+  
+  <select id="selectRoundByTypeAndTerm" resultType="LotteryRound">
+    select * 
+    from lottery_round 
+    where lotteryType = #{lotteryType,jdbcType=VARCHAR} and lotteryTerm = #{lotteryTerm,jdbcType=VARCHAR} 
+  </select>
+	<select id="selectByHistoryRound" resultType="LotteryRound">
+    select *
+    from lottery_round r
+    where r.lotteryType = #{lotteryType,jdbcType=VARCHAR} and r.roundStatus = #{roundStatus,jdbcType=VARCHAR} 
+	 order by starttime desc
+	<if test="beginRow != null and pageSize !=null">
+	limit #{beginRow,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+	</if>
+  </select>
+  
+  <select id="selectRoundByTime" resultType="LotteryRound">
+    select * 
+    from lottery_round 
+    where Date(CLOSETIME) <![CDATA[<=]]> #{closeTime,jdbcType=TIMESTAMP} and ROUNDSTATUS = 'Open' 
+	 order by starttime desc
   </select>
 
 </mapper>

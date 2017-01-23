@@ -11,10 +11,11 @@
     <result column="ITEMSCALE" jdbcType="DOUBLE" property="itemscale" />
     <result column="ITEMODDS" jdbcType="DOUBLE" property="itemodds" />
     <result column="ITEMBONUS" jdbcType="DOUBLE" property="itembonus" />
+    <result column="ItemNameCN" jdbcType="VARCHAR" property="itemnamecn" />
   </resultMap>
   <sql id="Base_Column_List">
     ITEMID, LOTTERYTYPE, ITEMNO, ITEMNAME, ITEMTYPE, ITEMGROUP, ITEMSCALE, ITEMODDS, 
-    ITEMBONUS
+    ITEMBONUS, ItemNameCN
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -32,10 +33,12 @@
     </selectKey>
     insert into lottery_item (LOTTERYTYPE, ITEMNO, ITEMNAME, 
       ITEMTYPE, ITEMGROUP, ITEMSCALE, 
-      ITEMODDS, ITEMBONUS)
+      ITEMODDS, ITEMBONUS, ItemNameCN
+      )
     values (#{lotterytype,jdbcType=VARCHAR}, #{itemno,jdbcType=VARCHAR}, #{itemname,jdbcType=VARCHAR}, 
       #{itemtype,jdbcType=VARCHAR}, #{itemgroup,jdbcType=VARCHAR}, #{itemscale,jdbcType=DOUBLE}, 
-      #{itemodds,jdbcType=DOUBLE}, #{itembonus,jdbcType=DOUBLE})
+      #{itemodds,jdbcType=DOUBLE}, #{itembonus,jdbcType=DOUBLE}, #{itemnamecn,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.lottery.orm.bo.LotteryItem">
     <selectKey keyProperty="itemid" order="AFTER" resultType="java.lang.Integer">
@@ -67,6 +70,9 @@
       <if test="itembonus != null">
         ITEMBONUS,
       </if>
+      <if test="itemnamecn != null">
+        ItemNameCN,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="lotterytype != null">
@@ -92,6 +98,9 @@
       </if>
       <if test="itembonus != null">
         #{itembonus,jdbcType=DOUBLE},
+      </if>
+      <if test="itemnamecn != null">
+        #{itemnamecn,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -122,6 +131,9 @@
       <if test="itembonus != null">
         ITEMBONUS = #{itembonus,jdbcType=DOUBLE},
       </if>
+      <if test="itemnamecn != null">
+        ItemNameCN = #{itemnamecn,jdbcType=VARCHAR},
+      </if>
     </set>
     where ITEMID = #{itemid,jdbcType=INTEGER}
   </update>
@@ -134,7 +146,8 @@
       ITEMGROUP = #{itemgroup,jdbcType=VARCHAR},
       ITEMSCALE = #{itemscale,jdbcType=DOUBLE},
       ITEMODDS = #{itemodds,jdbcType=DOUBLE},
-      ITEMBONUS = #{itembonus,jdbcType=DOUBLE}
+      ITEMBONUS = #{itembonus,jdbcType=DOUBLE},
+      ItemNameCN = #{itemnamecn,jdbcType=VARCHAR}
     where ITEMID = #{itemid,jdbcType=INTEGER}
   </update>
 </mapper>

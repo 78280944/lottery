@@ -1,5 +1,6 @@
 package com.lottery.orm.dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +13,7 @@ import com.lottery.orm.bo.LotteryRound;
 
 public interface CustomLotteryMapper {
     
-    List<Map<String, String>> selectOrderForCheck(@Param("roundId")Integer roundId);
+    List<Map<String, String>> selectOrderForCheck(@Param("roundId")Integer roundId, @Param("accountId")Integer accountId);
     
     List<AccountDetail> selectAccountBySupUserName(@Param("supUserName")String supUserName);
     
@@ -24,5 +25,11 @@ public interface CustomLotteryMapper {
     
     LotteryRound selectRoundByRoundId(@Param("roundId")Integer roundId);
     
-    LotteryRound selectHistoryOrder(@Param("roundId")Integer roundId);
+    LotteryRound selectRoundByTypeAndTerm(@Param("lotteryType")String lotteryType, @Param("lotteryTerm")String lotteryTerm);
+    
+    List<LotteryRound> selectByHistoryRound(@Param("lotteryType")String lotteryType, @Param("roundStatus")String roundStatus ,@Param("beginRow")Integer beginRow,@Param("pageSize")Integer pageSize);
+    
+    List<LotteryRound> selectRoundByTime(@Param("lotteryType")String lotteryType, @Param("closeTime")Date closeTime );
+    
+    
 }

@@ -90,24 +90,6 @@ public class LotteryReportController {
 		return result;
 
 	}
-	
-	@ApiOperation(value = "获取历史下注单", notes = "获取交易报表", httpMethod = "POST")
-	@RequestMapping(value = "/getHistoryOrder", method = RequestMethod.POST)
-	@ResponseBody
-	public HistoryOrderResult getHistoryOrder(
-			@ApiParam(value = "Json参数", required = true) @Validated @RequestBody ReportParamVo param) throws Exception {
-		HistoryOrderResult result = new HistoryOrderResult();
-		try {
-			List<HistoryOrderDto> orderList = lotteryReportMapper.selectByHistoryOrder(param.getStartTime(),
-					param.getEndTime(), param.getAccountId(), param.getBeginRow(), param.getPageSize());
-			result.success(orderList);
-			LOG.info(result.getMessage());
-		} catch (Exception e) {
-			result.error();
-			LOG.error(e.getMessage(), e);
-		}
-		return result;
 
-	}
 
 }

@@ -14,8 +14,8 @@ public class UpdateRoundVo {
     @Min(value=0, message = "游戏ID格式不正确")
     private Integer roundId;
 
-    @ApiModelProperty(value = "游戏结果, 开出之号码")
-    @NotBlank(message = "游戏结果不能为空")
+    @ApiModelProperty(value = "开奖结果, 比如广西快乐十分开奖结果:10,07,04,16,11")
+    @NotBlank(message = "开奖结果不能为空")
     private String resultStr;
 
     public Integer getRoundId() {

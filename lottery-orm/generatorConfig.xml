@@ -3,7 +3,7 @@
 
 <generatorConfiguration>
 	<!-- 配置文件路径 -->
-	<properties url="file:///e:/workspace/lottery/lottery-orm/generatorConfig.properties" />
+	<properties url="file:///z:/pzspace/lottery/lottery-orm/generatorConfig.properties" />
 
 	<!--数据库驱动包路径 -->
 	<classPathEntry location="${drive.class.path}" />
@@ -68,13 +68,13 @@
 			<generatedKey column="serialno" sqlStatement="MySql" identity="true"/> 
 	    </table> -->
 	    
-	   <table tableName="account_Detail" domainObjectName="AccountDetail"
+	   <table tableName="lottery_round" domainObjectName="LotteryRound"
 	    	enableCountByExample="false"
 			enableUpdateByExample="false" 
 			enableDeleteByExample="false"
 			enableSelectByExample="false" 
 			selectByExampleQueryId="false">
-			<generatedKey column="accountid" sqlStatement="MySql" identity="true"/> 
+			<generatedKey column="roundid" sqlStatement="MySql" identity="true"/> 
 	    </table>
 	    
 	</context>
