@@ -116,8 +116,6 @@ public class AccountInfoController {
 		    	OffAccountInfo offparaInfo = mapper.map(param, OffAccountInfo.class);
 		    	System.out.println("8-------"+offparaInfo.getUsername()+".."+offparaInfo.getPassword());
 		    	OffAccountInfo offaccountInfo = offAccountInfoMapper.selectByLogin(offparaInfo);
-		    	System.out.println("9-----s---"+offaccountInfo.getUserid()+"..");
-		    	System.out.println("8-----s---"+offaccountInfo.getOfftype());
 		    	if (offaccountInfo!=null){
 			    	AccountDetail accountDetail = accountDetailMapper.selectByUserId(offaccountInfo.getUserid(), offaccountInfo.getOfftype());
 			    	if (accountDetail == null){
