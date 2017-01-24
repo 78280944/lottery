@@ -1,4 +1,4 @@
-package com.lottery.api.task;
+package com.lottery.orm.task;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -6,18 +6,17 @@ import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.quartz.CronScheduleBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.lottery.api.util.HttpclientTool;
-import com.lottery.api.util.TaskUtil;
 import com.lottery.orm.bo.LotteryRound;
 import com.lottery.orm.service.JobTaskService;
 import com.lottery.orm.service.LotteryRoundService;
 import com.lottery.orm.util.EnumType;
+import com.lottery.orm.util.HttpclientTool;
 
 @Component
 public class LotteryTask {
@@ -28,9 +27,6 @@ public class LotteryTask {
 	@Autowired
 	private LotteryRoundService lotteryRoundService;
 	
-	@Autowired
-	private JobTaskService taskService;
-	
 	/**
 	 * 获取广西快乐十分开奖结果
 	 */
@@ -39,10 +35,12 @@ public class LotteryTask {
 			String result = HttpclientTool.get(LOTTERY_API_URL);
 			if(StringUtils.isNotBlank(result)&&result.trim().startsWith("{")){
 				JSONObject jObj = new JSONObject(result);
+				Date latestOpenTime = (new DateTime()).toDate();
 				if(jObj.has("open")){
 					JSONArray openArray = jObj.getJSONArray("open");//更新游戏开奖结果
 					for(int i=0; i<openArray.length(); i++){
 						JSONObject openObj = openArray.getJSONObject(i);
+						if(i==0)	latestOpenTime = format.parse(openObj.getString("opentime"));
 						LotteryRound openRound = new LotteryRound();
 						openRound.setLotterytype(EnumType.LotteryType.CornSeed.ID);//玉米籽
 						openRound.setLotteryterm(openObj.getString("expect"));//开奖游戏期次
@@ -62,7 +60,8 @@ public class LotteryTask {
 					JSONObject nextObj = null;
 					for(int i=0; i<nextArray.length(); i++){
 						JSONObject tempObj = nextArray.getJSONObject(i);
-						Date tempOpenTime = format.parse(tempObj.getString("opentime").replace("*", "0"));
+						String opentimeStr = tempObj.getString("opentime");
+						Date tempOpenTime = format.parse(opentimeStr.replace("**", "01"));
 						if(nextOpenTime==null||nextOpenTime.after(tempOpenTime)){
 							nextOpenTime = tempOpenTime;
 							nextObj = tempObj;
@@ -72,10 +71,13 @@ public class LotteryTask {
 						LotteryRound nextRound = new LotteryRound();
 						nextRound.setLotterytype(EnumType.LotteryType.CornSeed.ID);//玉米籽
 						nextRound.setLotteryterm(nextObj.getString("expect"));//下一轮游戏期次
-						Date opentime = format.parse(nextObj.getString("opentime").replace("*", "0"));
+						String opentimeStr = nextObj.getString("opentime");
+						Date opentime = format.parse(opentimeStr.replace("**", "01"));
+						if(opentimeStr.contains("**")){//用于测试
+							opentime = (new DateTime(latestOpenTime)).plusMinutes(15).toDate();
+						}
 						nextRound.setOpentime(opentime);//预计开奖时间
 						if(lotteryRoundService.addLotteryRound(nextRound)){
-							addRoundTask(nextRound);
 							log.info("新增一期游戏:"+nextRound.getLotteryterm());
 						}
 					}
@@ -87,21 +89,6 @@ public class LotteryTask {
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-		}
-	}
-	
-	public boolean addRoundTask(LotteryRound nextRound){
-		try {
-			String cronStr = TaskUtil.getCron(nextRound.getOpentime());
-			CronScheduleBuilder.cronSchedule(cronStr);
-			taskService.updateCron(new Long(2), cronStr);
-			taskService.updateCron(new Long(3), TaskUtil.getCron(nextRound.getClosetime()));
-			
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			log.error("更新获取开奖结果任务失败:"+nextRound.getLotteryterm());
-			return false;
 		}
 	}
 	

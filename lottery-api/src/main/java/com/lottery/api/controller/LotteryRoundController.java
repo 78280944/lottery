@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.lottery.api.dto.PageParamVo;
 import com.lottery.api.dto.RoundParamVo;
 import com.lottery.api.dto.UpdateRoundVo;
-import com.lottery.api.task.LotteryTask;
 import com.lottery.orm.bo.LotteryRound;
 import com.lottery.orm.dao.CustomLotteryMapper;
 import com.lottery.orm.dao.LotteryRoundMapper;
@@ -53,9 +52,6 @@ public class LotteryRoundController {
 	@Autowired
 	LotteryOrderService lotteryOrderService;
 	
-	@Autowired
-	LotteryTask lotteryTask;
-	
 	@ApiOperation(value = "新增一期游戏", notes = "新增游戏记录", httpMethod = "POST")
 	@RequestMapping(value = "/addLotteryRound", method = RequestMethod.POST)
 	@ResponseBody
@@ -68,7 +64,6 @@ public class LotteryRoundController {
 			round.setRoundstatus(EnumType.RoundStatus.Open.ID);
 			round.setOpentime(param.getOpenTime());
 			if (lotteryRoundService.addLotteryRound(round)) {
-				lotteryTask.addRoundTask(round);
 				result.success(round);
 			} else {
 				result.fail(MessageTool.FailCode);

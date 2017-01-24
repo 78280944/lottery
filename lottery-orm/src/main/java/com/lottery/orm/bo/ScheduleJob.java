@@ -157,4 +157,18 @@ public class ScheduleJob {
 				+ isConcurrent + ", springId=" + springId + ", methodName=" + methodName + "]";
 	}
 	
+	 public boolean equals(Object o) {
+        if (o instanceof ScheduleJob) {
+        	ScheduleJob i = (ScheduleJob) o;
+            if (getJobName() != null&&getJobGroup() != null) {
+            	return getJobName().equals(i.getJobName())&&getJobGroup().equals(i.getJobGroup());
+            } else if(getJobName() != null&&getJobGroup() == null){
+            	return getJobName().equals(i.getJobName())&&i.getJobGroup()==null;
+            }else{
+            	return false;
+            }
+        } else {
+            return false;
+        }
+    }
 }

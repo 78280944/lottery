@@ -100,7 +100,7 @@ public class JobTaskService {
 			return;
 		}
 		job.setCronExpression(cron);
-		if (ScheduleJob.STATUS_RUNNING.equals(job.getJobStatus())) {
+		if (ScheduleJob.STATUS_RUNNING.equals(job.getJobStatus())&&getRunningJob().contains(job)) {
 			updateJobCron(job);
 		}
 		scheduleJobMapper.updateByPrimaryKeySelective(job);
@@ -114,7 +114,7 @@ public class JobTaskService {
 	 * @throws SchedulerException
 	 */
 	public void addJob(ScheduleJob job) throws SchedulerException {
-		if (job == null || !ScheduleJob.STATUS_RUNNING.equals(job.getJobStatus()) || StringUtils.isBlank(job.getCronExpression())) {
+		if (job == null || !ScheduleJob.STATUS_RUNNING.equals(job.getJobStatus())) {
 			return;
 		}
 
@@ -209,6 +209,7 @@ public class JobTaskService {
 			JobKey jobKey = jobDetail.getKey();
 			Trigger trigger = executingJob.getTrigger();
 			job.setJobName(jobKey.getName());
+			System.out.println("==============="+jobKey.getName());
 			job.setJobGroup(jobKey.getGroup());
 			job.setDescription("触发器:" + trigger.getKey());
 			Trigger.TriggerState triggerState = scheduler.getTriggerState(trigger.getKey());

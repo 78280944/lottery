@@ -2,6 +2,7 @@ package com.lottery.orm.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -65,4 +66,14 @@ public class TaskUtils {
 		}
 		log.info("任务名称 = [" + scheduleJob.getJobName() + "]----------启动成功");
 	}
+	
+	public static String getCron(java.util.Date  date){  
+        String dateFormat="ss mm HH dd MM ? yyyy";  
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);  
+        String formatTimeStr = null;  
+        if (date != null) {  
+            formatTimeStr = sdf.format(date);  
+        }  
+        return formatTimeStr;  
+    } 
 }
