@@ -108,19 +108,22 @@ public class AccountInfoController {
 				rAcDto.setManage("");
 				rAcDto.setOfftype("3");
 				rAcDto.setAccountID(accountDetail.getAccountid());
+				rAcDto.setRiskamount("");
 				System.out.println("55---------"+accountDetail.getMoney());
 				rAcDto.setAccountAmount(null==accountDetail.getMoney()||"".equals(accountDetail.getMoney())||BigDecimal.valueOf(0) == accountDetail.getMoney()?BigDecimal.valueOf(0):accountDetail.getMoney());
 				result.success(rAcDto);
 		    }else {
 		    	OffAccountInfo offparaInfo = mapper.map(param, OffAccountInfo.class);
+		    	System.out.println("8-------"+offparaInfo.getUsername()+".."+offparaInfo.getPassword());
 		    	OffAccountInfo offaccountInfo = offAccountInfoMapper.selectByLogin(offparaInfo);
-		    	String offtype;
+		    	System.out.println("9-----s---"+offaccountInfo.getUserid()+"..");
+		    	System.out.println("8-----s---"+offaccountInfo.getOfftype());
 		    	if (offaccountInfo!=null){
-			    	AccountDetail accountDetail = accountDetailMapper.selectByUserId(offaccountInfo.getUserid(), "1");
-			    	offtype = "1";
+			    	AccountDetail accountDetail = accountDetailMapper.selectByUserId(offaccountInfo.getUserid(), offaccountInfo.getOfftype());
 			    	if (accountDetail == null){
-			    		accountDetail =  accountDetailMapper.selectByUserId(offaccountInfo.getUserid(), "2");
-			    		offtype = "2";
+					      result.fail(MessageTool.Code_3002);
+					      LOG.info(result.getMessage());
+					      return result;
 			    	}
 					AccountInfoDto rAcDto = new AccountInfoDto();
 					rAcDto.setUserid(null==offaccountInfo.getUserid()||"".equals(offaccountInfo.getUserid())||0.0==offaccountInfo.getUserid() ?0:offaccountInfo.getUserid());
@@ -137,9 +140,10 @@ public class AccountInfoController {
 					rAcDto.setPercentage(null==offaccountInfo.getPercentage()||"".equals(offaccountInfo.getPercentage())||0.0==offaccountInfo.getPercentage() ?0.0:offaccountInfo.getPercentage());
 					rAcDto.setQuery(null==offaccountInfo.getQuery()||"".equals(offaccountInfo.getQuery()) ? "":offaccountInfo.getQuery());
 					rAcDto.setManage(null==offaccountInfo.getManage()||"".equals(offaccountInfo.getManage()) ? "":offaccountInfo.getManage());
-					rAcDto.setOfftype(offtype);
+					rAcDto.setOfftype(offaccountInfo.getOfftype());
 					rAcDto.setAccountID(accountDetail.getAccountid());
 					rAcDto.setAccountAmount(null==accountDetail.getMoney()||"".equals(accountDetail.getMoney())||BigDecimal.valueOf(0) == accountDetail.getMoney()?BigDecimal.valueOf(0):accountDetail.getMoney());
+					rAcDto.setRiskamount(null==offaccountInfo.getRiskamount()||"".equals(offaccountInfo.getRiskamount()) ?"":offaccountInfo.getRiskamount());
 					result.success(rAcDto);	
 		    	}else
 		    	   result.fail(MessageTool.Code_3001);

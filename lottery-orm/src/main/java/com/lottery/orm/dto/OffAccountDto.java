@@ -20,6 +20,18 @@ public class OffAccountDto extends SubAccountDto {
 	@ApiModelProperty(value = "账户余额", required = true)
 	private BigDecimal accountAmount;
 	
+	@ApiModelProperty(value = "风险限额", required = true)
+	private String riskamount;
+	
+	
+	public String getRiskamount() {
+		return riskamount;
+	}
+
+	public void setRiskamount(String riskamount) {
+		this.riskamount = riskamount;
+	}
+
 	public Integer getAccountID() {
 		return accountID;
 	}

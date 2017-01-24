@@ -36,7 +36,18 @@ public class AccountInfoDto extends BaseAccountDto {
 	@ApiModelProperty(value = "账户类型", required = true)
 	private String offtype;
 	
+	@ApiModelProperty(value = "风险限额", required = true)
+	private String riskamount;
 	
+	
+	public String getRiskamount() {
+		return riskamount;
+	}
+
+	public void setRiskamount(String riskamount) {
+		this.riskamount = riskamount;
+	}
+
 	public Integer getAccountID() {
 		return accountID;
 	}

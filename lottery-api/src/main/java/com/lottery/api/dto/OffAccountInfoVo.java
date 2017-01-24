@@ -1,5 +1,7 @@
 package com.lottery.api.dto;
 
+import java.math.BigDecimal;
+
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 public class OffAccountInfoVo extends BaseAccountInfoVo{
@@ -10,8 +12,18 @@ public class OffAccountInfoVo extends BaseAccountInfoVo{
     private Double ratio;
     @ApiModelProperty(value = "代理占成")
     private Double percentage;
+    @ApiModelProperty(value = "风控限额")
+    private String riskamount;
 
     
+	public String getRiskamount() {
+		return riskamount;
+	}
+
+	public void setRiskamount(String riskamount) {
+		this.riskamount = riskamount;
+	}
+
 	public Double getLimited() {
 		return limited;
 	}

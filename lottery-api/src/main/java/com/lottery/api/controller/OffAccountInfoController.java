@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.lottery.api.dto.AccountInfoVo;
 import com.lottery.api.dto.LoginParamVo;
 import com.lottery.api.dto.OffAccountInfoVo;
+import com.lottery.api.dto.UpdateAccountRiskVo;
 import com.lottery.api.dto.UpdateOffAccountVo;
 import com.lottery.api.dto.UpdatePlayAmountVo;
 import com.lottery.api.dto.UpdatePlayPassVo;
@@ -99,6 +100,7 @@ public class OffAccountInfoController {
 		      rAcDto.setSupusername(null==OffAccountInfo.getSupusername()||"".equals(OffAccountInfo.getSupusername()) ?"":OffAccountInfo.getSupusername());
 		      rAcDto.setLevel(null==OffAccountInfo.getLevel()||"".equals(OffAccountInfo.getLevel()) ?"":OffAccountInfo.getLevel());
 		      rAcDto.setOfftype(null==OffAccountInfo.getOfftype()||"".equals(OffAccountInfo.getOfftype()) ?"":OffAccountInfo.getOfftype());
+		      rAcDto.setRiskamount(null==OffAccountInfo.getRiskamount()||"".equals(OffAccountInfo.getRiskamount()) ?"":OffAccountInfo.getRiskamount());
 		      result.success(rAcDto);
 		    }else{
 		    	result.fail(MessageTool.Code_3001);
@@ -193,7 +195,7 @@ public class OffAccountInfoController {
 				      return result;		
 				}
 			}
-			
+			param.setPassword(DigestUtils.md5Hex(password));
 			OffAccountInfo paraInfo = mapper.map(param, OffAccountInfo.class);
 			OffAccountInfo OffAccountInfo = offAccountInfoMapper.selectByUsername(paraInfo.getUsername());
 			//System.out.println("9--------"+OffAccountInfo+"..."+OffAccountInfo.getUsername());
@@ -218,14 +220,14 @@ public class OffAccountInfoController {
 				      LOG.info(result.getMessage());
 				      return result;	
 				}
-				param.setPassword(DigestUtils.md5Hex(password));
-			  
+
 			    paraInfo.setQuery("Y1,Y2,Y3,Y4,Y5");
 			    paraInfo.setManage("M1,M2,M3,M4,M5");
 			    paraInfo.setState("1");//默认状态正常
 			    paraInfo.setLevel(ToolsUtil.decideLevel(level));
 			    paraInfo.setOfftype("1");
 			    paraInfo.setInputdate(new Date());
+			    paraInfo.setRiskamount(param.getRiskamount());
 			    OffAccountInfoService.addOffAccountInfo(paraInfo);
 			    
 			    result.success();
@@ -410,6 +412,7 @@ public class OffAccountInfoController {
 		      rAcDto.setOfftype(null==OffAccountInfos.get(i).getOfftype()||"".equals(OffAccountInfos.get(i).getOfftype()) ?"":OffAccountInfos.get(i).getOfftype());
 		      rAcDto.setAccountID(accountDetail.getAccountid());
 		      rAcDto.setAccountAmount(accountDetail.getMoney());
+		      rAcDto.setRiskamount(null==OffAccountInfos.get(i).getRiskamount()||"".equals(OffAccountInfos.get(i).getRiskamount()) ?"":OffAccountInfos.get(i).getRiskamount());
 		      list.add(rAcDto);  
 			}
 		    result.success(list);
@@ -565,6 +568,42 @@ public class OffAccountInfoController {
 				offAccountInfo.setPassword(DigestUtils.md5Hex(password));
 				offAccountInfoMapper.updateByPrimaryKey(offAccountInfo);
 			    LOG.info("修改密码记录详情为："+" 管理员："+supusername+" 账户类型："+offtype+" IP："+ip+" 修改下家ID"+userid+" 密码修改为"+offAccountInfo.getPassword());
+			    result.success();
+			}
+			LOG.info(result.getMessage());
+		} catch (Exception e) {
+			result.error();
+			LOG.error(e.getMessage(),e);
+		}
+		return result;
+	}
+	
+	
+	@ApiOperation(value = "代理用户修改下线风险限额", notes = "代理用户修改下线风险限额", httpMethod = "POST")
+	@RequestMapping(value = "/updateAccountRisk", method = RequestMethod.POST)
+	@ResponseBody
+	public RestResult updateAccountRisk(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody UpdateAccountRiskVo param) throws Exception {
+		RestResult result = new RestResult();
+		try {
+			int userid = param.getUserid();
+			String riskamount = param.getRiskamount();
+            String supusername = param.getSupusername();
+            int offtype = param.getOfftype();
+			String ip = param.getIp();
+			
+			if (0==userid){
+			      result.fail("用户ID",MessageTool.Code_2002);
+			      LOG.info(result.getMessage());
+			      return result;
+			}
+			
+			OffAccountInfo offAccountInfo = offAccountInfoMapper.selectByPrimaryKey(param.getUserid());
+			if(offAccountInfo==null){
+			      result.fail(MessageTool.Code_3001);
+			}else{
+				offAccountInfo.setRiskamount(riskamount);
+				offAccountInfoMapper.updateByPrimaryKey(offAccountInfo);
+			    LOG.info("修改风险限额记录详情为："+" 管理员："+supusername+" 账户类型："+offtype+" IP："+ip+" 修改下家ID"+userid+" 风险限额修改为"+offAccountInfo.getRiskamount());
 			    result.success();
 			}
 			LOG.info(result.getMessage());

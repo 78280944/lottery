@@ -1,5 +1,6 @@
 package com.lottery.orm.bo;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class OffAccountInfo {
@@ -21,7 +22,7 @@ public class OffAccountInfo {
 	private String supusername;
 	private String level;
 	private String offtype;
-	private String attribute1;
+	private String riskamount;
 	private String attribute2;
 
 	
@@ -127,11 +128,12 @@ public class OffAccountInfo {
 	public void setOfftype(String offtype) {
 		this.offtype = offtype;
 	}
-	public String getAttribute1() {
-		return attribute1;
+
+	public String getRiskamount() {
+		return riskamount;
 	}
-	public void setAttribute1(String attribute1) {
-		this.attribute1 = attribute1;
+	public void setRiskamount(String riskamount) {
+		this.riskamount = riskamount;
 	}
 	public String getAttribute2() {
 		return attribute2;
