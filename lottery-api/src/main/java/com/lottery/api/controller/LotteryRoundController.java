@@ -82,8 +82,7 @@ public class LotteryRoundController {
 	public RoundResult getLotteryRound() throws Exception {
 		RoundResult result = new RoundResult();
 		try {
-			Integer roundId = customLotteryMapper.selectRoundIdByStatus(EnumType.LotteryType.CornSeed.ID,
-					EnumType.RoundStatus.Open.ID);
+			Integer roundId = customLotteryMapper.selectCurrentRoundId(EnumType.LotteryType.CornSeed.ID);
 			if (roundId == null) {
 				result.fail("目前没有游戏信息");
 			} else {
