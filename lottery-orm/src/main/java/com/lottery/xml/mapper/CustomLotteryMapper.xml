@@ -81,10 +81,10 @@
     where lotteryType = #{lotteryType,jdbcType=VARCHAR} and roundStatus = #{roundStatus,jdbcType=VARCHAR}
 	</select>-->
 	
-	<select id="selectRoundIdByStatus" resultType="java.lang.Integer">
+	<select id="selectCurrentRoundId" resultType="java.lang.Integer">
     select roundId
     from lottery_round r
-    where r.lotteryType = #{lotteryType,jdbcType=VARCHAR} and r.roundStatus = #{roundStatus,jdbcType=VARCHAR} 
+    where r.lotteryType = #{lotteryType,jdbcType=VARCHAR} and r.roundStatus in ('Open', 'Close') 
 	 order by starttime desc limit 0,1
 	</select>
 	

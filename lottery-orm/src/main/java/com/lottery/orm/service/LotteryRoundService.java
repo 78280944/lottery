@@ -82,44 +82,42 @@ public class LotteryRoundService {
 		try {
 			DateTime runGetOpenTime = new DateTime(nextRound.getOpentime()).plusSeconds(3);//执行任务时间最好比开奖晚3秒
 			cronStr = TaskUtils.getCron(runGetOpenTime.toDate());
-			CronScheduleBuilder.cronSchedule(cronStr);
 			Long task1 = new Long(2);
-			//taskService.updateCron(task1, cronStr);
 			
 			ScheduleJob job = taskService.getTaskById(task1);
 			if (job != null) {
 				job.setCronExpression(cronStr);
 				if (ScheduleJob.STATUS_RUNNING.equals(job.getJobStatus())&&taskService.getRunningJob().contains(job)) {
-					taskService.updateJobCron(job);
+					if(taskService.updateJobCron(job)){
+						scheduleJobMapper.updateByPrimaryKeySelective(job);
+					}
 				}else{
-					taskService.changeStatus(task1, "start");
+					job.setJobStatus(ScheduleJob.STATUS_RUNNING);
+					if(taskService.addJob(job)){
+						scheduleJobMapper.updateByPrimaryKeySelective(job);
+					}
 				}
-				scheduleJobMapper.updateByPrimaryKeySelective(job);
+				
 			}
 			
 			cronStr = TaskUtils.getCron(nextRound.getClosetime());
-			CronScheduleBuilder.cronSchedule(cronStr);
 			Long task2 = new Long(3);
 			job = taskService.getTaskById(task2);
 			
 			if (job != null) {
 				job.setCronExpression(cronStr);
 				if (ScheduleJob.STATUS_RUNNING.equals(job.getJobStatus())&&taskService.getRunningJob().contains(job)) {
-					taskService.updateJobCron(job);
+					if(taskService.updateJobCron(job)){
+						scheduleJobMapper.updateByPrimaryKeySelective(job);
+					}
 				}else{
-					taskService.changeStatus(task2, "start");
+					job.setJobStatus(ScheduleJob.STATUS_RUNNING);
+					if(taskService.addJob(job)){
+						scheduleJobMapper.updateByPrimaryKeySelective(job);
+					}
 				}
-				scheduleJobMapper.updateByPrimaryKeySelective(job);
+				
 			}
-			//taskService.updateCron(task2, cronStr);
-			
-			/*if(!taskService.getTaskById(task1).getJobStatus().equals("1")){
-				taskService.changeStatus(task1, "start");
-			}
-			
-			if(!taskService.getTaskById(task2).getJobStatus().equals("1")){
-				taskService.changeStatus(task2, "start");
-			}*/
 			
 		} catch (Exception e) {
 			log.error("更新获取开奖结果任务失败:"+nextRound.getLotteryterm()+":"+cronStr);
