@@ -51,7 +51,7 @@ public class LotteryRoundService {
 		round.setRoundstatus(EnumType.RoundStatus.Open.ID);
 		round.setStarttime(new Date());
 		DateTime openTime = new DateTime(round.getOpentime());
-		round.setClosetime(openTime.minusMinutes(5).toDate());//开奖前5分钟封盘
+		round.setClosetime(openTime.minusMinutes(2).toDate());//开奖前2分钟封盘
 		LotteryRound existRound = customLotteryMapper.selectRoundByTypeAndTerm(round.getLotterytype(), round.getLotteryterm());
 		if(existRound==null){
 			List<LotteryItem> itemList = customLotteryMapper.selectItemByLotteryType(round.getLotterytype());

@@ -7,6 +7,7 @@ import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+import org.joda.time.Period;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +22,9 @@ import com.lottery.orm.util.HttpclientTool;
 @Component
 public class LotteryTask {
 	public final Logger log = Logger.getLogger(this.getClass());
-	private final String LOTTERY_API_URL = "http://t.apiplus.cn/newly.do?code=gxklsf&format=json&extend=true";
+	private final String LOTTERY_API_URL = "http://t.apiplus.cn/newly.do?code=cqklsf&format=json&extend=true";
 	private final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private final Integer ROUND_INTERVAL_MINUTES = 10;//游戏间隔时间
 	
 	@Autowired
 	private LotteryRoundService lotteryRoundService;
@@ -35,12 +37,15 @@ public class LotteryTask {
 			String result = HttpclientTool.get(LOTTERY_API_URL);
 			if(StringUtils.isNotBlank(result)&&result.trim().startsWith("{")){
 				JSONObject jObj = new JSONObject(result);
-				Date latestOpenTime = (new DateTime()).toDate();
+				//Date latestOpenTime = (new DateTime()).toDate();
+				JSONObject latestOpenObj = null;
 				if(jObj.has("open")){
 					JSONArray openArray = jObj.getJSONArray("open");//更新游戏开奖结果
 					for(int i=0; i<openArray.length(); i++){
 						JSONObject openObj = openArray.getJSONObject(i);
-						if(i==0)	latestOpenTime = format.parse(openObj.getString("opentime"));
+						if(i==0){
+							latestOpenObj = openObj;
+						}
 						LotteryRound openRound = new LotteryRound();
 						openRound.setLotterytype(EnumType.LotteryType.CornSeed.ID);//玉米籽
 						openRound.setLotteryterm(openObj.getString("expect"));//开奖游戏期次
@@ -53,6 +58,8 @@ public class LotteryTask {
 						}
 					}
 				}
+				
+				
 				
 				if(jObj.has("next")){
 					JSONArray nextArray = jObj.getJSONArray("next");//获取下一轮游戏期次
@@ -68,19 +75,28 @@ public class LotteryTask {
 						}
 					}
 					if(nextObj!=null){
-						LotteryRound nextRound = new LotteryRound();
-						nextRound.setLotterytype(EnumType.LotteryType.CornSeed.ID);//玉米籽
-						nextRound.setLotteryterm(nextObj.getString("expect"));//下一轮游戏期次
 						String opentimeStr = nextObj.getString("opentime");
 						Date opentime = format.parse(opentimeStr.replace("**", "01"));
-						if(opentimeStr.contains("**")){//用于测试
-							opentime = (new DateTime(latestOpenTime)).plusMinutes(15).toDate();
+						if(opentimeStr.contains("**")&&latestOpenObj!=null){//用于测试
+							Date latestOpenTime = format.parse(latestOpenObj.getString("opentime"));
+							opentime = (new DateTime(latestOpenTime)).plusMinutes(ROUND_INTERVAL_MINUTES).toDate();
 						}
-						nextRound.setOpentime(opentime);//预计开奖时间
-						if(lotteryRoundService.addLotteryRound(nextRound)){
-							log.info("新增一期游戏:"+nextRound.getLotteryterm());
-						}
+						addNextRound(nextObj.getString("expect"), opentime);
 					}
+				}else{
+					/*if(latestOpenObj!=null){//当没有下期信息时用于测试
+						DateTime latestOpenTime = new DateTime(format.parse(latestOpenObj.getString("opentime")));
+						DateTime opentime = latestOpenTime.plusMinutes(ROUND_INTERVAL_MINUTES);
+						Period period=new Period(latestOpenTime,opentime);
+						String nextExpect = null;
+						if(period.getDays()==0){
+							nextExpect = String.valueOf(Long.parseLong(latestOpenObj.getString("expect"))+1);
+						}else{
+							nextExpect = String.valueOf(Integer.parseInt(opentime.toString("yyyyMMdd"))*1000+1);
+						}
+						addNextRound(nextExpect, opentime.toDate());
+					}*/
+					log.info("未获取到下期游戏信息！");
 				}
 				
 				
@@ -89,6 +105,16 @@ public class LotteryTask {
 			}
 		}catch(Exception e){
 			e.printStackTrace();
+		}
+	}
+	
+	private void addNextRound(String term, Date opentime) throws Exception{
+		LotteryRound nextRound = new LotteryRound();
+		nextRound.setLotterytype(EnumType.LotteryType.CornSeed.ID);//玉米籽
+		nextRound.setLotteryterm(term);//下一轮游戏期次
+		nextRound.setOpentime(opentime);//预计开奖时间
+		if(lotteryRoundService.addLotteryRound(nextRound)){
+			log.info("新增一期游戏:"+nextRound.getLotteryterm());
 		}
 	}
 	
