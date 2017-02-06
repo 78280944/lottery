@@ -478,7 +478,7 @@ public class AccountInfoController {
 		RemarkResult result = new RemarkResult();
 		RemarkDto remark = new RemarkDto();
 		String online = "9151206965";
-		String share = "https://www.baidu.com";
+		String share = "https://www.pgyer.com/EIAE";
 		String rule = "http://lottery.puzongsoft.com/lottery-api/rule.html";
 			
 		remark.setOnline(online);
