@@ -19,10 +19,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.lottery.api.dto.AccountInfoVo;
 import com.lottery.api.dto.LoginParamVo;
 import com.lottery.api.dto.OffAccountInfoVo;
+import com.lottery.api.dto.UpdateAccountPerVo;
+import com.lottery.api.dto.UpdateAccountRatioVo;
 import com.lottery.api.dto.UpdateAccountRiskVo;
 import com.lottery.api.dto.UpdateOffAccountVo;
 import com.lottery.api.dto.UpdatePlayAmountVo;
 import com.lottery.api.dto.UpdatePlayPassVo;
+import com.lottery.api.dto.UpdatePlayRatioVo;
 import com.lottery.api.util.ToolsUtil;
 import com.lottery.orm.bo.AccountDetail;
 import com.lottery.orm.bo.AccountInfo;
@@ -501,6 +504,41 @@ public class OffAccountInfoController {
 		return result;
 	}
 	
+	@ApiOperation(value = "代理用户修改玩家洗码比", notes = "代理用户修改玩家洗码比", httpMethod = "POST")
+	@RequestMapping(value = "/updatePlayRatio", method = RequestMethod.POST)
+	@ResponseBody
+	public RestResult updatePlayRatio(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody UpdatePlayRatioVo param) throws Exception {
+		RestResult result = new RestResult();
+		try {
+			int userid = param.getUserid();
+			double ratio = param.getRatio();
+            String supusername = param.getSupusername();
+            int offtype = param.getOfftype();
+			String ip = param.getIp();
+			
+			if (0==userid){
+			      result.fail("用户ID",MessageTool.Code_2002);
+			      LOG.info(result.getMessage());
+			      return result;
+			}
+			
+			AccountInfo accountInfo = accountInfoMapper.selectByPrimaryKey(param.getUserid());
+			if(accountInfo==null){
+			      result.fail(MessageTool.Code_3001);
+			}else{
+				accountInfo.setRatio(ratio);
+			    accountInfoService.updateAccountInfo(accountInfo);
+			    LOG.info("修改玩家洗码比记录详情为："+" 管理员："+supusername+" 账户类型："+offtype+" IP："+ip+" 修改玩家ID"+userid+" 玩家洗码比修改为"+accountInfo.getRatio());
+			    result.success();
+			}
+			LOG.info(result.getMessage());
+		} catch (Exception e) {
+			result.error();
+			LOG.error(e.getMessage(),e);
+		}
+		return result;
+	}
+	
 	
 	@ApiOperation(value = "代理用户修改下线剩余点数", notes = "代理用户修改下线剩余点数", httpMethod = "POST")
 	@RequestMapping(value = "/updateAccountAmount", method = RequestMethod.POST)
@@ -614,5 +652,73 @@ public class OffAccountInfoController {
 		return result;
 	}
 	
+	@ApiOperation(value = "代理用户修改下线代理占成", notes = "代理用户修改下线代理占成", httpMethod = "POST")
+	@RequestMapping(value = "/updateAccountPercent", method = RequestMethod.POST)
+	@ResponseBody
+	public RestResult updateAccountPercent(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody UpdateAccountPerVo param) throws Exception {
+		RestResult result = new RestResult();
+		try {
+			int userid = param.getUserid();
+			double limited = param.getLimited();
+            String supusername = param.getSupusername();
+            int offtype = param.getOfftype();
+			String ip = param.getIp();
+			
+			if (0==userid){
+			      result.fail("用户ID",MessageTool.Code_2002);
+			      LOG.info(result.getMessage());
+			      return result;
+			}
+			
+			OffAccountInfo offAccountInfo = offAccountInfoMapper.selectByPrimaryKey(param.getUserid());
+			if(offAccountInfo==null){
+			      result.fail(MessageTool.Code_3001);
+			}else{
+				offAccountInfo.setLimited(limited);
+				offAccountInfoMapper.updateByPrimaryKey(offAccountInfo);
+			    LOG.info("修改代理占成记录详情为："+" 管理员："+supusername+" 账户类型："+offtype+" IP："+ip+" 修改下家ID"+userid+" 代理占成修改为"+offAccountInfo.getLimited());
+			    result.success();
+			}
+			LOG.info(result.getMessage());
+		} catch (Exception e) {
+			result.error();
+			LOG.error(e.getMessage(),e);
+		}
+		return result;
+	}
 	
+	@ApiOperation(value = "代理用户修改下线洗码比", notes = "代理用户修改下线代洗码比", httpMethod = "POST")
+	@RequestMapping(value = "/updateAccountRatio", method = RequestMethod.POST)
+	@ResponseBody
+	public RestResult updateAccountRatio(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody UpdateAccountRatioVo param) throws Exception {
+		RestResult result = new RestResult();
+		try {
+			int userid = param.getUserid();
+			double ratio = param.getRatio();
+            String supusername = param.getSupusername();
+            int offtype = param.getOfftype();
+			String ip = param.getIp();
+			
+			if (0==userid){
+			      result.fail("用户ID",MessageTool.Code_2002);
+			      LOG.info(result.getMessage());
+			      return result;
+			}
+			
+			OffAccountInfo offAccountInfo = offAccountInfoMapper.selectByPrimaryKey(param.getUserid());
+			if(offAccountInfo==null){
+			      result.fail(MessageTool.Code_3001);
+			}else{
+				offAccountInfo.setRatio(ratio);;
+				offAccountInfoMapper.updateByPrimaryKey(offAccountInfo);
+			    LOG.info("修改洗码比记录详情为："+" 管理员："+supusername+" 账户类型："+offtype+" IP："+ip+" 修改下家ID"+userid+" 代理占成修改为"+offAccountInfo.getRatio());
+			    result.success();
+			}
+			LOG.info(result.getMessage());
+		} catch (Exception e) {
+			result.error();
+			LOG.error(e.getMessage(),e);
+		}
+		return result;
+	}
 }
