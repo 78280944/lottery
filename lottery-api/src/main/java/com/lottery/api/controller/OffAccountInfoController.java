@@ -659,7 +659,7 @@ public class OffAccountInfoController {
 		RestResult result = new RestResult();
 		try {
 			int userid = param.getUserid();
-			double limited = param.getLimited();
+			double percentage = param.getPetcentage();
             String supusername = param.getSupusername();
             int offtype = param.getOfftype();
 			String ip = param.getIp();
@@ -674,9 +674,9 @@ public class OffAccountInfoController {
 			if(offAccountInfo==null){
 			      result.fail(MessageTool.Code_3001);
 			}else{
-				offAccountInfo.setLimited(limited);
+				offAccountInfo.setPercentage(percentage);;
 				offAccountInfoMapper.updateByPrimaryKey(offAccountInfo);
-			    LOG.info("修改代理占成记录详情为："+" 管理员："+supusername+" 账户类型："+offtype+" IP："+ip+" 修改下家ID"+userid+" 代理占成修改为"+offAccountInfo.getLimited());
+			    LOG.info("修改代理占成记录详情为："+" 管理员："+supusername+" 账户类型："+offtype+" IP："+ip+" 修改下家ID"+userid+" 代理占成修改为"+offAccountInfo.getPercentage());
 			    result.success();
 			}
 			LOG.info(result.getMessage());

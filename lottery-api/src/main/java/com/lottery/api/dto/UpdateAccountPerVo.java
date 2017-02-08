@@ -8,7 +8,7 @@ public class UpdateAccountPerVo {
 	private int userid;
 	
 	@ApiModelProperty(value = "代理占成", required = true)
-	private Double limited;
+	private Double petcentage;
 	
 	@ApiModelProperty(value = "状态", required = true)
 	private String state;
@@ -30,12 +30,13 @@ public class UpdateAccountPerVo {
 		this.userid = userid;
 	}
 
-	public Double getLimited() {
-		return limited;
+
+	public Double getPetcentage() {
+		return petcentage;
 	}
 
-	public void setLimited(Double limited) {
-		this.limited = limited;
+	public void setPetcentage(Double petcentage) {
+		this.petcentage = petcentage;
 	}
 
 	public String getState() {
