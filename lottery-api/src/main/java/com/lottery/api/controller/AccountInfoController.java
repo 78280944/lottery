@@ -90,7 +90,14 @@ public class AccountInfoController {
 		    if(accountInfo!=null){
 		    	System.out.println("9---"+accountInfo.getUserid());
 		    	AccountDetail accountDetail = accountDetailMapper.selectByUserId(accountInfo.getUserid(), "3");
-		    	System.out.println("55---------"+accountDetail+"  ");
+		    	//获取上级的限额等信息
+			    OffAccountInfo leOffAccountInfo = offAccountInfoMapper.selectByUsername(accountInfo.getSupusername());
+				if(leOffAccountInfo==null){ 	
+				      result.fail("管理员",MessageTool.Code_3002);
+				      LOG.info(result.getMessage());
+				      return result;
+				  }
+				    	
 				AccountInfoDto rAcDto = new AccountInfoDto();
 				rAcDto.setUserid(null==accountInfo.getUserid()||"".equals(accountInfo.getUserid())||0.0==accountInfo.getUserid() ?0:accountInfo.getUserid());
 				rAcDto.setUsername(accountInfo.getUsername());
@@ -109,7 +116,11 @@ public class AccountInfoController {
 				rAcDto.setOfftype("3");
 				rAcDto.setAccountID(accountDetail.getAccountid());
 				rAcDto.setRiskamount("");
-				System.out.println("55---------"+accountDetail.getMoney());
+			    rAcDto.setLelimited(leOffAccountInfo.getLimited());
+			    rAcDto.setLepercentage(leOffAccountInfo.getPercentage());
+			    rAcDto.setLeratio(leOffAccountInfo.getRatio());
+			    rAcDto.setLeriskamount(leOffAccountInfo.getRiskamount());
+				//System.out.println("55---------"+accountDetail.getMoney());
 				rAcDto.setAccountAmount(null==accountDetail.getMoney()||"".equals(accountDetail.getMoney())||BigDecimal.valueOf(0) == accountDetail.getMoney()?BigDecimal.valueOf(0):accountDetail.getMoney());
 				result.success(rAcDto);
 		    }else {
@@ -445,6 +456,14 @@ public class AccountInfoController {
 				List<AccountInfoDto> list = new ArrayList<AccountInfoDto>();
 				for (int i = 0;i<accountInfos.size();i++){
 					AccountDetail accountDetail =  accountDetailMapper.selectByUserId(accountInfos.get(i).getUserid(),"3");
+			    	//获取上级的限额等信息
+				    OffAccountInfo leOffAccountInfo = offAccountInfoMapper.selectByUsername(accountInfos.get(i).getSupusername());
+					if(leOffAccountInfo==null){ 	
+					      result.fail("管理员",MessageTool.Code_3002);
+					      LOG.info(result.getMessage());
+					      return result;
+					  }
+					    
 					AccountInfoDto rAcDto = new AccountInfoDto();
 			        rAcDto.setUserid(null==accountInfos.get(i).getUserid()||"".equals(accountInfos.get(i).getUserid())||0==accountInfos.get(i).getUserid() ?0:accountInfos.get(i).getUserid());
 			        rAcDto.setUsername(null==accountInfos.get(i).getUsername()||"".equals(accountInfos.get(i).getUsername()) ?"":accountInfos.get(i).getUsername());
@@ -458,6 +477,10 @@ public class AccountInfoController {
 			        rAcDto.setOfftype("3");
 			        rAcDto.setAccountID(accountDetail.getAccountid());
 			        rAcDto.setAccountAmount(accountDetail.getMoney());
+				    rAcDto.setLelimited(leOffAccountInfo.getLimited());
+				    rAcDto.setLepercentage(leOffAccountInfo.getPercentage());
+				    rAcDto.setLeratio(leOffAccountInfo.getRatio());
+				    rAcDto.setLeriskamount(leOffAccountInfo.getRiskamount());
 			        list.add(rAcDto);
 				}
 				result.success(list);

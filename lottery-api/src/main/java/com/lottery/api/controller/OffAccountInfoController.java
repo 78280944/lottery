@@ -89,6 +89,16 @@ public class OffAccountInfoController {
 		    OffAccountInfo paraInfo = mapper.map(param, OffAccountInfo.class);
 		    OffAccountInfo OffAccountInfo = offAccountInfoMapper.selectByLogin(paraInfo);
 		    if(OffAccountInfo!=null){
+		    	//获取账户金额
+		      AccountDetail accountDetail =  accountDetailMapper.selectByUserId(OffAccountInfo.getUserid(),OffAccountInfo.getOfftype());
+		    	//获取上级的限额
+		      OffAccountInfo leOffAccountInfo = offAccountInfoMapper.selectByUsername(OffAccountInfo.getSupusername());
+			  if(leOffAccountInfo==null){ 	
+			      result.fail("管理员",MessageTool.Code_3002);
+			      LOG.info(result.getMessage());
+			      return result;
+			  }
+			    	
 		      OffAccountDto rAcDto = new OffAccountDto();
 		      rAcDto.setUserid(null==OffAccountInfo.getUserid()||"".equals(OffAccountInfo.getUserid())||0==OffAccountInfo.getUserid() ?0:OffAccountInfo.getUserid());
 		      rAcDto.setUsername(null==OffAccountInfo.getUsername()||"".equals(OffAccountInfo.getUsername()) ?"":OffAccountInfo.getUsername());
@@ -103,7 +113,12 @@ public class OffAccountInfoController {
 		      rAcDto.setSupusername(null==OffAccountInfo.getSupusername()||"".equals(OffAccountInfo.getSupusername()) ?"":OffAccountInfo.getSupusername());
 		      rAcDto.setLevel(null==OffAccountInfo.getLevel()||"".equals(OffAccountInfo.getLevel()) ?"":OffAccountInfo.getLevel());
 		      rAcDto.setOfftype(null==OffAccountInfo.getOfftype()||"".equals(OffAccountInfo.getOfftype()) ?"":OffAccountInfo.getOfftype());
+		      rAcDto.setAccountAmount(accountDetail.getMoney());
 		      rAcDto.setRiskamount(null==OffAccountInfo.getRiskamount()||"".equals(OffAccountInfo.getRiskamount()) ?"":OffAccountInfo.getRiskamount());
+		      rAcDto.setLelimited(leOffAccountInfo.getLimited());
+		      rAcDto.setLepercentage(leOffAccountInfo.getPercentage());
+		      rAcDto.setLeratio(leOffAccountInfo.getRatio());
+		      rAcDto.setLeriskamount(leOffAccountInfo.getRiskamount());
 		      result.success(rAcDto);
 		    }else{
 		    	result.fail(MessageTool.Code_3001);
@@ -399,6 +414,13 @@ public class OffAccountInfoController {
 			List<OffAccountDto> list = new ArrayList<OffAccountDto>();
 			for (int i = 0;i<OffAccountInfos.size();i++){
 			  AccountDetail accountDetail =  accountDetailMapper.selectByUserId(OffAccountInfos.get(i).getUserid(),OffAccountInfos.get(i).getOfftype());
+		    	//获取上级的限额
+		      OffAccountInfo leOffAccountInfo = offAccountInfoMapper.selectByUsername(OffAccountInfos.get(i).getSupusername());
+			  if(leOffAccountInfo==null){ 	
+			      result.fail("管理员",MessageTool.Code_3002);
+			      LOG.info(result.getMessage());
+			      return result;
+			  }
 			  OffAccountDto rAcDto = new OffAccountDto();		        
 		      rAcDto.setUserid(null==OffAccountInfos.get(i).getUserid()||"".equals(OffAccountInfos.get(i).getUserid())||0==OffAccountInfos.get(i).getUserid() ?0:OffAccountInfos.get(i).getUserid());
 		      rAcDto.setUsername(null==OffAccountInfos.get(i).getUsername()||"".equals(OffAccountInfos.get(i).getUsername()) ?"":OffAccountInfos.get(i).getUsername());
@@ -416,6 +438,10 @@ public class OffAccountInfoController {
 		      rAcDto.setAccountID(accountDetail.getAccountid());
 		      rAcDto.setAccountAmount(accountDetail.getMoney());
 		      rAcDto.setRiskamount(null==OffAccountInfos.get(i).getRiskamount()||"".equals(OffAccountInfos.get(i).getRiskamount()) ?"":OffAccountInfos.get(i).getRiskamount());
+		      rAcDto.setLelimited(leOffAccountInfo.getLimited());
+		      rAcDto.setLepercentage(leOffAccountInfo.getPercentage());
+		      rAcDto.setLeratio(leOffAccountInfo.getRatio());
+		      rAcDto.setLeriskamount(leOffAccountInfo.getRiskamount());
 		      list.add(rAcDto);  
 			}
 		    result.success(list);

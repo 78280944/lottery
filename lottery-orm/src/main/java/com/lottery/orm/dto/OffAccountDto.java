@@ -23,7 +23,50 @@ public class OffAccountDto extends SubAccountDto {
 	@ApiModelProperty(value = "风险限额", required = true)
 	private String riskamount;
 	
+	@ApiModelProperty(value = "上级点数限额", required = true)
+	private Double lelimited;
 	
+	@ApiModelProperty(value = "上级洗码比", required = true)
+	private Double leratio;
+	
+	@ApiModelProperty(value = "上级代理占成", required = true)
+	private Double lepercentage;
+	
+	@ApiModelProperty(value = "上级风险限额", required = true)
+	private String leriskamount;
+	
+	public Double getLelimited() {
+		return lelimited;
+	}
+
+	public void setLelimited(Double lelimited) {
+		this.lelimited = lelimited;
+	}
+
+	public Double getLeratio() {
+		return leratio;
+	}
+
+	public void setLeratio(Double leratio) {
+		this.leratio = leratio;
+	}
+
+	public Double getLepercentage() {
+		return lepercentage;
+	}
+
+	public void setLepercentage(Double lepercentage) {
+		this.lepercentage = lepercentage;
+	}
+
+	public String getLeriskamount() {
+		return leriskamount;
+	}
+
+	public void setLeriskamount(String leriskamount) {
+		this.leriskamount = leriskamount;
+	}
+
 	public String getRiskamount() {
 		return riskamount;
 	}
