@@ -71,12 +71,13 @@ public class LotteryOrderController {
 					orderDetails.add(orderDetail);
 				}
 				order.setOrderDetailList(orderDetails);
-				if (lotteryOrderService.checkLotteryOrder(order)) {
+				String checkInfo = lotteryOrderService.checkLotteryOrder(order);
+				if (checkInfo.length()==0) {
 					lotteryOrderService.addLotteryOrder(order);
 					LotteryOrderDto orderDto = mapper.map(order, LotteryOrderDto.class);
 					result.success(orderDto);
 				} else {
-					result.fail(MessageTool.FailCode);
+					result.fail(checkInfo);
 				}
 			}
 			LOG.info(result.getMessage());

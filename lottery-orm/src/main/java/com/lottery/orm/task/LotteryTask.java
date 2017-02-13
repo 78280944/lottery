@@ -22,7 +22,7 @@ import com.lottery.orm.util.HttpclientTool;
 @Component
 public class LotteryTask {
 	public final Logger log = Logger.getLogger(this.getClass());
-	private final String LOTTERY_API_URL = "http://t.apiplus.cn/newly.do?code=cqklsf&format=json&extend=true";
+	private final String LOTTERY_API_URL = "http://c.apiplus.net/newly.do?token=ed91e13bc38ac8d1&code=cqklsf&format=json&extend=true";
 	private final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private final Integer ROUND_INTERVAL_MINUTES = 10;//游戏间隔时间
 	

@@ -1,28 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lottery.orm.dao.LotteryReportMapper">
-  <resultMap id="WinningReportMap" type="com.lottery.orm.dto.WinningReportDto">
+  <resultMap id="PlayerWinReportMap" type="com.lottery.orm.dto.PlayerWinReportDto">
     <result column="ACCOUNTID" jdbcType="INTEGER" property="accountId" />
     <result column="USERNAME" jdbcType="VARCHAR" property="userName" />
     <result column="SUPUSERNAME" jdbcType="VARCHAR" property="supUserName" />
-    <result column="TRADECOUNT" jdbcType="INTEGER" property="tradeCount" />
+    <result column="LOTTERYTERM" jdbcType="VARCHAR" property="lotteryTerm" />
+    <result column="ORDERID" jdbcType="INTEGER" property="orderId" />
+    <result column="ORDERTIME" jdbcType="TIMESTAMP" property="orderTime" />
     <result column="ORDERAMOUNT" jdbcType="DECIMAL" property="orderAmount" />
     <result column="ACTUALAMOUNT" jdbcType="DECIMAL" property="actualAmount" />
-    <result column="RATIO" jdbcType="DECIMAL" property="ratio" />
     <result column="RETURNAMOUNT" jdbcType="DECIMAL" property="returnAmount" />
-    <result column="COMMISIONAMOUNT" jdbcType="DECIMAL" property="commisionAmount" />
+    <result column="WINAMOUNT" jdbcType="DECIMAL" property="winAmount" />
+    <result column="SYSTEMAMOUNT" jdbcType="DECIMAL" property="systemAmount" />
+  </resultMap>
+  <resultMap id="AgencyWinReportMap" type="com.lottery.orm.dto.AgencyWinReportDto">
+    <result column="USERNAME" jdbcType="VARCHAR" property="userName" />
+    <result column="ORDERAMOUNT" jdbcType="DECIMAL" property="orderAmount" />
+    <result column="ACTUALAMOUNT" jdbcType="DECIMAL" property="actualAmount" />
+    <result column="FEEAMOUNT" jdbcType="DECIMAL" property="feeAmount" />
+    <result column="PERCENTAGE" jdbcType="DECIMAL" property="percentage" />
+    <result column="WINAMOUNT" jdbcType="DECIMAL" property="winAmount" />
+    <result column="SYSTEMAMOUNT" jdbcType="DECIMAL" property="systemAmount" />
   </resultMap>
   <resultMap id="TradeReportMap" type="com.lottery.orm.dto.TradeReportDto">
     <result column="ACCOUNTID" jdbcType="INTEGER" property="accountId" />
+    <result column="USERNAME" jdbcType="VARCHAR" property="userName" />
+    <result column="SUPUSERNAME" jdbcType="VARCHAR" property="supUserName" />
     <result column="LOTTERYTERM" jdbcType="VARCHAR" property="lotteryTerm" />
+    <result column="ORDERID" jdbcType="INTEGER" property="orderId" />
     <result column="ORDERTIME" jdbcType="TIMESTAMP" property="orderTime" />
-    <result column="ENDTIME" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="PRIZETIME" jdbcType="TIMESTAMP" property="prizeTime" />
+    <result column="RESULTSTR" jdbcType="VARCHAR" property="resultStr" />
     <result column="ORDERAMOUNT" jdbcType="DECIMAL" property="orderAmount" />
     <result column="ACTUALAMOUNT" jdbcType="DECIMAL" property="actualAmount" />
     <result column="ACCOUNTAMOUNT" jdbcType="DECIMAL" property="accountAmount" />
   </resultMap>
   <resultMap id="InoutReportMap" type="com.lottery.orm.dto.InoutReportDto">
     <result column="ACCOUNTID" jdbcType="INTEGER" property="accountId" />
+    <result column="USERNAME" jdbcType="VARCHAR" property="userName" />
     <result column="TRADEAMOUNT" jdbcType="DECIMAL" property="tradeAmount" />
     <result column="ACCOUNTAMOUNT" jdbcType="DECIMAL" property="accountAmount" />
     <result column="INPUTTIME" jdbcType="TIMESTAMP" property="inputTime" />
@@ -35,22 +51,58 @@
     <result column="ITEMNAMECN" jdbcType="VARCHAR" property="itemNameCN" />
     <result column="DETAILAMOUNT" jdbcType="DECIMAL" property="detailAmount" />
     <result column="ACTUALAMOUNT" jdbcType="DECIMAL" property="actualAmount" />
+    <result column="RETURNAMOUNT" jdbcType="DECIMAL" property="returnAmount" />
+    <result column="WINAMOUNT" jdbcType="DECIMAL" property="winAmount" />
   </resultMap>
   
-  <select id="selectByWinningReport" resultMap="WinningReportMap">
+  <select id="selectWinReportByPlayer" resultMap="PlayerWinReportMap">
     select 
-    a.ACCOUNTID, a.USERNAME, a.SUPUSERNAME, count(*) as TRADECOUNT, SUM(ORDERAMOUNT) as ORDERAMOUNT, SUM(ACTUALAMOUNT) as ACTUALAMOUNT, AVG(a.RATIO) as RATIO, SUM(PRIZEAMOUNT-ACTUALAMOUNT) as RETURNAMOUNT, SUM(COMMISIONAMOUNT) as COMMISIONAMOUNT 
-    from account_detail a, lottery_order o
-    where a.ACCOUNTID = o.ACCOUNTID 
+    a.ACCOUNTID, a.USERNAME, a.SUPUSERNAME,r.LOTTERYTERM, o.ORDERID, o.ORDERTIME, ORDERAMOUNT, ACTUALAMOUNT, RETURNAMOUNT, ACTUALAMOUNT+RETURNAMOUNT as WINAMOUNT, SYSTEMAMOUNT
+    from account_detail a, lottery_order o, lottery_round r
+    where a.ACCOUNTID = o.ACCOUNTID and o.ROUNDID=r.ROUNDID and o.PRIZETIME is not null
 	<if test="startTime != null and endTime != null">
-	and Date(PRIZETIME) between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
+	and Date(ORDERTIME) between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
 	</if>
 	<if test="startTime != null and endTime == null">
-	and Date(PRIZETIME) <![CDATA[>=]]> #{startTime,jdbcType=TIMESTAMP}
+	and Date(ORDERTIME) <![CDATA[>=]]> #{startTime,jdbcType=TIMESTAMP}
 	</if>
 	<if test="startTime == null and endTime != null">
-	and Date(PRIZETIME) <![CDATA[<=]]> #{endTime,jdbcType=TIMESTAMP}
+	and Date(ORDERTIME) <![CDATA[<=]]> #{endTime,jdbcType=TIMESTAMP}
 	</if>
+	<![CDATA[and a.OFFTYPE='3' and FIND_IN_SET(username, 
+	   (SELECT GROUP_CONCAT(Level SEPARATOR ',') FROM (
+	      SELECT @Ids := (SELECT GROUP_CONCAT(username SEPARATOR ',') FROM account_detail WHERE FIND_IN_SET(supusername, @Ids) ) Level
+	      FROM account_detail
+	      JOIN (SELECT @Ids := #{supUsername,jdbcType=VARCHAR}) temp1
+	      WHERE FIND_IN_SET(supusername, @Ids)
+	   ) temp2 )
+	)]]>
+	<if test="beginRow != null and pageSize !=null">
+	limit #{beginRow,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+	</if>
+  </select>
+  <select id="selectWinReportByAgency" resultMap="AgencyWinReportMap">
+    select 
+    a.USERNAME, SUM(ORDERAMOUNT) as ORDERAMOUNT, SUM(-ACTUALAMOUNT) as ACTUALAMOUNT, SUM(RETURNAMOUNT+SYSTEMAMOUNT) as FEEAMOUNT, AVG(PERCENTAGE) as PERCENTAGE, SUM(r.TRADEAMOUNT) as WINAMOUNT, SUM(SYSTEMAMOUNT) as SYSTEMAMOUNT
+    from account_detail a, lottery_order o,trade_info r
+    where a.ACCOUNTID = r.ACCOUNTID and o.ORDERID=r.RELATIVEID and r.RELATIVETYPE='AgencyWin' and o.PRIZETIME is not null
+	<if test="startTime != null and endTime != null">
+	and Date(ORDERTIME) between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
+	</if>
+	<if test="startTime != null and endTime == null">
+	and Date(ORDERTIME) <![CDATA[>=]]> #{startTime,jdbcType=TIMESTAMP}
+	</if>
+	<if test="startTime == null and endTime != null">
+	and Date(ORDERTIME) <![CDATA[<=]]> #{endTime,jdbcType=TIMESTAMP}
+	</if>
+	<![CDATA[and a.OFFTYPE='1' and FIND_IN_SET(a.username, 
+	   (SELECT GROUP_CONCAT(Level SEPARATOR ',') FROM (
+	      SELECT @Ids := (SELECT GROUP_CONCAT(username SEPARATOR ',') FROM account_detail WHERE FIND_IN_SET(supusername, @Ids) ) Level
+	      FROM account_detail
+	      JOIN (SELECT @Ids := #{supUsername,jdbcType=VARCHAR}) temp1
+	      WHERE FIND_IN_SET(supusername, @Ids)
+	   ) temp2 )
+	)]]>
     group by a.ACCOUNTID
 	<if test="beginRow != null and pageSize !=null">
 	limit #{beginRow,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
@@ -58,21 +110,26 @@
   </select>
   <select id="selectByTradeReport" resultMap="TradeReportMap">
     select 
-    o.ACCOUNTID, LOTTERYTERM, ORDERTIME, ENDTIME, ORDERAMOUNT, ACTUALAMOUNT, ACCOUNTAMOUNT
-    from lottery_order o, lottery_round r
-    where o.ROUNDID = R.ROUNDID 
+    a.ACCOUNTID, a.USERNAME, a.SUPUSERNAME, r.LOTTERYTERM, o.ORDERID, o.ORDERTIME, o.PRIZETIME, o.ORDERAMOUNT, r.RESULTSTR, o.ACTUALAMOUNT, o.ACCOUNTAMOUNT
+    from account_detail a, lottery_order o, lottery_round r
+    where a.ACCOUNTID = o.ACCOUNTID and o.ROUNDID = r.ROUNDID and o.PRIZETIME is not null
 	<if test="startTime != null and endTime != null">
-	and Date(ENDTIME) between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
+	and Date(ORDERTIME) between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
 	</if>
 	<if test="startTime != null and endTime == null">
-	and Date(ENDTIME) <![CDATA[>=]]> #{startTime,jdbcType=TIMESTAMP}
+	and Date(ORDERTIME) <![CDATA[>=]]> #{startTime,jdbcType=TIMESTAMP}
 	</if>
 	<if test="startTime == null and endTime != null">
-	and Date(ENDTIME) <![CDATA[<=]]> #{endTime,jdbcType=TIMESTAMP}
+	and Date(ORDERTIME) <![CDATA[<=]]> #{endTime,jdbcType=TIMESTAMP}
 	</if>
-	<if test="accountId != null">
-	 and o.ACCOUNTID = #{accountId,jdbcType=INTEGER}
-	</if>
+	<![CDATA[and a.OFFTYPE='3' and FIND_IN_SET(username, 
+	   (SELECT GROUP_CONCAT(Level SEPARATOR ',') FROM (
+	      SELECT @Ids := (SELECT GROUP_CONCAT(username SEPARATOR ',') FROM account_detail WHERE FIND_IN_SET(supusername, @Ids) ) Level
+	      FROM account_detail
+	      JOIN (SELECT @Ids := #{supUsername,jdbcType=VARCHAR}) temp1
+	      WHERE FIND_IN_SET(supusername, @Ids)
+	   ) temp2 )
+	)]]>
 	 order by ORDERTIME desc
 	 <if test="beginRow != null and pageSize !=null">
 	limit #{beginRow,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
@@ -80,9 +137,9 @@
   </select>
   <select id="selectByInoutReport" resultMap="InoutReportMap">
     select 
-    ACCOUNTID, TRADEAMOUNT, ACCOUNTAMOUNT, INPUTTIME, REMARK
-    from trade_info t
-    where TRADETYPE in ('Inout')
+    a.ACCOUNTID, a.USERNAME, t.TRADEAMOUNT, t.ACCOUNTAMOUNT, t.INPUTTIME, t.REMARK
+    from account_detail a, trade_info t
+    where a.ACCOUNTID = t.ACCOUNTID and TRADETYPE in ('Inout')
 	<if test="startTime != null and endTime != null">
 		and Date(INPUTTIME) between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
 	</if>
@@ -92,9 +149,14 @@
 	<if test="startTime == null and endTime != null">
 	and Date(INPUTTIME) <![CDATA[<=]]> #{endTime,jdbcType=TIMESTAMP}
 	</if>
-	<if test="accountId != null">
-		and t.ACCOUNTID = #{accountId,jdbcType=INTEGER}
-	</if>
+	<![CDATA[and a.OFFTYPE='3' and FIND_IN_SET(username, 
+	   (SELECT GROUP_CONCAT(Level SEPARATOR ',') FROM (
+	      SELECT @Ids := (SELECT GROUP_CONCAT(username SEPARATOR ',') FROM account_detail WHERE FIND_IN_SET(supusername, @Ids) ) Level
+	      FROM account_detail
+	      JOIN (SELECT @Ids := #{supUsername,jdbcType=VARCHAR}) temp1
+	      WHERE FIND_IN_SET(supusername, @Ids)
+	   ) temp2 )
+	)]]>
 	order by INPUTTIME desc
 	<if test="beginRow != null and pageSize !=null">
 	limit #{beginRow,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
@@ -103,7 +165,7 @@
   
   <select id="selectByHistoryOrder" resultMap="HistoryOrderMap">
     select 
-    o.ORDERID, ORDERTIME, ROUNDID, i.ITEMNAMECN, d.DETAILAMOUNT, d.ACTUALAMOUNT 
+    o.ORDERID, ORDERTIME, ROUNDID, i.ITEMNAMECN, d.DETAILAMOUNT, d.ACTUALAMOUNT, d.RETURNAMOUNT, d.ACTUALAMOUNT+d.RETURNAMOUNT AS WINAMOUNT
     from lottery_order o inner join lottery_order_detail d on o.ORDERID=d.ORDERID left join lottery_item i on d.ITEMNO=i.ITEMNO
     where o.ACCOUNTID = #{accountId,jdbcType=INTEGER}
 	<if test="startTime != null and endTime != null">
@@ -123,7 +185,7 @@
   
   <select id="selectByCurRoundOrder" resultMap="HistoryOrderMap">
     select 
-    o.ORDERID, ORDERTIME, ROUNDID, i.ITEMNAMECN, d.DETAILAMOUNT, d.ACTUALAMOUNT 
+    o.ORDERID, ORDERTIME, ROUNDID, i.ITEMNAMECN, d.DETAILAMOUNT, d.ACTUALAMOUNT, d.RETURNAMOUNT, d.ACTUALAMOUNT+d.RETURNAMOUNT AS WINAMOUNT
     from lottery_order o inner join lottery_order_detail d on o.ORDERID=d.ORDERID left join lottery_item i on d.ITEMNO=i.ITEMNO
     where o.ACCOUNTID = #{accountId,jdbcType=INTEGER} and o.ROUNDID = #{roundId,jdbcType=INTEGER}
 	order by o.ORDERID, ORDERTIME

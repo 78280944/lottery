@@ -9,7 +9,10 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 public class InoutReportDto {
 	@ApiModelProperty(value = "账户ID", required = true)
 	private Integer accountId;
-
+	
+	@ApiModelProperty(value = "用户名", required = true)
+	private String userName;
+	
 	@ApiModelProperty(value = "出入点数", required = true)
 	private Double tradeAmount;
 
@@ -63,4 +66,13 @@ public class InoutReportDto {
 		this.remark = remark;
 	}
 
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	
+	
 }

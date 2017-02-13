@@ -8,7 +8,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 public class LotteryOrder {
-    @ApiModelProperty(value = "投注单ID", required = true)
+
+	@ApiModelProperty(value = "投注单ID", required = true)
     private Integer orderid;
 
 	@ApiModelProperty(value = "游戏ID", required = true)
@@ -24,7 +25,7 @@ public class LotteryOrder {
 	@ApiModelProperty(value = "投注金额", required = true)
     private Double orderamount;
 
-	@ApiModelProperty(value = "该投注单的代理佣金")
+	@ApiModelProperty(value = "代理佣金")
     private Double commisionamount;
     
 	@ApiModelProperty(value = "中奖")
@@ -33,17 +34,19 @@ public class LotteryOrder {
 	@ApiModelProperty(value = "奖金实收")
     private Double actualamount;
 
-	@ApiModelProperty(value = "洗码量")
+	@ApiModelProperty(value = "返利")
     private Double returnamount;
-    
-	@ApiModelProperty(value = "开奖时间")
+	
+	@ApiModelProperty(value = "超代佣金,即公司收�?")
+	private Double systemamount;
+
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date prizetime;
 
 	@ApiModelProperty(value = "账户余额")
     private BigDecimal accountamount;
     
-	@ApiModelProperty(value = "投注单详情")
+	@ApiModelProperty(value = "投注单详�?")
     List<LotteryOrderDetail> orderDetailList;
 
     public Integer getOrderid() {
@@ -117,7 +120,15 @@ public class LotteryOrder {
     public void setReturnamount(Double returnamount) {
 	this.returnamount = returnamount;
     }
+    
+    public Double getSystemamount() {
+		return systemamount;
+	}
 
+	public void setSystemamount(Double systemamount) {
+		this.systemamount = systemamount;
+	}
+	
     public Date getPrizetime() {
 	return prizetime;
     }

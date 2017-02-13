@@ -80,7 +80,7 @@ public class LotteryRoundService {
 	public void addRoundTask(LotteryRound nextRound) throws Exception{
 		String cronStr = "";
 		try {
-			DateTime runGetOpenTime = new DateTime(nextRound.getOpentime()).plusSeconds(3);//执行任务时间最好比开奖晚3秒
+			DateTime runGetOpenTime = new DateTime(nextRound.getOpentime()).plusSeconds(10);//执行任务时间最好比开奖晚10秒
 			cronStr = TaskUtils.getCron(runGetOpenTime.toDate());
 			Long task1 = new Long(2);
 			

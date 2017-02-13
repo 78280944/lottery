@@ -21,6 +21,7 @@
 			<list>
 				<value>classpath:log4j.properties</value>
 				<value>classpath:jdbc.properties</value>
+				<value>classpath:rest-config.properties</value>
 			</list>
 		</property>
 	</bean>

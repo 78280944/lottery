@@ -24,6 +24,12 @@ public class HistoryOrderDto {
 
 	@ApiModelProperty(value = "派彩", required = true)
 	private Double actualAmount;
+	
+	@ApiModelProperty(value = "返利", required = true)
+	private Double returnAmount;
+	
+	@ApiModelProperty(value = "输赢", required = true)
+	private Double winAmount;
 
 	public Integer getOrderId() {
 		return orderId;
@@ -74,5 +80,20 @@ public class HistoryOrderDto {
 		this.actualAmount = actualAmount;
 	}
 
-	
+	public Double getReturnAmount() {
+		return returnAmount;
+	}
+
+	public void setReturnAmount(Double returnAmount) {
+		this.returnAmount = returnAmount;
+	}
+
+	public Double getWinAmount() {
+		return winAmount;
+	}
+
+	public void setWinAmount(Double winAmount) {
+		this.winAmount = winAmount;
+	}
+
 }

@@ -3,21 +3,22 @@ package com.lottery.orm.bo;
 public class LotteryOrderDetailKey {
     private Integer orderid;
 
-    private String itemno;
+	private String itemno;
 
-    public Integer getOrderid() {
-        return orderid;
-    }
+	public Integer getOrderid() {
+		return orderid;
+	}
 
-    public void setOrderid(Integer orderid) {
-        this.orderid = orderid;
-    }
+	public void setOrderid(Integer orderid) {
+		this.orderid = orderid;
+	}
 
-    public String getItemno() {
-        return itemno;
-    }
+	public String getItemno() {
+		return itemno;
+	}
 
-    public void setItemno(String itemno) {
-        this.itemno = itemno == null ? null : itemno.trim();
-    }
+	public void setItemno(String itemno) {
+		this.itemno = itemno == null ? null : itemno.trim();
+	}
+
 }

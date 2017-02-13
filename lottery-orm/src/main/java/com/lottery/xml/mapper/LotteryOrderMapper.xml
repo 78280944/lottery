@@ -11,12 +11,13 @@
     <result column="PRIZEAMOUNT" jdbcType="DOUBLE" property="prizeamount" />
     <result column="ACTUALAMOUNT" jdbcType="DOUBLE" property="actualamount" />
     <result column="RETURNAMOUNT" jdbcType="DOUBLE" property="returnamount" />
+    <result column="SYSTEMAMOUNT" jdbcType="DOUBLE" property="systemamount" />
     <result column="PRIZETIME" jdbcType="TIMESTAMP" property="prizetime" />
     <result column="ACCOUNTAMOUNT" jdbcType="DECIMAL" property="accountamount" />
   </resultMap>
   <sql id="Base_Column_List">
     ORDERID, ROUNDID, ACCOUNTID, ORDERAMOUNT, COMMISIONAMOUNT, ORDERTIME, PRIZEAMOUNT, 
-    ACTUALAMOUNT, RETURNAMOUNT, PRIZETIME, ACCOUNTAMOUNT
+    ACTUALAMOUNT, RETURNAMOUNT, SYSTEMAMOUNT, PRIZETIME, ACCOUNTAMOUNT
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -34,12 +35,12 @@
     </selectKey>
     insert into lottery_order (ROUNDID, ACCOUNTID, ORDERAMOUNT, 
       COMMISIONAMOUNT, ORDERTIME, PRIZEAMOUNT, 
-      ACTUALAMOUNT, RETURNAMOUNT, PRIZETIME, 
-      ACCOUNTAMOUNT)
+      ACTUALAMOUNT, RETURNAMOUNT, SYSTEMAMOUNT, 
+      PRIZETIME, ACCOUNTAMOUNT)
     values (#{roundid,jdbcType=INTEGER}, #{accountid,jdbcType=INTEGER}, #{orderamount,jdbcType=DOUBLE}, 
       #{commisionamount,jdbcType=DOUBLE}, #{ordertime,jdbcType=TIMESTAMP}, #{prizeamount,jdbcType=DOUBLE}, 
-      #{actualamount,jdbcType=DOUBLE}, #{returnamount,jdbcType=DOUBLE}, #{prizetime,jdbcType=TIMESTAMP}, 
-      #{accountamount,jdbcType=DECIMAL})
+      #{actualamount,jdbcType=DOUBLE}, #{returnamount,jdbcType=DOUBLE}, #{systemamount,jdbcType=DOUBLE}, 
+      #{prizetime,jdbcType=TIMESTAMP}, #{accountamount,jdbcType=DECIMAL})
   </insert>
   <insert id="insertSelective" parameterType="com.lottery.orm.bo.LotteryOrder">
     <selectKey keyProperty="orderid" order="AFTER" resultType="java.lang.Integer">
@@ -70,6 +71,9 @@
       </if>
       <if test="returnamount != null">
         RETURNAMOUNT,
+      </if>
+      <if test="systemamount != null">
+        SYSTEMAMOUNT,
       </if>
       <if test="prizetime != null">
         PRIZETIME,
@@ -102,6 +106,9 @@
       </if>
       <if test="returnamount != null">
         #{returnamount,jdbcType=DOUBLE},
+      </if>
+      <if test="systemamount != null">
+        #{systemamount,jdbcType=DOUBLE},
       </if>
       <if test="prizetime != null">
         #{prizetime,jdbcType=TIMESTAMP},
@@ -138,6 +145,9 @@
       <if test="returnamount != null">
         RETURNAMOUNT = #{returnamount,jdbcType=DOUBLE},
       </if>
+      <if test="systemamount != null">
+        SYSTEMAMOUNT = #{systemamount,jdbcType=DOUBLE},
+      </if>
       <if test="prizetime != null">
         PRIZETIME = #{prizetime,jdbcType=TIMESTAMP},
       </if>
@@ -157,6 +167,7 @@
       PRIZEAMOUNT = #{prizeamount,jdbcType=DOUBLE},
       ACTUALAMOUNT = #{actualamount,jdbcType=DOUBLE},
       RETURNAMOUNT = #{returnamount,jdbcType=DOUBLE},
+      SYSTEMAMOUNT = #{systemamount,jdbcType=DOUBLE},
       PRIZETIME = #{prizetime,jdbcType=TIMESTAMP},
       ACCOUNTAMOUNT = #{accountamount,jdbcType=DECIMAL}
     where ORDERID = #{orderid,jdbcType=INTEGER}

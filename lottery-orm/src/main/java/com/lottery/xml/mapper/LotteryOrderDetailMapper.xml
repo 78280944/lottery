@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.lottery.orm.bo.LotteryOrderDetail">
     <id column="ORDERID" jdbcType="INTEGER" property="orderid" />
     <id column="ITEMNO" jdbcType="VARCHAR" property="itemno" />
-    <result column="ITEMODDS" jdbcType="DOUBLE" property="itemodds" />
+    <result column="ITEMSCALE" jdbcType="DOUBLE" property="itemscale" />
     <result column="ITEMBONUS" jdbcType="DOUBLE" property="itembonus" />
     <result column="DETAILAMOUNT" jdbcType="DOUBLE" property="detailamount" />
     <result column="PRIZEAMOUNT" jdbcType="DOUBLE" property="prizeamount" />
@@ -12,7 +12,7 @@
     <result column="RETURNAMOUNT" jdbcType="DOUBLE" property="returnamount" />
   </resultMap>
   <sql id="Base_Column_List">
-    ORDERID, ITEMNO, ITEMODDS, ITEMBONUS, DETAILAMOUNT, PRIZEAMOUNT, ACTUALAMOUNT, RETURNAMOUNT
+    ORDERID, ITEMNO, ITEMSCALE, ITEMBONUS, DETAILAMOUNT, PRIZEAMOUNT, ACTUALAMOUNT, RETURNAMOUNT
   </sql>
   <select id="selectByPrimaryKey" parameterType="com.lottery.orm.bo.LotteryOrderDetailKey" resultMap="BaseResultMap">
     select 
@@ -27,10 +27,10 @@
       and ITEMNO = #{itemno,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.lottery.orm.bo.LotteryOrderDetail">
-    insert into lottery_order_detail (ORDERID, ITEMNO, ITEMODDS, 
+    insert into lottery_order_detail (ORDERID, ITEMNO, ITEMSCALE, 
       ITEMBONUS, DETAILAMOUNT, PRIZEAMOUNT, 
       ACTUALAMOUNT, RETURNAMOUNT)
-    values (#{orderid,jdbcType=INTEGER}, #{itemno,jdbcType=VARCHAR}, #{itemodds,jdbcType=DOUBLE}, 
+    values (#{orderid,jdbcType=INTEGER}, #{itemno,jdbcType=VARCHAR}, #{itemscale,jdbcType=DOUBLE}, 
       #{itembonus,jdbcType=DOUBLE}, #{detailamount,jdbcType=DOUBLE}, #{prizeamount,jdbcType=DOUBLE}, 
       #{actualamount,jdbcType=DOUBLE}, #{returnamount,jdbcType=DOUBLE})
   </insert>
@@ -43,8 +43,8 @@
       <if test="itemno != null">
         ITEMNO,
       </if>
-      <if test="itemodds != null">
-        ITEMODDS,
+      <if test="itemscale != null">
+        ITEMSCALE,
       </if>
       <if test="itembonus != null">
         ITEMBONUS,
@@ -69,8 +69,8 @@
       <if test="itemno != null">
         #{itemno,jdbcType=VARCHAR},
       </if>
-      <if test="itemodds != null">
-        #{itemodds,jdbcType=DOUBLE},
+      <if test="itemscale != null">
+        #{itemscale,jdbcType=DOUBLE},
       </if>
       <if test="itembonus != null">
         #{itembonus,jdbcType=DOUBLE},
@@ -92,8 +92,8 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.lottery.orm.bo.LotteryOrderDetail">
     update lottery_order_detail
     <set>
-      <if test="itemodds != null">
-        ITEMODDS = #{itemodds,jdbcType=DOUBLE},
+      <if test="itemscale != null">
+        ITEMSCALE = #{itemscale,jdbcType=DOUBLE},
       </if>
       <if test="itembonus != null">
         ITEMBONUS = #{itembonus,jdbcType=DOUBLE},
@@ -116,7 +116,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.lottery.orm.bo.LotteryOrderDetail">
     update lottery_order_detail
-    set ITEMODDS = #{itemodds,jdbcType=DOUBLE},
+    set ITEMSCALE = #{itemscale,jdbcType=DOUBLE},
       ITEMBONUS = #{itembonus,jdbcType=DOUBLE},
       DETAILAMOUNT = #{detailamount,jdbcType=DOUBLE},
       PRIZEAMOUNT = #{prizeamount,jdbcType=DOUBLE},

@@ -40,6 +40,7 @@ public class TradeInfoController {
 	RestResult result = new RestResult();
 	try {
 	    TradeInfo tradeInfo = mapper.map(param, TradeInfo.class);
+	    tradeInfo.setRelativeid(param.getSupAccountId());
 	    tradeInfo.setRelativetype(EnumType.RalativeType.In.ID);
 	    if (tradeInfoService.addInoutTradeInfo(tradeInfo)) {
 		result.success(tradeInfo);
@@ -63,6 +64,7 @@ public class TradeInfoController {
 	RestResult result = new RestResult();
 	try {
 	    TradeInfo tradeInfo = mapper.map(param, TradeInfo.class);
+	    tradeInfo.setRelativeid(param.getSupAccountId());
 	    tradeInfo.setRelativetype(EnumType.RalativeType.Out.ID);
 	    if (tradeInfoService.addInoutTradeInfo(tradeInfo)) {
 		result.success(tradeInfo);

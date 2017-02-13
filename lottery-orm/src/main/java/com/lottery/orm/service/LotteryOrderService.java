@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,11 +17,13 @@ import com.lottery.orm.bo.LotteryOrder;
 import com.lottery.orm.bo.LotteryOrderDetail;
 import com.lottery.orm.bo.LotteryRound;
 import com.lottery.orm.bo.LotteryRoundItem;
+import com.lottery.orm.bo.OffAccountInfo;
 import com.lottery.orm.bo.TradeInfo;
 import com.lottery.orm.dao.AccountDetailMapper;
 import com.lottery.orm.dao.CustomLotteryMapper;
 import com.lottery.orm.dao.LotteryOrderDetailMapper;
 import com.lottery.orm.dao.LotteryOrderMapper;
+import com.lottery.orm.dao.OffAccountInfoMapper;
 import com.lottery.orm.dao.TradeInfoMapper;
 import com.lottery.orm.util.EnumType;
 
@@ -42,6 +45,9 @@ public class LotteryOrderService {
 
 	@Autowired
 	private LotteryOrderDetailMapper lotteryOrderDetailMapper;
+	
+	@Autowired
+	private OffAccountInfoMapper offAccountInfoMapper;
 
 	// 添加投注单
 	public LotteryOrder addLotteryOrder(LotteryOrder order) {
@@ -55,8 +61,7 @@ public class LotteryOrderService {
 			tempItem.setItemno(orderDetail.getItemno());
 			LotteryRoundItem roundItem = itemList.get(itemList.indexOf(tempItem));
 
-			orderDetail.setItemodds(roundItem.getItemodds());
-			orderDetail.setItembonus(roundItem.getItembonus());
+			orderDetail.setItemscale(roundItem.getItemscale());
 			orderDetail.setOrderid(order.getOrderid());
 			lotteryOrderDetailMapper.insertSelective(orderDetail);
 			orderAmount += orderDetail.getDetailamount();
@@ -70,63 +75,65 @@ public class LotteryOrderService {
 	public boolean updateOrderByRound(LotteryRound round, LotteryOrder order, List<LotteryItem> itemList) {
 		Double windOrder = 0.0;
 		Double lossOrder = 0.0;
-		Double totalPrize = 0.0;
-		Double totalActual = 0.0;
-		Double totalReturn = 0.0;
+		Double playerPrize = 0.0;//奖金，其中包含派彩跟抽水
+		Double playerReturn = 0.0;// 给玩家的返利
 		AccountDetail account = accountDetailMapper.selectByPrimaryKey(order.getAccountid());
 		for (LotteryOrderDetail detail : order.getOrderDetailList()) {// 投注细项汇总
 			LotteryItem tempItem = new LotteryItem();
 			tempItem.setItemno(detail.getItemno());
 			LotteryItem item = itemList.get(itemList.indexOf(tempItem));
+			Double returnAmount = detail.getDetailamount() * account.getRatio();
+			detail.setReturnamount(returnAmount);
+			playerReturn += returnAmount;
 			if (isWinPrize(round, item)) {
-				Double prizeAmount = detail.getDetailamount() * detail.getItemodds();
-				Double actualAmount = prizeAmount - prizeAmount * detail.getItembonus();
-				Double returnAmount = detail.getDetailamount() * account.getRatio();
+				Double prizeAmount = detail.getDetailamount() * (detail.getItemscale() - 1);
 				detail.setPrizeamount(prizeAmount);
-				detail.setActualamount(actualAmount);
-				detail.setReturnamount(returnAmount);
+				detail.setActualamount(prizeAmount);
 				windOrder += detail.getDetailamount();
-				totalPrize += prizeAmount;
-				totalActual += actualAmount;
-				totalReturn += returnAmount;
-				lotteryOrderDetailMapper.updateByPrimaryKeySelective(detail);
+				playerPrize += prizeAmount;
+				
+				
 			} else {
 				lossOrder += detail.getDetailamount();
+				detail.setPrizeamount(0.0);
+				detail.setActualamount(-detail.getDetailamount());
 			}
+			lotteryOrderDetailMapper.updateByPrimaryKeySelective(detail);
 		}
-		order.setPrizeamount(totalPrize);
-		order.setActualamount(totalActual);
-		order.setReturnamount(totalReturn);
-		order.setPrizetime(new Date());
+		
 
 		List<AccountDetail> parentAccounts = customLotteryMapper.selectAccountBySupUserName(account.getSupusername());
+		if(parentAccounts.size()<1){
+			return false;
+		}
 		AccountDetail systemAccount = parentAccounts.get(0);// 系统账户
-		AccountDetail firstAccount = parentAccounts.get(1);// 一级代理账户
-		Double prizeCommision = 0.0;// 庄家从奖金中抽取的佣金
-		Double orderCommision = 0.0;// 庄家从玩家的输单中抽取的佣金
-		Double systemCommision = 0.0;// 系统平台抽取佣金
-		if (windOrder > 0) {//// 玩家赢的投注项
+		Double systemCommision = (windOrder+lossOrder) * 0.005;// 系统平台抽取佣金, 即公司损益
+		
+		Double playerWinloss = 0.0;//玩家的输赢,不包含返利的计算
+		Double agencyWinloss = 0.0; //代理的输赢,包含公司损益、返利的计算
+		
 
-			addTradeInfo(account, order, totalActual, EnumType.RalativeType.Prize.ID);
-			addTradeInfo(account, order, totalReturn, EnumType.RalativeType.Return.ID);
-
-			addTradeInfo(firstAccount, order, totalPrize, EnumType.RalativeType.Pay.ID);// 庄家输钱了
-
-			prizeCommision = (totalPrize - totalActual) * 0.8;
-			systemCommision = (totalPrize - totalActual) * 0.06;
-			Double extraCommision = (totalPrize - totalActual) * 0.14 - totalReturn;// 玩家额外佣金，即抽水的14%减去抽水返利之后，还有剩余的话作为庄家佣金
-			prizeCommision = extraCommision > 0 ? prizeCommision + extraCommision : prizeCommision;
-
-		}
-
-		if (lossOrder > 0) {// 玩家输的投注项
-			addTradeInfo(account, order, lossOrder, EnumType.RalativeType.Order.ID);// 玩家输了投注本金
-			orderCommision += lossOrder * (0.8 + 0.14);// 提成
-			systemCommision += lossOrder * 0.06;
-		}
-		order.setCommisionamount(orderCommision + prizeCommision + systemCommision);
+		playerWinloss = playerPrize - lossOrder;
+		agencyWinloss = (lossOrder - playerPrize) - playerReturn - systemCommision;
+		
+		order.setPrizeamount(playerPrize);
+		order.setActualamount(playerWinloss);
+		order.setReturnamount(playerReturn);
+		order.setPrizetime(new Date());
+		order.setCommisionamount(agencyWinloss);
+		order.setSystemamount(systemCommision);
 		lotteryOrderMapper.updateByPrimaryKeySelective(order);
-		addTradeInfo(firstAccount, order, prizeCommision + orderCommision, EnumType.RalativeType.Commision.ID);// 庄家抽取的总佣金
+		
+		addTradeInfo(account, order, playerWinloss, EnumType.RalativeType.PlayerWin.ID);//玩家输赢
+		addTradeInfo(account, order, playerReturn, EnumType.RalativeType.Return.ID);// 给玩家的返利
+		Double childPercent = 0.0;//下级代理占比
+		for(int i=parentAccounts.size()-1; i>=0; i-- ){
+			AccountDetail tempAccount = parentAccounts.get(i);
+			Double curWinloss = agencyWinloss*(tempAccount.getPercentage()-childPercent);//当前代理输赢占比
+			addTradeInfo(tempAccount, order, curWinloss, EnumType.RalativeType.AgencyWin.ID);// 代理输赢
+			childPercent = tempAccount.getPercentage();
+		}
+		
 		addTradeInfo(systemAccount, order, systemCommision, EnumType.RalativeType.Commision.ID);// 系统平台抽取佣金
 		return true;
 	}
@@ -134,11 +141,6 @@ public class LotteryOrderService {
 	// 新增一级代理佣金款项
 	private void addTradeInfo(AccountDetail account, LotteryOrder order, Double tradeAmount, String relativeType) {
 		BigDecimal accountAmount;
-		if (relativeType.equals(EnumType.RalativeType.Order.ID) || relativeType.equals(EnumType.RalativeType.Pay.ID)) {
-			tradeAmount = 0.0 - tradeAmount;
-			// accountAmount = account.getMoney().subtract(new
-			// BigDecimal(order.getOrderamount()));
-		}
 		accountAmount = account.getMoney().add(new BigDecimal(tradeAmount));
 		TradeInfo tradeInfo = new TradeInfo();
 		tradeInfo.setAccountid(account.getAccountid());
@@ -227,9 +229,52 @@ public class LotteryOrderService {
 	 * public LotteryOrder updateLotteryOrder(LotteryOrder order) { return
 	 * addTradeInfoByOrder(order); }
 	 */
-
+	public String checkLotteryOrder(LotteryOrder order) {
+		String[] typeOrder = {"角","连","番","正","三中","特码","色","大小","单双"};
+		List<Map<String, String>> detailList = customLotteryMapper.selectOrderForCheck(order.getRoundid(), order.getAccountid());
+		Map<String, Double> tempMap = new HashMap<String, Double>();
+		AccountDetail accountDatail = accountDetailMapper.selectByPrimaryKey(order.getAccountid());
+		OffAccountInfo accountInfo = offAccountInfoMapper.selectByUsername(accountDatail.getSupusername());
+		List<LotteryItem> itemList = customLotteryMapper.selectItemByLotteryType(EnumType.LotteryType.CornSeed.ID);
+		Map<String, String> itemGroupMap = new HashMap<String, String>();
+		for (LotteryItem item : itemList) {
+			itemGroupMap.put(item.getItemno(), item.getItemgroup());
+		}
+		
+		for (Map<String, String> detailMap : detailList) {
+			tempMap.put(detailMap.get("ItemGroup"), Double.parseDouble(String.valueOf(detailMap.get("Amount"))));
+		}
+		Double totalOrderAmount = 0.0;
+		for (LotteryOrderDetail detail : order.getOrderDetailList()) {
+			String itemGroup = itemGroupMap.get(detail.getItemno());
+			if(itemGroup==null) return "不存在下注项:"+detail.getItemno();
+			Double amount = detail.getDetailamount();
+			if (tempMap.containsKey(itemGroup)) {
+				tempMap.put(itemGroup, tempMap.get(itemGroup) + amount);
+			} else {
+				tempMap.put(itemGroup, amount);
+			}
+			totalOrderAmount += amount;
+		}
+		if(new BigDecimal(totalOrderAmount).compareTo(accountDatail.getMoney())>0){
+			return "下注金额不能超过点数限额";
+		}
+		if(StringUtils.isBlank(accountInfo.getRiskamount()))	return "风控限额还未配置";
+		String[] riskAmount = accountInfo.getRiskamount().split(";");
+		if(riskAmount.length==riskAmount.length){
+			for(int i=0; i<typeOrder.length; i++){
+				if(getMapVal(tempMap, typeOrder[i])>Double.parseDouble(riskAmount[i])){
+					return "下注金额不能超过风控限额";
+				}
+			}
+		}else{
+			return "风控限额配置有错误";
+		}
+		
+		return "";
+	}
 	// 添加账户
-	public boolean checkLotteryOrder(LotteryOrder order) {
+	/*public boolean checkLotteryOrder(LotteryOrder order) {
 		List<Map<String, String>> detailList = customLotteryMapper.selectOrderForCheck(order.getRoundid(), order.getAccountid());
 		Map<String, Double> tempMap = new HashMap<String, Double>();
 		AccountDetail account = accountDetailMapper.selectByPrimaryKey(order.getAccountid());
@@ -270,7 +315,7 @@ public class LotteryOrderService {
 				return false;
 		}
 		return true;
-	}
+	}*/
 
 	private Double getMapVal(Map<String, Double> tempMap, String key) {
 		if (tempMap.get(key) == null) {

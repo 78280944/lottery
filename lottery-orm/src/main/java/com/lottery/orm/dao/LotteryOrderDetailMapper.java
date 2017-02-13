@@ -4,7 +4,8 @@ import com.lottery.orm.bo.LotteryOrderDetail;
 import com.lottery.orm.bo.LotteryOrderDetailKey;
 
 public interface LotteryOrderDetailMapper {
-    int deleteByPrimaryKey(LotteryOrderDetailKey key);
+
+	int deleteByPrimaryKey(LotteryOrderDetailKey key);
 
     int insert(LotteryOrderDetail record);
 

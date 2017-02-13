@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lottery.orm.dao.CustomLotteryMapper">
 	<resultMap id="DetailSumInfo" type="java.util.Map">
-		<result column="ITEMNO" property="ItemNo" jdbcType="VARCHAR"/>
+		<result column="ITEMGROUP" property="ItemGroup" jdbcType="VARCHAR"/>
 		<result column="DETAILAMOUNT" property="Amount" jdbcType="VARCHAR"/>
 	</resultMap>
 	<resultMap id="AccountDetailMap" type="com.lottery.orm.bo.AccountDetail" >
@@ -45,7 +45,7 @@
 	<collection property="orderDetailList" ofType="com.lottery.orm.bo.LotteryOrderDetail" column="ORDERID">  
 		<id column="ORDERID" jdbcType="INTEGER" property="orderid" />
 		<id column="ITEMNO" jdbcType="VARCHAR" property="itemno" />
-		<result column="ITEMODDS" jdbcType="DOUBLE" property="itemodds" />
+		<result column="ITEMSCALE" jdbcType="DOUBLE" property="itemscale" />
 		<result column="ITEMBONUS" jdbcType="DOUBLE" property="itembonus" />
 		<result column="DETAILAMOUNT" jdbcType="DOUBLE" property="detailamount" />
 		<result column="PRIZEAMOUNT" jdbcType="DOUBLE" property="prizeamount" />
@@ -95,10 +95,10 @@
 	</select>
   
 	<select id="selectOrderForCheck" resultMap="DetailSumInfo">
-	select sum(d.DETAILAMOUNT) as DETAILAMOUNT,d.ITEMNO 
-	from lottery_order_detail d, lottery_order o 
-	where d.ORDERID = o.ORDERID and o.ROUNDID = #{roundId,jdbcType=INTEGER} and o.accountId = #{accountId,jdbcType=INTEGER} and d.ITEMNO in ('RED','BLUE','GREEN','BIG','SMALL','SINGLE','DOUBLE') 
-	group by d.ITEMNO
+	select sum(d.DETAILAMOUNT) as DETAILAMOUNT,i.ITEMGROUP 
+	from lottery_item i,lottery_order_detail d, lottery_order o 
+	where i.ITEMNO = d.ITEMNO and d.ORDERID = o.ORDERID and o.ROUNDID = #{roundId,jdbcType=INTEGER} and o.accountId = #{accountId,jdbcType=INTEGER} 
+	group by i.ITEMGROUP
 	</select>
 	
 	<select id="selectAccountBySupUserName" statementType="CALLABLE" resultMap="AccountDetailMap">

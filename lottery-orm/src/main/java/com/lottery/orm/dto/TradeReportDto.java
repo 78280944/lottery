@@ -9,17 +9,29 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 public class TradeReportDto {
 	@ApiModelProperty(value = "账户ID", required = true)
 	private Integer accountId;
-
+	
+	@ApiModelProperty(value = "用户", required = true)
+	private String userName;
+	
+	@ApiModelProperty(value = "所属代理", required = true)
+	private String supUserName;
+	
 	@ApiModelProperty(value = "游戏期次", required = true)
 	private String lotteryTerm;
-
+	
+	@ApiModelProperty(value = "下注单ID", required = true)
+	private Integer orderId;
+	
 	@ApiModelProperty(value = "投注时间", required = true)
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Date orderTime;
 
 	@ApiModelProperty(value = "开奖时间", required = true)
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-	private Date endTime;
+	private Date prizeTime;
+	
+	@ApiModelProperty(value = "游戏结果", required = true)
+	private String resultStr;
 
 	@ApiModelProperty(value = "投注金额", required = true)
 	private Double orderAmount;
@@ -54,14 +66,6 @@ public class TradeReportDto {
 		this.orderTime = orderTime;
 	}
 
-	public Date getEndTime() {
-		return endTime;
-	}
-
-	public void setEndTime(Date endTime) {
-		this.endTime = endTime;
-	}
-
 	public Double getOrderAmount() {
 		return orderAmount;
 	}
@@ -86,4 +90,45 @@ public class TradeReportDto {
 		this.accountAmount = accountAmount;
 	}
 
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getSupUserName() {
+		return supUserName;
+	}
+
+	public void setSupUserName(String supUserName) {
+		this.supUserName = supUserName;
+	}
+
+	public Integer getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Integer orderId) {
+		this.orderId = orderId;
+	}
+
+	public Date getPrizeTime() {
+		return prizeTime;
+	}
+
+	public void setPrizeTime(Date prizeTime) {
+		this.prizeTime = prizeTime;
+	}
+
+	public String getResultStr() {
+		return resultStr;
+	}
+
+	public void setResultStr(String resultStr) {
+		this.resultStr = resultStr;
+	}
+
+	
 }
