@@ -50,6 +50,7 @@ public class OffAccountInfo {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
 	public Double getLimited() {
 		return limited;
 	}

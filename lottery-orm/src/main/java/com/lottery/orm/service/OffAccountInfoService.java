@@ -43,7 +43,7 @@ public class OffAccountInfoService {
 			AccountDetail accountDetail = new AccountDetail();
 			accountDetail.setUserid(paraInfo.getUserid());
 			accountDetail.setUsername(paraInfo.getUsername());
-			accountDetail.setLimited(paraInfo.getLimited());
+			//accountDetail.setLimited(paraInfo.getLimited());
 			accountDetail.setRatio(paraInfo.getRatio());
 			accountDetail.setPercentage(paraInfo.getPercentage());
 			accountDetail.setState(paraInfo.getState());
@@ -62,7 +62,7 @@ public class OffAccountInfoService {
 		AccountDetail accountDetail = new AccountDetail();
 		accountDetail.setUserid(paraInfo.getUserid());
 		accountDetail.setUsername(paraInfo.getUsername());
-		accountDetail.setLimited(paraInfo.getLimited());
+		//accountDetail.setLimited(paraInfo.getLimited());
 		accountDetail.setRatio(paraInfo.getRatio());
 		accountDetail.setPercentage(paraInfo.getPercentage());
 		accountDetail.setState(paraInfo.getState());

@@ -239,6 +239,7 @@ public class AccountInfoController {
 		    }else{
 			    paraInfo.setState("1");//默认状态正常
 			    paraInfo.setInputdate(new Date());
+			    paraInfo.setLimited(Double.parseDouble("0.0"));
 			    accountInfoService.addAccountInfo(paraInfo);
 			    result.success();
 		    }
@@ -302,6 +303,7 @@ public class AccountInfoController {
 			    paraInfo.setUpdatedate(new Date());
 			    paraInfo.setSupusername(accountInfo.getSupusername());
 			    paraInfo.setLevel(accountInfo.getLevel());
+			    paraInfo.setLimited(Double.parseDouble("0.0"));
 			    System.out.println("id.."+paraInfo.getUserid());
 			    accountInfoService.updateAccountInfo(paraInfo);
 			    result.success();

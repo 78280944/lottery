@@ -147,7 +147,6 @@ public class OffAccountInfoController {
 			String level = param.getLevel();
 			String supusername = param.getSupusername();
 			Double percentage = null;
-			//Double limited =  null;
 			Double ratio = null;
 			
 			//判断是否有权限新增下线
@@ -235,6 +234,7 @@ public class OffAccountInfoController {
 			    paraInfo.setOfftype("1");
 			    paraInfo.setInputdate(new Date());
 			    paraInfo.setRiskamount(param.getRiskamount());
+			    paraInfo.setLimited(Double.parseDouble("0.0"));
 			    OffAccountInfoService.addOffAccountInfo(paraInfo);
 			    
 			    result.success();
