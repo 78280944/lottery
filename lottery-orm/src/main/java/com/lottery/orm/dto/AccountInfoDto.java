@@ -6,8 +6,8 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 
 public class AccountInfoDto extends BaseAccountDto {
 	
-	@ApiModelProperty(value = "点数限额", required = true)
-	private Double limited;
+	//@ApiModelProperty(value = "点数限额", required = true)
+	//private Double limited;
 
 	@ApiModelProperty(value = "洗码比", required = true)
 	private Double ratio;
@@ -39,8 +39,8 @@ public class AccountInfoDto extends BaseAccountDto {
 	@ApiModelProperty(value = "风险限额", required = true)
 	private String riskamount;
 	
-	@ApiModelProperty(value = "上级点数限额", required = true)
-	private Double lelimited;
+	//@ApiModelProperty(value = "上级点数限额", required = true)
+	//private Double lelimited;
 	
 	@ApiModelProperty(value = "上级洗码比", required = true)
 	private Double leratio;
@@ -51,7 +51,7 @@ public class AccountInfoDto extends BaseAccountDto {
 	@ApiModelProperty(value = "上级风险限额", required = true)
 	private String leriskamount;
 	
-	
+	/*
 	public Double getLelimited() {
 		return lelimited;
 	}
@@ -59,7 +59,7 @@ public class AccountInfoDto extends BaseAccountDto {
 	public void setLelimited(Double lelimited) {
 		this.lelimited = lelimited;
 	}
-
+*/
 	public Double getLeratio() {
 		return leratio;
 	}
@@ -147,7 +147,7 @@ public class AccountInfoDto extends BaseAccountDto {
 	public void setWebchat(String webchat) {
 		this.webchat = webchat;
 	}
-
+/*
 	public Double getLimited() {
 		return limited;
 	}
@@ -155,7 +155,7 @@ public class AccountInfoDto extends BaseAccountDto {
 	public void setLimited(Double limited) {
 		this.limited = limited;
 	}
-
+*/
 	public Double getRatio() {
 		return ratio;
 	}

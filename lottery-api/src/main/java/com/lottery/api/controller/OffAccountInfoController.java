@@ -22,10 +22,12 @@ import com.lottery.api.dto.OffAccountInfoVo;
 import com.lottery.api.dto.UpdateAccountPerVo;
 import com.lottery.api.dto.UpdateAccountRatioVo;
 import com.lottery.api.dto.UpdateAccountRiskVo;
+import com.lottery.api.dto.UpdateAccountStateVo;
 import com.lottery.api.dto.UpdateOffAccountVo;
 import com.lottery.api.dto.UpdatePlayAmountVo;
 import com.lottery.api.dto.UpdatePlayPassVo;
 import com.lottery.api.dto.UpdatePlayRatioVo;
+import com.lottery.api.dto.UpdatePlayStateVo;
 import com.lottery.api.util.ToolsUtil;
 import com.lottery.orm.bo.AccountDetail;
 import com.lottery.orm.bo.AccountInfo;
@@ -104,7 +106,7 @@ public class OffAccountInfoController {
 		      rAcDto.setUsername(null==OffAccountInfo.getUsername()||"".equals(OffAccountInfo.getUsername()) ?"":OffAccountInfo.getUsername());
 		      rAcDto.setAusername(null==OffAccountInfo.getAusername()||"".equals(OffAccountInfo.getAusername()) ?"":OffAccountInfo.getAusername());
 		      rAcDto.setPassword(null==OffAccountInfo.getPassword()||"".equals(OffAccountInfo.getPassword()) ?"":OffAccountInfo.getPassword());
-		      rAcDto.setLimited(null==OffAccountInfo.getLimited()||"".equals(OffAccountInfo.getLimited())||0.0==OffAccountInfo.getLimited() ?0.0:OffAccountInfo.getLimited());
+		      //rAcDto.setLimited(null==OffAccountInfo.getLimited()||"".equals(OffAccountInfo.getLimited())||0.0==OffAccountInfo.getLimited() ?0.0:OffAccountInfo.getLimited());
 		      rAcDto.setRatio(null==OffAccountInfo.getRatio()||"".equals(OffAccountInfo.getRatio())||0.0==OffAccountInfo.getRatio() ?0.0:OffAccountInfo.getRatio());
 		      rAcDto.setPercentage(null==OffAccountInfo.getPercentage()||"".equals(OffAccountInfo.getPercentage())||0.0==OffAccountInfo.getPercentage() ?0.0:OffAccountInfo.getPercentage());
 		      rAcDto.setQuery(null==OffAccountInfo.getQuery()||"".equals(OffAccountInfo.getQuery()) ?"":OffAccountInfo.getQuery());
@@ -115,7 +117,7 @@ public class OffAccountInfoController {
 		      rAcDto.setOfftype(null==OffAccountInfo.getOfftype()||"".equals(OffAccountInfo.getOfftype()) ?"":OffAccountInfo.getOfftype());
 		      rAcDto.setAccountAmount(accountDetail.getMoney());
 		      rAcDto.setRiskamount(null==OffAccountInfo.getRiskamount()||"".equals(OffAccountInfo.getRiskamount()) ?"":OffAccountInfo.getRiskamount());
-		      rAcDto.setLelimited(leOffAccountInfo.getLimited());
+		      //rAcDto.setLelimited(leOffAccountInfo.getLimited());
 		      rAcDto.setLepercentage(leOffAccountInfo.getPercentage());
 		      rAcDto.setLeratio(leOffAccountInfo.getRatio());
 		      rAcDto.setLeriskamount(leOffAccountInfo.getRiskamount());
@@ -145,7 +147,7 @@ public class OffAccountInfoController {
 			String level = param.getLevel();
 			String supusername = param.getSupusername();
 			Double percentage = null;
-			Double limited =  null;
+			//Double limited =  null;
 			Double ratio = null;
 			
 			//判断是否有权限新增下线
@@ -155,12 +157,8 @@ public class OffAccountInfoController {
 		        return result;	
 			}
 			
-			if (null != param.getLimited())
-				limited = param.getLimited();
 			if (null != param.getRatio())
 				ratio = param.getRatio();
-			if (null != param.getLimited())
-				limited = param.getLimited();
 			if (null != param.getPercentage())
 				percentage = param.getPercentage();
 				
@@ -186,15 +184,6 @@ public class OffAccountInfoController {
 			      return result;
 			}
 			*/
-			//数字型
-			System.out.println("7----------"+limited);
-			if (null != limited){
-				if (ToolsUtil.isNumeric(String.valueOf(limited))){
-				      result.fail("点数限额",MessageTool.Code_1004);
-				      LOG.info(result.getMessage());
-				      return result;		
-				}
-			}
 			
 			//数字型
 			if (null != ratio){
@@ -426,7 +415,7 @@ public class OffAccountInfoController {
 		      rAcDto.setUsername(null==OffAccountInfos.get(i).getUsername()||"".equals(OffAccountInfos.get(i).getUsername()) ?"":OffAccountInfos.get(i).getUsername());
 		      rAcDto.setAusername(null==OffAccountInfos.get(i).getAusername()||"".equals(OffAccountInfos.get(i).getAusername()) ?"":OffAccountInfos.get(i).getAusername());
 		      rAcDto.setPassword(null==OffAccountInfos.get(i).getPassword()||"".equals(OffAccountInfos.get(i).getPassword()) ?"":OffAccountInfos.get(i).getPassword());
-		      rAcDto.setLimited(null==OffAccountInfos.get(i).getLimited()||"".equals(OffAccountInfos.get(i).getLimited())||0.0==OffAccountInfos.get(i).getLimited() ?0.0:OffAccountInfos.get(i).getLimited());
+		      //rAcDto.setLimited(null==OffAccountInfos.get(i).getLimited()||"".equals(OffAccountInfos.get(i).getLimited())||0.0==OffAccountInfos.get(i).getLimited() ?0.0:OffAccountInfos.get(i).getLimited());
 		      rAcDto.setRatio(null==OffAccountInfos.get(i).getRatio()||"".equals(OffAccountInfos.get(i).getRatio())||0.0==OffAccountInfos.get(i).getRatio() ?0.0:OffAccountInfos.get(i).getRatio());
 		      rAcDto.setPercentage(null==OffAccountInfos.get(i).getPercentage()||"".equals(OffAccountInfos.get(i).getPercentage())||0.0==OffAccountInfos.get(i).getPercentage() ?0.0:OffAccountInfos.get(i).getPercentage());
 		      rAcDto.setQuery(null==OffAccountInfos.get(i).getQuery()||"".equals(OffAccountInfos.get(i).getQuery()) ?"":OffAccountInfos.get(i).getQuery());
@@ -438,7 +427,7 @@ public class OffAccountInfoController {
 		      rAcDto.setAccountID(accountDetail.getAccountid());
 		      rAcDto.setAccountAmount(accountDetail.getMoney());
 		      rAcDto.setRiskamount(null==OffAccountInfos.get(i).getRiskamount()||"".equals(OffAccountInfos.get(i).getRiskamount()) ?"":OffAccountInfos.get(i).getRiskamount());
-		      rAcDto.setLelimited(leOffAccountInfo.getLimited());
+		      //rAcDto.setLelimited(leOffAccountInfo.getLimited());
 		      rAcDto.setLepercentage(leOffAccountInfo.getPercentage());
 		      rAcDto.setLeratio(leOffAccountInfo.getRatio());
 		      rAcDto.setLeriskamount(leOffAccountInfo.getRiskamount());
@@ -453,7 +442,7 @@ public class OffAccountInfoController {
 		return result;
 	}
 	
-
+/*
 	@ApiOperation(value = "代理用户修改玩家剩余点数", notes = "代理用户修改玩家剩余点数", httpMethod = "POST")
 	@RequestMapping(value = "/updatePlayAmount", method = RequestMethod.POST)
 	@ResponseBody
@@ -494,7 +483,7 @@ public class OffAccountInfoController {
 		return result;
 	}
 	
-	
+	*/
 	@ApiOperation(value = "代理用户修改玩家密码", notes = "代理用户修改玩家密码", httpMethod = "POST")
 	@RequestMapping(value = "/updatePlayPass", method = RequestMethod.POST)
 	@ResponseBody
@@ -568,6 +557,43 @@ public class OffAccountInfoController {
 	}
 	
 	
+	@ApiOperation(value = "代理用户修改玩家状态", notes = "代理用户修改玩家状态", httpMethod = "POST")
+	@RequestMapping(value = "/updatePlayState", method = RequestMethod.POST)
+	@ResponseBody
+	public RestResult updatePlayState(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody UpdatePlayStateVo param) throws Exception {
+		RestResult result = new RestResult();
+		try {
+			int userid = param.getUserid();
+			String state = param.getState();
+            String supusername = param.getSupusername();
+            int offtype = param.getOfftype();
+			String ip = param.getIp();
+			
+			if (0==userid){
+			      result.fail("用户ID",MessageTool.Code_2002);
+			      LOG.info(result.getMessage());
+			      return result;
+			}
+			
+			AccountInfo accountInfo = accountInfoMapper.selectByPrimaryKey(param.getUserid());
+			if(accountInfo==null){
+			      result.fail(MessageTool.Code_3001);
+			}else{
+				accountInfo.setState(state);
+				accountInfo.setIp(ip);
+			    accountInfoService.updateAccountInfo(accountInfo);
+			    LOG.info("修改玩家状态记录详情为："+" 管理员："+supusername+" 账户类型："+offtype+" IP："+ip+" 修改玩家ID"+userid+" 状态修改为"+accountInfo.getState());
+			    result.success();
+			}
+			LOG.info(result.getMessage());
+		} catch (Exception e) {
+			result.error();
+			LOG.error(e.getMessage(),e);
+		}
+		return result;
+	}
+	
+	/*
 	@ApiOperation(value = "代理用户修改下线剩余点数", notes = "代理用户修改下线剩余点数", httpMethod = "POST")
 	@RequestMapping(value = "/updateAccountAmount", method = RequestMethod.POST)
 	@ResponseBody
@@ -608,7 +634,7 @@ public class OffAccountInfoController {
 		return result;
 	}
 	
-	
+	*/
 	@ApiOperation(value = "代理用户修改下线密码", notes = "代理用户修改下线密码", httpMethod = "POST")
 	@RequestMapping(value = "/updateAccountPass", method = RequestMethod.POST)
 	@ResponseBody
@@ -744,6 +770,42 @@ public class OffAccountInfoController {
 				offAccountInfo.setIp(ip);
 				offAccountInfoMapper.updateByPrimaryKey(offAccountInfo);
 			    LOG.info("修改洗码比记录详情为："+" 管理员："+supusername+" 账户类型："+offtype+" IP："+ip+" 修改下家ID"+userid+" 代理占成修改为"+offAccountInfo.getRatio());
+			    result.success();
+			}
+			LOG.info(result.getMessage());
+		} catch (Exception e) {
+			result.error();
+			LOG.error(e.getMessage(),e);
+		}
+		return result;
+	}
+	
+	@ApiOperation(value = "代理用户修改下线状态", notes = "代理用户修改下线状态", httpMethod = "POST")
+	@RequestMapping(value = "/updateAccountState", method = RequestMethod.POST)
+	@ResponseBody
+	public RestResult updateAccountState(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody UpdateAccountStateVo param) throws Exception {
+		RestResult result = new RestResult();
+		try {
+			int userid = param.getUserid();
+			String state = param.getState();
+            String supusername = param.getSupusername();
+            int offtype = param.getOfftype();
+			String ip = param.getIp();
+			
+			if (0==userid){
+			      result.fail("用户ID",MessageTool.Code_2002);
+			      LOG.info(result.getMessage());
+			      return result;
+			}
+			
+			OffAccountInfo offAccountInfo = offAccountInfoMapper.selectByPrimaryKey(param.getUserid());
+			if(offAccountInfo==null){
+			      result.fail(MessageTool.Code_3001);
+			}else{
+				offAccountInfo.setState(state);
+				offAccountInfo.setIp(ip);
+				offAccountInfoMapper.updateByPrimaryKey(offAccountInfo);
+			    LOG.info("修改状态记录详情为："+" 管理员："+supusername+" 账户类型："+offtype+" IP："+ip+" 修改下家ID"+userid+" 状态修改为"+offAccountInfo.getState());
 			    result.success();
 			}
 			LOG.info(result.getMessage());

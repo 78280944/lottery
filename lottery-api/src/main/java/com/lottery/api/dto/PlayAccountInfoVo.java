@@ -4,11 +4,11 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 
 public class PlayAccountInfoVo extends BaseAccountInfoVo{
 	
-	    @ApiModelProperty(value = "点数限额")
-	    private Double limited;
+	   // @ApiModelProperty(value = "点数限额")
+	  //  private Double limited;
 	    @ApiModelProperty(value = "洗码比")
 	    private Double ratio; 
-	    
+	    /*
 	    public Double getLimited() {
 			return limited;
 		}
@@ -16,7 +16,7 @@ public class PlayAccountInfoVo extends BaseAccountInfoVo{
 		public void setLimited(Double limited) {
 			this.limited = limited;
 		}
-
+*/
 		public Double getRatio() {
 			return ratio;
 		}

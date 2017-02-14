@@ -103,7 +103,7 @@ public class AccountInfoController {
 				rAcDto.setUsername(accountInfo.getUsername());
 				rAcDto.setAusername(accountInfo.getAusername());
 				rAcDto.setPassword(accountInfo.getPassword());
-				rAcDto.setLimited(null==accountInfo.getLimited()||"".equals(accountInfo.getLimited())||0.0==accountInfo.getLimited() ?0.0:accountInfo.getLimited());
+				//rAcDto.setLimited(null==accountInfo.getLimited()||"".equals(accountInfo.getLimited())||0.0==accountInfo.getLimited() ?0.0:accountInfo.getLimited());
 				rAcDto.setRatio(null==accountInfo.getRatio()||"".equals(accountInfo.getRatio())||0.0==accountInfo.getRatio() ?0:accountInfo.getRatio());
 				rAcDto.setState(null==accountInfo.getState()||"".equals(accountInfo.getState()) ? "":accountInfo.getState());
 				rAcDto.setSupusername(null==accountInfo.getSupusername()||"".equals(accountInfo.getSupusername()) ? "":accountInfo.getSupusername());
@@ -116,7 +116,7 @@ public class AccountInfoController {
 				rAcDto.setOfftype("3");
 				rAcDto.setAccountID(accountDetail.getAccountid());
 				rAcDto.setRiskamount("");
-			    rAcDto.setLelimited(leOffAccountInfo.getLimited());
+			    //rAcDto.setLelimited(leOffAccountInfo.getLimited());
 			    rAcDto.setLepercentage(leOffAccountInfo.getPercentage());
 			    rAcDto.setLeratio(leOffAccountInfo.getRatio());
 			    rAcDto.setLeriskamount(leOffAccountInfo.getRiskamount());
@@ -139,7 +139,7 @@ public class AccountInfoController {
 					rAcDto.setUsername(offaccountInfo.getUsername());
 					rAcDto.setAusername(offaccountInfo.getAusername());
 					rAcDto.setPassword(offaccountInfo.getPassword());
-					rAcDto.setLimited(null==offaccountInfo.getLimited()||"".equals(offaccountInfo.getLimited())||0.0==offaccountInfo.getLimited() ?0.0:offaccountInfo.getLimited());
+					//rAcDto.setLimited(null==offaccountInfo.getLimited()||"".equals(offaccountInfo.getLimited())||0.0==offaccountInfo.getLimited() ?0.0:offaccountInfo.getLimited());
 					rAcDto.setRatio(null==offaccountInfo.getRatio()||"".equals(offaccountInfo.getRatio())||0.0==offaccountInfo.getRatio() ?0:offaccountInfo.getRatio());
 					rAcDto.setState(null==offaccountInfo.getState()||"".equals(offaccountInfo.getState()) ? "":offaccountInfo.getState());
 					rAcDto.setSupusername(null==offaccountInfo.getSupusername()||"".equals(offaccountInfo.getSupusername()) ? "":offaccountInfo.getSupusername());
@@ -176,14 +176,11 @@ public class AccountInfoController {
 			String password = param.getPassword();
 			String supusername = param.getSupusername();
 			String level = param.getLevel();
-			Double limited =  null;
+			//Double limited =  null;
 			Double ratio = null;
 			
-			if (null != param.getLimited())
-				limited = param.getLimited();
 			if (null != param.getRatio())
-				ratio = param.getRatio();
-			
+				ratio = param.getRatio();		
 			
 			//参数合规性校验，必要参数不能为空
 			if (ToolsUtil.isEmptyTrim(username)||ToolsUtil.isEmptyTrim(password)){
@@ -214,7 +211,7 @@ public class AccountInfoController {
 			      return result;
 			}
 			*/
-			
+			/*
 			//数字型
 			if (null != limited){
 				if (ToolsUtil.isNumeric(String.valueOf(limited))){
@@ -223,7 +220,7 @@ public class AccountInfoController {
 				      return result;		
 				}
 			}
-			
+			*/
 			//数字型
 			if (null != ratio){
 				if (ToolsUtil.isNumeric(String.valueOf(ratio))){
@@ -469,7 +466,7 @@ public class AccountInfoController {
 			        rAcDto.setUsername(null==accountInfos.get(i).getUsername()||"".equals(accountInfos.get(i).getUsername()) ?"":accountInfos.get(i).getUsername());
 			        rAcDto.setAusername(null==accountInfos.get(i).getAusername()||"".equals(accountInfos.get(i).getAusername()) ?"":accountInfos.get(i).getAusername());
 			        rAcDto.setPassword(null==accountInfos.get(i).getPassword()||"".equals(accountInfos.get(i).getPassword()) ?"":accountInfos.get(i).getPassword());
-			        rAcDto.setLimited(null==accountInfos.get(i).getLimited()||"".equals(accountInfos.get(i).getLimited())||0.0==accountInfos.get(i).getLimited() ?0.0:accountInfos.get(i).getLimited());
+			        //rAcDto.setLimited(null==accountInfos.get(i).getLimited()||"".equals(accountInfos.get(i).getLimited())||0.0==accountInfos.get(i).getLimited() ?0.0:accountInfos.get(i).getLimited());
 			        rAcDto.setRatio(null==accountInfos.get(i).getRatio()||"".equals(accountInfos.get(i).getRatio())||0.0==accountInfos.get(i).getRatio() ?0.0:accountInfos.get(i).getRatio());
 			        rAcDto.setLevel(null==accountInfos.get(i).getLevel()||"".equals(accountInfos.get(i).getLevel()) ?"":accountInfos.get(i).getLevel());
 			        rAcDto.setState(null==accountInfos.get(i).getState()||"".equals(accountInfos.get(i).getState()) ?"":accountInfos.get(i).getState());
@@ -477,7 +474,7 @@ public class AccountInfoController {
 			        rAcDto.setOfftype("3");
 			        rAcDto.setAccountID(accountDetail.getAccountid());
 			        rAcDto.setAccountAmount(accountDetail.getMoney());
-				    rAcDto.setLelimited(leOffAccountInfo.getLimited());
+				    //rAcDto.setLelimited(leOffAccountInfo.getLimited());
 				    rAcDto.setLepercentage(leOffAccountInfo.getPercentage());
 				    rAcDto.setLeratio(leOffAccountInfo.getRatio());
 				    rAcDto.setLeriskamount(leOffAccountInfo.getRiskamount());
@@ -502,7 +499,7 @@ public class AccountInfoController {
 		RemarkDto remark = new RemarkDto();
 		String online = "9151206965";
 		String share = "https://www.pgyer.com/EIAE";
-		String rule = "http://lottery.puzongsoft.com/lottery-api/rule.html";
+		String rule = "http://lottery.puzongsoft.com/rule.html";
 			
 		remark.setOnline(online);
 		remark.setShare(share);

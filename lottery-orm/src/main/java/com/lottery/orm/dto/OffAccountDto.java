@@ -5,8 +5,8 @@ import java.math.BigDecimal;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 public class OffAccountDto extends SubAccountDto {
-	@ApiModelProperty(value = "点数限额", required = true)
-	private Double limited;
+	//@ApiModelProperty(value = "点数限额", required = true)
+	//private Double limited;
 
 	@ApiModelProperty(value = "洗码比", required = true)
 	private Double ratio;
@@ -23,8 +23,8 @@ public class OffAccountDto extends SubAccountDto {
 	@ApiModelProperty(value = "风险限额", required = true)
 	private String riskamount;
 	
-	@ApiModelProperty(value = "上级点数限额", required = true)
-	private Double lelimited;
+	//@ApiModelProperty(value = "上级点数限额", required = true)
+	//private Double lelimited;
 	
 	@ApiModelProperty(value = "上级洗码比", required = true)
 	private Double leratio;
@@ -35,6 +35,7 @@ public class OffAccountDto extends SubAccountDto {
 	@ApiModelProperty(value = "上级风险限额", required = true)
 	private String leriskamount;
 	
+	/*
 	public Double getLelimited() {
 		return lelimited;
 	}
@@ -42,7 +43,7 @@ public class OffAccountDto extends SubAccountDto {
 	public void setLelimited(Double lelimited) {
 		this.lelimited = lelimited;
 	}
-
+*/
 	public Double getLeratio() {
 		return leratio;
 	}
@@ -90,7 +91,7 @@ public class OffAccountDto extends SubAccountDto {
 	public void setAccountAmount(BigDecimal accountAmount) {
 		this.accountAmount = accountAmount;
 	}
-
+/*
 	public Double getLimited() {
 		return limited;
 	}
@@ -98,7 +99,7 @@ public class OffAccountDto extends SubAccountDto {
 	public void setLimited(Double limited) {
 		this.limited = limited;
 	}
-
+*/
 	public Double getRatio() {
 		return ratio;
 	}
