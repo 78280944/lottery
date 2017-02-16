@@ -30,10 +30,9 @@
     <result column="LOTTERYTERM" jdbcType="VARCHAR" property="lotteryTerm" />
     <result column="ORDERID" jdbcType="INTEGER" property="orderId" />
     <result column="ORDERTIME" jdbcType="TIMESTAMP" property="orderTime" />
-    <result column="PRIZETIME" jdbcType="TIMESTAMP" property="prizeTime" />
-    <result column="RESULTSTR" jdbcType="VARCHAR" property="resultStr" />
+    <result column="ITEMNAMECN" jdbcType="VARCHAR" property="itemNameCN" />
     <result column="ORDERAMOUNT" jdbcType="DECIMAL" property="orderAmount" />
-    <result column="ACTUALAMOUNT" jdbcType="DECIMAL" property="actualAmount" />
+    <result column="WINAMOUNT" jdbcType="DECIMAL" property="winAmount" />
     <result column="ACCOUNTAMOUNT" jdbcType="DECIMAL" property="accountAmount" />
   </resultMap>
   <resultMap id="InoutReportMap" type="com.lottery.orm.dto.InoutReportDto">
@@ -77,6 +76,7 @@
 	      WHERE FIND_IN_SET(supusername, @Ids)
 	   ) temp2 )
 	)]]>
+	order by o.ORDERTIME desc
 	<if test="beginRow != null and pageSize !=null">
 	limit #{beginRow,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
 	</if>
@@ -104,15 +104,16 @@
 	   ) temp2 )
 	)]]>
     group by a.ACCOUNTID
+    order by o.ORDERTIME desc
 	<if test="beginRow != null and pageSize !=null">
 	limit #{beginRow,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
 	</if>
   </select>
   <select id="selectByTradeReport" resultMap="TradeReportMap">
     select 
-    a.ACCOUNTID, a.USERNAME, a.SUPUSERNAME, r.LOTTERYTERM, o.ORDERID, o.ORDERTIME, o.PRIZETIME, o.ORDERAMOUNT, r.RESULTSTR, o.ACTUALAMOUNT, o.ACCOUNTAMOUNT
-    from account_detail a, lottery_order o, lottery_round r
-    where a.ACCOUNTID = o.ACCOUNTID and o.ROUNDID = r.ROUNDID and o.PRIZETIME is not null
+    a.ACCOUNTID, a.USERNAME, a.SUPUSERNAME, r.LOTTERYTERM, o.ORDERID, o.ORDERTIME, getItemNameByNo(d.ITEMNO) as ITEMNAMECN, o.ORDERAMOUNT, o.ACTUALAMOUNT+o.RETURNAMOUNT as WINAMOUNT, o.ACCOUNTAMOUNT
+    from account_detail a, lottery_order o, lottery_round r, lottery_order_detail d
+    where a.ACCOUNTID = o.ACCOUNTID and o.ROUNDID = r.ROUNDID and o.ORDERID=d.ORDERID and o.PRIZETIME is not null and a.USERNAME = #{userName,jdbcType=VARCHAR}
 	<if test="startTime != null and endTime != null">
 	and Date(ORDERTIME) between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
 	</if>
@@ -149,7 +150,7 @@
 	<if test="startTime == null and endTime != null">
 	and Date(INPUTTIME) <![CDATA[<=]]> #{endTime,jdbcType=TIMESTAMP}
 	</if>
-	<![CDATA[and a.OFFTYPE='3' and FIND_IN_SET(username, 
+	<![CDATA[and FIND_IN_SET(username, 
 	   (SELECT GROUP_CONCAT(Level SEPARATOR ',') FROM (
 	      SELECT @Ids := (SELECT GROUP_CONCAT(username SEPARATOR ',') FROM account_detail WHERE FIND_IN_SET(supusername, @Ids) ) Level
 	      FROM account_detail

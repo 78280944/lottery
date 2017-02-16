@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.lottery.api.dto.ReportParamVo;
+import com.lottery.api.dto.TradeReportVo;
 import com.lottery.orm.bo.AccountDetail;
 import com.lottery.orm.dao.AccountDetailMapper;
 import com.lottery.orm.dao.CustomLotteryMapper;
@@ -152,7 +153,7 @@ public class LotteryReportController {
 	@RequestMapping(value = "/getTradeReport", method = RequestMethod.POST)
 	@ResponseBody
 	public TradeReportResult getTradeReport(
-			@ApiParam(value = "Json参数", required = true) @Validated @RequestBody ReportParamVo param) throws Exception {
+			@ApiParam(value = "Json参数", required = true) @Validated @RequestBody TradeReportVo param) throws Exception {
 		TradeReportResult result = new TradeReportResult();
 		try {
 			Date startTime = param.getStartTime();
@@ -165,7 +166,7 @@ public class LotteryReportController {
 			AccountDetail accountDetail = accountDetailMapper.selectByPrimaryKey(param.getAccountId());
 			if(accountDetail.getOfftype().equals(EnumType.OffType.Admin.ID)||accountDetail.getOfftype().equals(EnumType.OffType.Agency.ID)){
 				List<TradeReportDto> accountList = lotteryReportMapper.selectByTradeReport(startTime,
-						endTime, accountDetail.getUsername(), param.getBeginRow(), param.getPageSize());
+						endTime, accountDetail.getUsername(), param.getPlayerUserName(), param.getBeginRow(), param.getPageSize());
 				result.success(accountList);
 			}else{
 				result.fail("该账户不是代理账户");

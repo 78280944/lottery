@@ -28,43 +28,42 @@ public class TradeInfoService {
     private AccountDetailMapper accountDetailMapper;
     
     // 添加出入金款项并更新账户
-    public boolean addInoutTradeInfo(TradeInfo tradeInfo) {
-    AccountDetail supAccountDetail = accountDetailMapper.selectByPrimaryKey(tradeInfo.getRelativeid());
-	AccountDetail accountDetail = accountDetailMapper.selectByPrimaryKey(tradeInfo.getAccountid());
-	Double supAccountAmount = supAccountDetail.getMoney().doubleValue();
-	Double accountAmount = accountDetail.getMoney().doubleValue();
-	
-	
-	if(tradeInfo.getRelativetype().equals(EnumType.RalativeType.In.ID)){
-		supAccountAmount = supAccountAmount - tradeInfo.getTradeamount();
-	    accountAmount = accountAmount + tradeInfo.getTradeamount();
-	    tradeInfo.setTradeamount(tradeInfo.getTradeamount());
-	}else if(tradeInfo.getRelativetype().equals(EnumType.RalativeType.Out.ID)){
-	    accountAmount = accountAmount - tradeInfo.getTradeamount();
-	    tradeInfo.setTradeamount(0.0 - tradeInfo.getTradeamount());//转换为负数
-	}else{
-	    return false;
-	}
-	tradeInfo.setTradetype(EnumType.TradeType.Inout.ID);
-	tradeInfo.setAccountamount(new BigDecimal(accountAmount));
-	tradeInfo.setInputtime(new Date());
-	if (tradeInfoMapper.insertSelective(tradeInfo) > 0) {
-		accountDetail.setMoney(new BigDecimal(accountAmount));
-	    accountDetailMapper.updateByPrimaryKeySelective(accountDetail);
-	    supAccountDetail.setMoney(new BigDecimal(supAccountAmount));
-	    accountDetailMapper.updateByPrimaryKeySelective(supAccountDetail);
-	    return true;
-	}
-	
-	/*if(accountDetail.getOfftype().equals(EnumType.OffType.Play.ID)){
+    public String addInoutTradeInfo(TradeInfo tradeInfo) {
+	    AccountDetail supAccountDetail = accountDetailMapper.selectByPrimaryKey(tradeInfo.getRelativeid());
+		AccountDetail accountDetail = accountDetailMapper.selectByPrimaryKey(tradeInfo.getAccountid());
+		Double supAccountAmount = supAccountDetail.getMoney().doubleValue();
+		Double accountAmount = accountDetail.getMoney().doubleValue();
 		
-	}else if(accountDetail.getOfftype().equals(EnumType.OffType.Agency.ID)){
+		if(tradeInfo.getRelativetype().equals(EnumType.RalativeType.In.ID)){
+			if(supAccountAmount>=tradeInfo.getTradeamount()){
+				supAccountAmount = supAccountAmount - tradeInfo.getTradeamount();
+			    accountAmount = accountAmount + tradeInfo.getTradeamount();
+			}else{
+				return "您帐户的点数小于上分的点数,无法给下级进行上分!";
+			}
+		}else{
+			if(accountAmount>=tradeInfo.getTradeamount()){
+				supAccountAmount = supAccountAmount + tradeInfo.getTradeamount();
+			    accountAmount = accountAmount - tradeInfo.getTradeamount();
+			    tradeInfo.setTradeamount(0.0 - tradeInfo.getTradeamount());//转换为负数
+			}else{
+				return "下级帐户的点数小于退分的点数,无法给下级进行退分!";
+			}
+		}
+		tradeInfo.setAccountamount(new BigDecimal(accountAmount));
+		tradeInfo.setTradetype(EnumType.TradeType.Inout.ID);
+		tradeInfo.setInputtime(new Date());
 		
-	}else{
-		return false;
-	}*/
-	
-	return false;
+		if (tradeInfoMapper.insertSelective(tradeInfo) > 0) {
+			accountDetail.setMoney(new BigDecimal(accountAmount));
+		    accountDetailMapper.updateByPrimaryKeySelective(accountDetail);
+		    supAccountDetail.setMoney(new BigDecimal(supAccountAmount));
+		    accountDetailMapper.updateByPrimaryKeySelective(supAccountDetail);
+		    return "";
+		}else{
+			return "新增点数出入记录失败!";
+		}
+		
     }
-
+    
 }

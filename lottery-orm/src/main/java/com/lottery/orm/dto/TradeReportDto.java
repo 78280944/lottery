@@ -26,18 +26,14 @@ public class TradeReportDto {
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Date orderTime;
 
-	@ApiModelProperty(value = "开奖时间", required = true)
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-	private Date prizeTime;
-	
-	@ApiModelProperty(value = "游戏结果", required = true)
-	private String resultStr;
+	@ApiModelProperty(value = "玩法", required = true)
+	private String itemNameCN;
 
 	@ApiModelProperty(value = "投注金额", required = true)
 	private Double orderAmount;
 
 	@ApiModelProperty(value = "输赢金额", required = true)
-	private Double actualAmount;
+	private Double winAmount;
 
 	@ApiModelProperty(value = "本期结束后账户余额", required = true)
 	private BigDecimal accountAmount;
@@ -74,12 +70,12 @@ public class TradeReportDto {
 		this.orderAmount = orderAmount;
 	}
 
-	public Double getActualAmount() {
-		return actualAmount;
+	public Double getWinAmount() {
+		return winAmount;
 	}
 
-	public void setActualAmount(Double actualAmount) {
-		this.actualAmount = actualAmount;
+	public void setWinAmount(Double winAmount) {
+		this.winAmount = winAmount;
 	}
 
 	public BigDecimal getAccountAmount() {
@@ -114,21 +110,14 @@ public class TradeReportDto {
 		this.orderId = orderId;
 	}
 
-	public Date getPrizeTime() {
-		return prizeTime;
+	public String getItemNameCN() {
+		return itemNameCN;
 	}
 
-	public void setPrizeTime(Date prizeTime) {
-		this.prizeTime = prizeTime;
+	public void setItemNameCN(String itemNameCN) {
+		this.itemNameCN = itemNameCN;
 	}
 
-	public String getResultStr() {
-		return resultStr;
-	}
-
-	public void setResultStr(String resultStr) {
-		this.resultStr = resultStr;
-	}
-
+	
 	
 }
