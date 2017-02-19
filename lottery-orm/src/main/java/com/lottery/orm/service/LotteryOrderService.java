@@ -50,7 +50,7 @@ public class LotteryOrderService {
 	private OffAccountInfoMapper offAccountInfoMapper;
 
 	// 添加投注单
-	public LotteryOrder addLotteryOrder(LotteryOrder order) {
+	public LotteryOrder addLotteryOrder(AccountDetail accountDetail, LotteryOrder order) {
 		order.setOrdertime(new Date());
 		lotteryOrderMapper.insertSelective(order);
 		Double orderAmount = 0.0;
@@ -68,6 +68,7 @@ public class LotteryOrderService {
 		}
 		order.setOrderamount(orderAmount);
 		lotteryOrderMapper.updateByPrimaryKeySelective(order);
+		addTradeInfo(accountDetail, order, -orderAmount, EnumType.RalativeType.Order.ID);//减去下注金额
 		return order;
 	}
 
@@ -124,7 +125,13 @@ public class LotteryOrderService {
 		order.setSystemamount(systemCommision);
 		lotteryOrderMapper.updateByPrimaryKeySelective(order);
 		
-		addTradeInfo(account, order, playerWinloss, EnumType.RalativeType.PlayerWin.ID);//玩家输赢
+		
+		if(windOrder>0.0){
+			addTradeInfo(account, order, windOrder, EnumType.RalativeType.Order.ID);//玩家中奖项的本金返还
+		}
+		if(playerPrize>0.0){
+			addTradeInfo(account, order, playerPrize, EnumType.RalativeType.PlayerWin.ID);//玩家派彩
+		}
 		addTradeInfo(account, order, playerReturn, EnumType.RalativeType.Return.ID);// 给玩家的返利
 		Double childPercent = 0.0;//下级代理占比
 		for(int i=parentAccounts.size()-1; i>=0; i-- ){
@@ -229,12 +236,12 @@ public class LotteryOrderService {
 	 * public LotteryOrder updateLotteryOrder(LotteryOrder order) { return
 	 * addTradeInfoByOrder(order); }
 	 */
-	public String checkLotteryOrder(LotteryOrder order) {
+	public String checkLotteryOrder(AccountDetail accountDetail, LotteryOrder order) {
 		String[] typeOrder = {"角","连","番","正","三中","特码","色","大小","单双"};
 		List<Map<String, String>> detailList = customLotteryMapper.selectOrderForCheck(order.getRoundid(), order.getAccountid());
 		Map<String, Double> tempMap = new HashMap<String, Double>();
-		AccountDetail accountDatail = accountDetailMapper.selectByPrimaryKey(order.getAccountid());
-		OffAccountInfo accountInfo = offAccountInfoMapper.selectByUsername(accountDatail.getSupusername());
+		
+		OffAccountInfo accountInfo = offAccountInfoMapper.selectByUsername(accountDetail.getSupusername());
 		List<LotteryItem> itemList = customLotteryMapper.selectItemByLotteryType(EnumType.LotteryType.CornSeed.ID);
 		Map<String, String> itemGroupMap = new HashMap<String, String>();
 		for (LotteryItem item : itemList) {
@@ -256,7 +263,7 @@ public class LotteryOrderService {
 			}
 			totalOrderAmount += amount;
 		}
-		if(new BigDecimal(totalOrderAmount).compareTo(accountDatail.getMoney())>0){
+		if(new BigDecimal(totalOrderAmount).compareTo(accountDetail.getMoney())>0){
 			return "下注金额不能超过点数限额";
 		}
 		if(StringUtils.isBlank(accountInfo.getRiskamount()))	return "风控限额还未配置";

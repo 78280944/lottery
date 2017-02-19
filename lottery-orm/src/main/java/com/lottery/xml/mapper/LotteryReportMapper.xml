@@ -150,6 +150,7 @@
 	<if test="startTime == null and endTime != null">
 	and Date(INPUTTIME) <![CDATA[<=]]> #{endTime,jdbcType=TIMESTAMP}
 	</if>
+	and a.OFFTYPE= #{offType,jdbcType=VARCHAR}
 	<![CDATA[and FIND_IN_SET(username, 
 	   (SELECT GROUP_CONCAT(Level SEPARATOR ',') FROM (
 	      SELECT @Ids := (SELECT GROUP_CONCAT(username SEPARATOR ',') FROM account_detail WHERE FIND_IN_SET(supusername, @Ids) ) Level
@@ -178,7 +179,7 @@
 	<if test="startTime == null and endTime != null">
 	and Date(ORDERTIME) <![CDATA[<=]]> #{endTime,jdbcType=TIMESTAMP}
 	</if>
-	order by o.ORDERID, ORDERTIME
+	order by o.ORDERID desc, ORDERTIME desc
 	<if test="beginRow != null and pageSize !=null">
 	limit #{beginRow,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
 	</if>
@@ -189,6 +190,6 @@
     o.ORDERID, ORDERTIME, ROUNDID, i.ITEMNAMECN, d.DETAILAMOUNT, d.ACTUALAMOUNT, d.RETURNAMOUNT, d.ACTUALAMOUNT+d.RETURNAMOUNT AS WINAMOUNT
     from lottery_order o inner join lottery_order_detail d on o.ORDERID=d.ORDERID left join lottery_item i on d.ITEMNO=i.ITEMNO
     where o.ACCOUNTID = #{accountId,jdbcType=INTEGER} and o.ROUNDID = #{roundId,jdbcType=INTEGER}
-	order by o.ORDERID, ORDERTIME
+	order by o.ORDERID desc, ORDERTIME desc
   </select>
 </mapper>

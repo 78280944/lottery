@@ -17,9 +17,11 @@ import com.lottery.api.dto.HisOrderVo;
 import com.lottery.api.dto.OrderDetailVo;
 import com.lottery.api.dto.OrderParamVo;
 import com.lottery.api.dto.ReportParamVo;
+import com.lottery.orm.bo.AccountDetail;
 import com.lottery.orm.bo.LotteryOrder;
 import com.lottery.orm.bo.LotteryOrderDetail;
 import com.lottery.orm.bo.LotteryRound;
+import com.lottery.orm.dao.AccountDetailMapper;
 import com.lottery.orm.dao.LotteryReportMapper;
 import com.lottery.orm.dao.LotteryRoundMapper;
 import com.lottery.orm.dto.HistoryOrderDto;
@@ -28,7 +30,6 @@ import com.lottery.orm.result.HistoryOrderResult;
 import com.lottery.orm.result.OrderResult;
 import com.lottery.orm.service.LotteryOrderService;
 import com.lottery.orm.util.EnumType;
-import com.lottery.orm.util.MessageTool;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
@@ -47,6 +48,9 @@ public class LotteryOrderController {
 
 	@Autowired
 	private LotteryRoundMapper lotteryRoundMapper;
+	
+	@Autowired
+	private AccountDetailMapper accountDetailMapper;
 	
 	@Autowired
 	private LotteryReportMapper reportLotteryMapper;
@@ -71,9 +75,10 @@ public class LotteryOrderController {
 					orderDetails.add(orderDetail);
 				}
 				order.setOrderDetailList(orderDetails);
-				String checkInfo = lotteryOrderService.checkLotteryOrder(order);
+				AccountDetail accountDetail = accountDetailMapper.selectByPrimaryKey(order.getAccountid());
+				String checkInfo = lotteryOrderService.checkLotteryOrder(accountDetail, order);
 				if (checkInfo.length()==0) {
-					lotteryOrderService.addLotteryOrder(order);
+					lotteryOrderService.addLotteryOrder(accountDetail, order);
 					LotteryOrderDto orderDto = mapper.map(order, LotteryOrderDto.class);
 					result.success(orderDto);
 				} else {

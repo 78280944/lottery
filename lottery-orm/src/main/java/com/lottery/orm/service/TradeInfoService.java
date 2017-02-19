@@ -35,7 +35,7 @@ public class TradeInfoService {
 		Double accountAmount = accountDetail.getMoney().doubleValue();
 		
 		if(tradeInfo.getRelativetype().equals(EnumType.RalativeType.In.ID)){
-			if(supAccountAmount>=tradeInfo.getTradeamount()){
+			if(supAccountAmount>=tradeInfo.getTradeamount()||supAccountDetail.getOfftype().equals(EnumType.OffType.Admin.ID)){
 				supAccountAmount = supAccountAmount - tradeInfo.getTradeamount();
 			    accountAmount = accountAmount + tradeInfo.getTradeamount();
 			}else{

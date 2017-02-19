@@ -64,7 +64,7 @@ public class TaskUtils {
 				e.printStackTrace();
 			}
 		}
-		log.info("任务名称 = [" + scheduleJob.getJobName() + "]----------启动成功");
+		log.debug("任务名称 = [" + scheduleJob.getJobName() + "]----------启动成功");
 	}
 	
 	public static String getCron(java.util.Date  date){  

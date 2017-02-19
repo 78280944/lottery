@@ -17,7 +17,7 @@ public interface LotteryReportMapper {
     List<AgencyWinReportDto> selectWinReportByAgency(@Param("startTime")Date startTime,@Param("endTime")Date endTime,@Param("supUsername")String supUsername,@Param("beginRow")Integer beginRow,@Param("pageSize")Integer pageSize);
     List<TradeReportDto> selectByTradeReport(@Param("startTime")Date startTime,@Param("endTime")Date endTime,@Param("supUsername")String supUsername,@Param("userName")String userName, @Param("beginRow")Integer beginRow,@Param("pageSize")Integer pageSize);
     
-    List<InoutReportDto> selectByInoutReport(@Param("startTime")Date startTime,@Param("endTime")Date endTime,@Param("supUsername")String supUsername, @Param("beginRow")Integer beginRow,@Param("pageSize")Integer pageSize);
+    List<InoutReportDto> selectByInoutReport(@Param("startTime")Date startTime,@Param("endTime")Date endTime,@Param("supUsername")String supUsername,@Param("offType")String offType, @Param("beginRow")Integer beginRow,@Param("pageSize")Integer pageSize);
  
     List<HistoryOrderDto> selectByCurRoundOrder(@Param("roundId")Integer roundId, @Param("accountId")Integer accountId);
     
