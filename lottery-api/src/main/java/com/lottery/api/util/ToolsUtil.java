@@ -126,7 +126,7 @@ public class ToolsUtil {
 	
 	//查询范围判断
 	public static boolean checkQuery(String parameter){
-		String objectString = "Y1,Y2,Y3,Y4,Y5";
+		String objectString = "M1,M2,Y3,Y4,Y5";
 		String[] temp = objectString.split(",");
 		String[] para = parameter.split(",");
 		int count = 0;

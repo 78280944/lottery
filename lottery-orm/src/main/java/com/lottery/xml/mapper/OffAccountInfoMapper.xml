@@ -272,6 +272,21 @@
 	limit #{beginrow,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
 	</if>
   </select>
+  
+  <select id="selectBySupuserAndRatio" resultMap="BaseResultMap">  
+    select 
+    <include refid="Base_Column_List" />
+    from offaccount_info
+    where supusername = #{supusername,jdbcType=VARCHAR} and offtype = #{offtype,jdbcType=VARCHAR} order by ratio desc
+  </select>
+  
+  <select id="selectBySupuserAndPer" resultMap="BaseResultMap">  
+    select 
+    <include refid="Base_Column_List" />
+    from offaccount_info
+    where supusername = #{supusername,jdbcType=VARCHAR} and offtype = #{offtype,jdbcType=VARCHAR} order by percentage desc
+  </select>  
+  
   <select id="selectByUsername" parameterType="java.lang.String" resultMap="BaseResultMap">  
     select 
     <include refid="Base_Column_List" />

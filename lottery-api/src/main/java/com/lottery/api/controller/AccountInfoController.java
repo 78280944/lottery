@@ -112,7 +112,6 @@ public class AccountInfoController {
 				rAcDto.setWebchat(null==accountInfo.getWebchat()||"".equals(accountInfo.getWebchat()) ? "":accountInfo.getWebchat());
 				rAcDto.setPercentage(0.0);
 				rAcDto.setQuery("");
-				rAcDto.setManage("");
 				rAcDto.setOfftype("3");
 				rAcDto.setAccountID(accountDetail.getAccountid());
 				rAcDto.setRiskamount("");
@@ -148,7 +147,7 @@ public class AccountInfoController {
 					rAcDto.setWebchat("");
 					rAcDto.setPercentage(null==offaccountInfo.getPercentage()||"".equals(offaccountInfo.getPercentage())||0.0==offaccountInfo.getPercentage() ?0.0:offaccountInfo.getPercentage());
 					rAcDto.setQuery(null==offaccountInfo.getQuery()||"".equals(offaccountInfo.getQuery()) ? "":offaccountInfo.getQuery());
-					rAcDto.setManage(null==offaccountInfo.getManage()||"".equals(offaccountInfo.getManage()) ? "":offaccountInfo.getManage());
+					//rAcDto.setManage(null==offaccountInfo.getManage()||"".equals(offaccountInfo.getManage()) ? "":offaccountInfo.getManage());
 					rAcDto.setOfftype(offaccountInfo.getOfftype());
 					rAcDto.setAccountID(accountDetail.getAccountid());
 					rAcDto.setAccountAmount(null==accountDetail.getMoney()||"".equals(accountDetail.getMoney())||BigDecimal.valueOf(0) == accountDetail.getMoney()?BigDecimal.valueOf(0):accountDetail.getMoney());

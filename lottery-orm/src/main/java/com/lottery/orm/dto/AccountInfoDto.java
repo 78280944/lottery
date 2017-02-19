@@ -27,11 +27,11 @@ public class AccountInfoDto extends BaseAccountDto {
 	@ApiModelProperty(value = "代理占成", required = true)
 	private Double percentage;
 	
-	@ApiModelProperty(value = "查询权限", required = true)
+	@ApiModelProperty(value = "管理权限", required = true)
 	private String query;
 	
-	@ApiModelProperty(value = "管理权限", required = true)
-	private String manage;
+	//@ApiModelProperty(value = "管理权限", required = true)
+	//private String manage;
 	
 	@ApiModelProperty(value = "账户类型", required = true)
 	private String offtype;
@@ -114,14 +114,6 @@ public class AccountInfoDto extends BaseAccountDto {
 
 	public void setQuery(String query) {
 		this.query = query;
-	}
-
-	public String getManage() {
-		return manage;
-	}
-
-	public void setManage(String manage) {
-		this.manage = manage;
 	}
 
 	public String getOfftype() {

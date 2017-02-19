@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.ibatis.annotations.Param;
 import org.apache.log4j.Logger;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.lottery.api.dto.AccountInfoVo;
 import com.lottery.api.dto.LoginParamVo;
+import com.lottery.api.dto.NoticeInfoVo;
+import com.lottery.api.dto.NoticeTypeVo;
 import com.lottery.api.dto.OffAccountInfoVo;
 import com.lottery.api.dto.UpdateAccountPerVo;
 import com.lottery.api.dto.UpdateAccountRatioVo;
@@ -31,13 +34,16 @@ import com.lottery.api.dto.UpdatePlayStateVo;
 import com.lottery.api.util.ToolsUtil;
 import com.lottery.orm.bo.AccountDetail;
 import com.lottery.orm.bo.AccountInfo;
+import com.lottery.orm.bo.NoticeInfo;
 import com.lottery.orm.bo.OffAccountInfo;
 import com.lottery.orm.dao.AccountDetailMapper;
 import com.lottery.orm.dao.AccountInfoMapper;
+import com.lottery.orm.dao.NoticeInfoMapper;
 import com.lottery.orm.dao.OffAccountInfoMapper;
 import com.lottery.orm.dto.OffAccountDto;
 import com.lottery.orm.result.OffAccountListResult;
 import com.lottery.orm.result.OffAccountResult;
+import com.lottery.orm.result.RemarkResult;
 import com.lottery.orm.result.RestResult;
 import com.lottery.orm.service.AccountInfoService;
 import com.lottery.orm.service.OffAccountInfoService;
@@ -70,6 +76,9 @@ public class OffAccountInfoController {
 	
 	@Autowired
     private AccountDetailMapper accountDetailMapper;
+	
+	@Autowired
+    private NoticeInfoMapper noticeInfoMapper;
 	
 	@ApiOperation(value = "获取代理信息", notes = "获取代理信息", httpMethod = "POST")
 	@RequestMapping(value = "/getOffAccountInfo", method = RequestMethod.POST)
@@ -110,7 +119,7 @@ public class OffAccountInfoController {
 		      rAcDto.setRatio(null==OffAccountInfo.getRatio()||"".equals(OffAccountInfo.getRatio())||0.0==OffAccountInfo.getRatio() ?0.0:OffAccountInfo.getRatio());
 		      rAcDto.setPercentage(null==OffAccountInfo.getPercentage()||"".equals(OffAccountInfo.getPercentage())||0.0==OffAccountInfo.getPercentage() ?0.0:OffAccountInfo.getPercentage());
 		      rAcDto.setQuery(null==OffAccountInfo.getQuery()||"".equals(OffAccountInfo.getQuery()) ?"":OffAccountInfo.getQuery());
-		      rAcDto.setManage(null==OffAccountInfo.getManage()||"".equals(OffAccountInfo.getManage()) ?"":OffAccountInfo.getManage());
+		      //rAcDto.setManage(null==OffAccountInfo.getManage()||"".equals(OffAccountInfo.getManage()) ?"":OffAccountInfo.getManage());
 		      rAcDto.setState(null==OffAccountInfo.getState()||"".equals(OffAccountInfo.getState()) ?"":OffAccountInfo.getState());
 		      rAcDto.setSupusername(null==OffAccountInfo.getSupusername()||"".equals(OffAccountInfo.getSupusername()) ?"":OffAccountInfo.getSupusername());
 		      rAcDto.setLevel(null==OffAccountInfo.getLevel()||"".equals(OffAccountInfo.getLevel()) ?"":OffAccountInfo.getLevel());
@@ -227,8 +236,8 @@ public class OffAccountInfoController {
 				      return result;	
 				}
 
-			    paraInfo.setQuery("Y1,Y2,Y3,Y4,Y5");
-			    paraInfo.setManage("M1,M2,M3,M4,M5");
+			    paraInfo.setQuery("M1,M2,Y3,Y4,Y5");
+			    paraInfo.setManage("");
 			    paraInfo.setState("1");//默认状态正常
 			    paraInfo.setLevel(ToolsUtil.decideLevel(level));
 			    paraInfo.setOfftype("1");
@@ -419,7 +428,7 @@ public class OffAccountInfoController {
 		      rAcDto.setRatio(null==OffAccountInfos.get(i).getRatio()||"".equals(OffAccountInfos.get(i).getRatio())||0.0==OffAccountInfos.get(i).getRatio() ?0.0:OffAccountInfos.get(i).getRatio());
 		      rAcDto.setPercentage(null==OffAccountInfos.get(i).getPercentage()||"".equals(OffAccountInfos.get(i).getPercentage())||0.0==OffAccountInfos.get(i).getPercentage() ?0.0:OffAccountInfos.get(i).getPercentage());
 		      rAcDto.setQuery(null==OffAccountInfos.get(i).getQuery()||"".equals(OffAccountInfos.get(i).getQuery()) ?"":OffAccountInfos.get(i).getQuery());
-		      rAcDto.setManage(null==OffAccountInfos.get(i).getManage()||"".equals(OffAccountInfos.get(i).getManage()) ?"":OffAccountInfos.get(i).getManage());
+		      //rAcDto.setManage(null==OffAccountInfos.get(i).getManage()||"".equals(OffAccountInfos.get(i).getManage()) ?"":OffAccountInfos.get(i).getManage());
 		      rAcDto.setState(null==OffAccountInfos.get(i).getState()||"".equals(OffAccountInfos.get(i).getState()) ?"":OffAccountInfos.get(i).getState());
 		      rAcDto.setSupusername(null==OffAccountInfos.get(i).getSupusername()||"".equals(OffAccountInfos.get(i).getSupusername()) ?"":OffAccountInfos.get(i).getSupusername());
 		      rAcDto.setLevel(null==OffAccountInfos.get(i).getLevel()||"".equals(OffAccountInfos.get(i).getLevel()) ?"":OffAccountInfos.get(i).getLevel());
@@ -730,6 +739,17 @@ public class OffAccountInfoController {
 			if(offAccountInfo==null){
 			      result.fail(MessageTool.Code_3001);
 			}else{
+				
+				//下线的洗码比对比
+				List<OffAccountInfo> offAccountInfos = offAccountInfoMapper.selectBySupuserAndPer(offAccountInfo.getUsername(),offAccountInfo.getOfftype());
+                if (offAccountInfos.size()>=1){
+                	if (percentage<offAccountInfos.get(0).getPercentage()){
+      			        result.fail("下级代理占成为"+offAccountInfos.get(0).getPercentage()+",",MessageTool.Code_2008);
+    			        LOG.info(result.getMessage());
+    			        return result;
+                	}
+                }
+				
 				offAccountInfo.setPercentage(percentage);
 				offAccountInfo.setIp(ip);
 				offAccountInfoMapper.updateByPrimaryKey(offAccountInfo);
@@ -766,6 +786,15 @@ public class OffAccountInfoController {
 			if(offAccountInfo==null){
 			      result.fail(MessageTool.Code_3001);
 			}else{
+				//下线的洗码比对比
+				List<OffAccountInfo> offAccountInfos = offAccountInfoMapper.selectBySupuserAndRatio(offAccountInfo.getUsername(),offAccountInfo.getOfftype());
+                if (offAccountInfos.size()>=1){
+                	if (ratio<offAccountInfos.get(0).getRatio()){
+      			        result.fail("下级代理洗码比为"+offAccountInfos.get(0).getRatio()+",",MessageTool.Code_2007);
+    			        LOG.info(result.getMessage());
+    			        return result;
+                	}
+                }
 				offAccountInfo.setRatio(ratio);
 				offAccountInfo.setIp(ip);
 				offAccountInfoMapper.updateByPrimaryKey(offAccountInfo);
@@ -815,4 +844,86 @@ public class OffAccountInfoController {
 		}
 		return result;
 	}
+	
+	@ApiOperation(value = "超级用户修改公告", notes = "超级用户修改公告", httpMethod = "POST")
+	@RequestMapping(value = "/updateNotice", method = RequestMethod.POST)
+	@ResponseBody
+	public RestResult updateAccountRemark(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody NoticeInfoVo param) throws Exception {
+		RestResult result = new RestResult();
+		try {
+			int noticeid = 1; //默认
+			String title = param.getTitle();
+			String notice = param.getNotice();
+			String stype = param.getStype();
+            String supusername = param.getSupusername();
+            int offtype = param.getOfftype();
+			String ip = param.getIp();
+	
+			if (stype.equals("")||!(stype.equals("0")||stype.equals("1"))){
+			      result.fail("公告类型",MessageTool.Code_1005);
+			      LOG.info(result.getMessage());
+			      return result;
+			}
+			if (stype.equals("0"))
+				noticeid = 1;
+			else if (stype.equals("1"))
+				noticeid = 2;
+			//NoticeInfo noticeInfo  = mapper.map(param, NoticeInfo.class);
+
+            NoticeInfo noticeInfo = noticeInfoMapper.selectByPrimaryKey(noticeid);
+			if(noticeInfo==null){
+			      result.fail(MessageTool.Code_4001);
+			}else{
+				noticeInfo.setTitle(title);
+				noticeInfo.setNotice(notice);
+				noticeInfo.setStype(stype);
+				noticeInfo.setSupusername(supusername);
+				noticeInfo.setOfftype(String.valueOf(offtype));
+				noticeInfo.setUpdateip(ip);
+				noticeInfo.setState("1");
+				noticeInfo.setUpdatedate(new Date());
+				noticeInfoMapper.updateByPrimaryKey(noticeInfo);
+			    LOG.info("修改公告记录详情为："+" 管理员："+supusername+" 账户类型："+offtype+" IP："+ip+" 修改公告ID"+noticeid+" 状态修改为"+noticeInfo.getNoticeid());
+			    result.success();
+			}
+			LOG.info(result.getMessage());
+		} catch (Exception e) {
+			result.error();
+			LOG.error(e.getMessage(),e);
+		}
+		return result;
+	}
+	
+	@ApiOperation(value = "获取公告", notes = "获取公告", httpMethod = "POST")
+	@RequestMapping(value = "/getNotice", method = RequestMethod.POST)
+	@ResponseBody
+	public RestResult getNotice(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody NoticeTypeVo param) throws Exception {
+		RestResult result = new RestResult();
+		try {
+			String stype = param.getStype();
+			if (stype.equals("")||!(stype.equals("0")||stype.equals("1"))){
+			      result.fail("公告类型",MessageTool.Code_1005);
+			      LOG.info(result.getMessage());
+			      return result;
+			}
+			int noticeid = 1;
+			if (stype.equals("0"))
+				noticeid = 1;
+			else if (stype.equals("1"))
+				noticeid = 2;
+
+            NoticeInfo noticeInfo = noticeInfoMapper.selectByPrimaryKey(noticeid);
+			if(noticeInfo==null){
+			      result.fail(MessageTool.Code_4001);
+			}else{
+				result.success(noticeInfo);
+			}
+			LOG.info(result.getMessage());
+		} catch (Exception e) {
+			result.error();
+			LOG.error(e.getMessage(),e);
+		}
+		return result;
+	}
+	
 }

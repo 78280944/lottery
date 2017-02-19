@@ -116,7 +116,7 @@ public class SubAccountInfoController {
 			String supusername = param.getSupusername();	
 			String level = param.getLevel();
 			String query = param.getQuery();
-			String manage = param.getManage();
+			//String manage = param.getManage();
 			//参数合规性校验，必要参数不能为空
 			if (ToolsUtil.isEmptyTrim(username)||ToolsUtil.isEmptyTrim(password)){
 			      result.fail("用户名，密码",MessageTool.Code_2002);
@@ -133,19 +133,19 @@ public class SubAccountInfoController {
 			
 			if (null!=query||!"".equals(query)){
 		        if (ToolsUtil.checkQuery(query)){
-			      result.fail("查询权限设置",MessageTool.Code_1005);
+			      result.fail("权限设置",MessageTool.Code_1005);
 			      LOG.info(result.getMessage());
 			      return result;
 		        }
 			}
-			
+			/*
 			if (null!=manage||!"".equals(manage)){
 				 if (ToolsUtil.checkManage(manage)){
 			      result.fail("管理权限设置",MessageTool.Code_1005);
 			      LOG.info(result.getMessage());
 			      return result;
 				 }
-			}
+			}*/
 			//玩家是否存在，用户名不能一致
 			
 			OffAccountInfo paraInfo = mapper.map(param, OffAccountInfo.class);
@@ -158,6 +158,7 @@ public class SubAccountInfoController {
 				System.out.println("1-----"+param.getPassword());
 			    paraInfo.setState("1");//默认状态正常
 			    paraInfo.setOfftype("2");
+			    paraInfo.setManage("");
 			    paraInfo.setInputdate(new Date());
 			    offAccountInfoService.addOffAccountInfo(paraInfo,"2");
 			    result.success();
@@ -264,7 +265,7 @@ public class SubAccountInfoController {
 				      rAcDto.setAusername(null==SubAccountInfos.get(i).getAusername()||"".equals(SubAccountInfos.get(i).getAusername()) ?"":SubAccountInfos.get(i).getAusername());
 				      rAcDto.setPassword(null==SubAccountInfos.get(i).getPassword()||"".equals(SubAccountInfos.get(i).getPassword()) ?"":SubAccountInfos.get(i).getPassword());
 				      rAcDto.setQuery(null==SubAccountInfos.get(i).getQuery()||"".equals(SubAccountInfos.get(i).getQuery()) ?"":SubAccountInfos.get(i).getQuery());
-				      rAcDto.setManage(null==SubAccountInfos.get(i).getManage()||"".equals(SubAccountInfos.get(i).getManage()) ?"":SubAccountInfos.get(i).getManage());
+				      //rAcDto.setManage(null==SubAccountInfos.get(i).getManage()||"".equals(SubAccountInfos.get(i).getManage()) ?"":SubAccountInfos.get(i).getManage());
 				      rAcDto.setState(null==SubAccountInfos.get(i).getState()||"".equals(SubAccountInfos.get(i).getState()) ?"":SubAccountInfos.get(i).getState());
 				      rAcDto.setSupusername(null==SubAccountInfos.get(i).getSupusername()||"".equals(SubAccountInfos.get(i).getSupusername()) ?"":SubAccountInfos.get(i).getSupusername());
 				      rAcDto.setLevel(null==SubAccountInfos.get(i).getLevel()||"".equals(SubAccountInfos.get(i).getLevel()) ?"":SubAccountInfos.get(i).getLevel());

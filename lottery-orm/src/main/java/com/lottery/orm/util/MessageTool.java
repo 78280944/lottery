@@ -21,6 +21,9 @@ public class MessageTool {
 	public final static int Code_2002 = 2002;
 	public final static int Code_2004 = 2004;
 	public final static int Code_2005 = 2005;
+	public final static int Code_2006 = 2006;
+	public final static int Code_2007 = 2007;
+	public final static int Code_2008 = 2008;
 	
 	public final static int Code_3001 = 3001;
 	public final static int Code_3002 = 3002;
@@ -29,6 +32,8 @@ public class MessageTool {
 	public final static int Code_3005 = 3005;
 	public final static int Code_3006 = 3006;
 	public final static int Code_3007 = 3007;
+	
+	public final static int Code_4001 = 4001;
 	
 	private static Properties prop = new Properties();
 	static{

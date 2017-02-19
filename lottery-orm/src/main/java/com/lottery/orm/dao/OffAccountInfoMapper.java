@@ -29,5 +29,9 @@ public interface OffAccountInfoMapper {
     
     List<OffAccountInfo> selectBySupusername(@Param("supusername")String supusername, @Param("offtype")String offtype,@Param("beginrow")Integer beginrow, @Param("pageSize")Integer pageSize);
     
+    List<OffAccountInfo> selectBySupuserAndRatio(@Param("supusername")String supusername, @Param("offtype")String offtype);
+    
+    List<OffAccountInfo> selectBySupuserAndPer(@Param("supusername")String supusername, @Param("offtype")String offtype);
+    
     OffAccountInfo selectByUseridAndType(@Param("userid")Integer userid, @Param("offtype")String offtype);
 }
