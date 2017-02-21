@@ -21,6 +21,21 @@ ORDER BY T1.lvl DESC;
 END$$
 DELIMITER ;
 
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` FUNCTION `getItemNameByNo`(p_itemNo char(255)) RETURNS char(255) CHARSET utf8
+BEGIN  
+DECLARE itemName CHAR(255);  
+
+SET itemName=(SELECT itemNameCN FROM lottery_item WHERE itemNo = p_itemNo and lotteryType='01');  
+IF itemName is null THEN  
+SET itemName='';    
+END IF;    
+RETURN itemName;  
+END$$
+DELIMITER ;
+
+
 ALTER TABLE `lottery`.`lottery_order` 
 ADD COLUMN `SYSTEMAMOUNT` DOUBLE(18,2) NULL AFTER `RETURNAMOUNT`;
 

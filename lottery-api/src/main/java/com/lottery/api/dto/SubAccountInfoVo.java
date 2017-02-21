@@ -4,7 +4,7 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 
 public class SubAccountInfoVo extends BaseAccountInfoVo{
 	
-	@ApiModelProperty(value = "权限管理,M1(账号管理)，M2(子账户管理),Y3(输赢报表),Y4(交易记录报表),Y5(点数出入报表)")
+	@ApiModelProperty(value = "权限管理,M1(账号管理)，M2(子账户管理)")
 	private String query;
 	//@ApiModelProperty(value = "管理权限,M1(账号管理)，M2(子账户管理),M3(输赢报表),M4(交易记录报表),M5(点数出入报表)")
 	//private String manage;

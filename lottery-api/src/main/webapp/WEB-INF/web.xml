@@ -30,13 +30,13 @@
 	</servlet-mapping>
 	
 	<!-- Filter for Auth -->
-	<!-- <filter>
+	<filter>
 		<filter-name>restAuthFilter</filter-name>
 		<filter-class>com.lottery.api.filter.RestAuthFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>restAuthFilter</filter-name>
 		<url-pattern>/lottery/*</url-pattern>
-	</filter-mapping> -->
+	</filter-mapping>
 </web-app>
 

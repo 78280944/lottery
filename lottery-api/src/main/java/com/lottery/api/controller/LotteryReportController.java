@@ -64,8 +64,8 @@ public class LotteryReportController {
 				Date startTime = QueryTool.getPeroidStartTime(initDate.toDate());
 				Date endTime = (new DateTime(startTime)).plusDays(27).toDate();
 				QueryDateDto queryDate = new QueryDateDto();
-				queryDate.setStartTime(startTime);
-				queryDate.setEndTime(endTime);
+				queryDate.setStartDate(startTime);
+				queryDate.setEndDate(endTime);
 				result.success(queryDate);
 			LOG.info(result.getMessage());
 		} catch (Exception e) {

@@ -16,22 +16,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.lottery.api.dto.AccountInfoVo;
-import com.lottery.api.dto.LoginParamVo;
 import com.lottery.api.dto.SubAccountInfoVo;
 import com.lottery.api.dto.UpdatePlayPassVo;
 import com.lottery.api.dto.UpdateSubAccAuserVo;
+import com.lottery.api.dto.UpdateSubAccRightVo;
 import com.lottery.api.dto.UpdateSubAccStateVo;
-import com.lottery.api.dto.UpdateSubAccountVo;
 import com.lottery.api.util.ToolsUtil;
 import com.lottery.orm.bo.AccountDetail;
-import com.lottery.orm.bo.AccountInfo;
 import com.lottery.orm.bo.OffAccountInfo;
 import com.lottery.orm.dao.AccountDetailMapper;
 import com.lottery.orm.dao.OffAccountInfoMapper;
 import com.lottery.orm.dto.SubAccountDto;
 import com.lottery.orm.result.RestResult;
 import com.lottery.orm.result.SubAccountListResult;
-import com.lottery.orm.result.SubAccountResult;
 import com.lottery.orm.service.OffAccountInfoService;
 import com.lottery.orm.util.EnumType;
 import com.lottery.orm.util.MessageTool;
@@ -382,6 +379,41 @@ public class SubAccountInfoController {
 				offAccountInfo.setState(state);
 				offAccountInfoMapper.updateByPrimaryKey(offAccountInfo);
 			    LOG.info("修改状态记录详情为："+" 管理员："+supusername+" 账户类型："+offtype+" IP："+ip+" 修改下家ID"+userid+" 状态修改为"+offAccountInfo.getState());
+			    result.success();
+			}
+			LOG.info(result.getMessage());
+		} catch (Exception e) {
+			result.error();
+			LOG.error(e.getMessage(),e);
+		}
+		return result;
+	}
+	
+	@ApiOperation(value = "代理用户修改子账户权限", notes = "代理用户修改子账户权限", httpMethod = "POST")
+	@RequestMapping(value = "/updateSubAccountRight", method = RequestMethod.POST)
+	@ResponseBody
+	public RestResult updateSubAccountState(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody UpdateSubAccRightVo param) throws Exception {
+		RestResult result = new RestResult();
+		try {
+			int userid = param.getUserid();
+			String query = param.getQuery();
+            String supusername = param.getSupusername();
+            int offtype = param.getOfftype();
+			String ip = param.getIp();
+			
+			if (0==userid){
+			      result.fail("用户ID",MessageTool.Code_2002);
+			      LOG.info(result.getMessage());
+			      return result;
+			}
+			
+			OffAccountInfo offAccountInfo = offAccountInfoMapper.selectByPrimaryKey(param.getUserid());
+			if(offAccountInfo==null){
+			      result.fail(MessageTool.Code_3001);
+			}else{
+				offAccountInfo.setQuery(query);
+				offAccountInfoMapper.updateByPrimaryKey(offAccountInfo);
+			    LOG.info("修改状态记录详情为："+" 管理员："+supusername+" 账户类型："+offtype+" IP："+ip+" 修改下家ID"+userid+" 权限修改为"+offAccountInfo.getQuery());
 			    result.success();
 			}
 			LOG.info(result.getMessage());

@@ -8,27 +8,27 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 public class QueryDateDto {
 
 	@ApiModelProperty(value = "开始时间", required = true)
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-	private Date startTime;
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+	private Date startDate;
 	
 	@ApiModelProperty(value = "结束时间", required = true)
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-	private Date endTime;
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+	private Date endDate;
 
-	public Date getStartTime() {
-		return startTime;
+	public Date getStartDate() {
+		return startDate;
 	}
 
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
 	}
 
-	public Date getEndTime() {
-		return endTime;
+	public Date getEndDate() {
+		return endDate;
 	}
 
-	public void setEndTime(Date endTime) {
-		this.endTime = endTime;
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
-	
+
 }
