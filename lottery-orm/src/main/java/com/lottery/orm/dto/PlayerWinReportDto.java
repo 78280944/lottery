@@ -1,5 +1,8 @@
 package com.lottery.orm.dto;
 
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 public class PlayerWinReportDto {
@@ -19,7 +22,8 @@ public class PlayerWinReportDto {
 	private Integer orderId;
 	
 	@ApiModelProperty(value = "下注时间", required = true)
-	private Integer orderTime;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+	private Date orderTime;
 
 	@ApiModelProperty(value = "投注金额", required = true)
 	private Double orderAmount;
@@ -100,11 +104,11 @@ public class PlayerWinReportDto {
 		this.orderId = orderId;
 	}
 
-	public Integer getOrderTime() {
+	public Date getOrderTime() {
 		return orderTime;
 	}
 
-	public void setOrderTime(Integer orderTime) {
+	public void setOrderTime(Date orderTime) {
 		this.orderTime = orderTime;
 	}
 

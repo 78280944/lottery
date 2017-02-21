@@ -49,6 +49,7 @@
 		<quartz.version>2.2.1</quartz.version>
 		<commons-lang3.version>3.5</commons-lang3.version>
 		<httpclient.version>4.5.2</httpclient.version>
+		<jjwt.version>0.7.0</jjwt.version>
 	</properties>
 
 	<build>
@@ -291,6 +292,11 @@
 			    <artifactId>httpclient</artifactId>
 			    <version>${httpclient.version}</version>
 			</dependency>
+			<dependency>
+	            <groupId>io.jsonwebtoken</groupId>
+	            <artifactId>jjwt</artifactId>
+	            <version>${jjwt.version}</version>
+	        </dependency>
 		</dependencies>
 	</dependencyManagement>
 </project>
