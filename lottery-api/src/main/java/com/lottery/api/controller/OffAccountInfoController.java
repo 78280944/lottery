@@ -157,7 +157,6 @@ public class OffAccountInfoController {
 			String supusername = param.getSupusername();
 			Double percentage = null;
 			Double ratio = null;
-			
 			//判断是否有权限新增下线
 			if (level.equals("3")){
 		        result.fail(MessageTool.Code_2004);
@@ -211,20 +210,18 @@ public class OffAccountInfoController {
 				}
 			}
 			param.setPassword(DigestUtils.md5Hex(password));
-			OffAccountInfo paraInfo = mapper.map(param, OffAccountInfo.class);
+			OffAccountInfo paraInfo = mapper.map(param, OffAccountInfo.class);		
 			OffAccountInfo OffAccountInfo = offAccountInfoMapper.selectByUsername(paraInfo.getUsername());
-			//System.out.println("9--------"+OffAccountInfo+"..."+OffAccountInfo.getUsername());
 		    if(OffAccountInfo!=null){ 	
 		    	result.fail(username,MessageTool.Code_2005);
 		    }else{
 				//洗码比逻辑 
 		    	OffAccountInfo = offAccountInfoMapper.selectByUsername(paraInfo.getSupusername());
 		    	if (OffAccountInfo==null){
-		    		result.fail(username,MessageTool.Code_2005);
+		    		result.fail(paraInfo.getSupusername(),MessageTool.Code_2005);
 		    		return result;
 		    	}
-		    	//System.out.println("80----"+ratio+"..."+OffAccountInfo.getRatio());
-				if (ratio>OffAccountInfo.getRatio()){
+		    	if (ratio>OffAccountInfo.getRatio()){
 				      result.fail("洗码比",MessageTool.Code_1008);
 				      LOG.info(result.getMessage());
 				      return result;	
