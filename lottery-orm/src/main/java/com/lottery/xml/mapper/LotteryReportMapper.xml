@@ -46,7 +46,7 @@
   <resultMap id="HistoryOrderMap" type="com.lottery.orm.dto.HistoryOrderDto">
     <result column="ORDERID" jdbcType="INTEGER" property="orderId" />
     <result column="ORDERTIME" jdbcType="TIMESTAMP" property="orderTime" />
-    <result column="ROUNDID" jdbcType="INTEGER" property="roundId" />
+    <result column="LOTTERYTERM" jdbcType="INTEGER" property="lotteryTerm" />
     <result column="ITEMNAMECN" jdbcType="VARCHAR" property="itemNameCN" />
     <result column="DETAILAMOUNT" jdbcType="DECIMAL" property="detailAmount" />
     <result column="ACTUALAMOUNT" jdbcType="DECIMAL" property="actualAmount" />
@@ -167,9 +167,9 @@
   
   <select id="selectByHistoryOrder" resultMap="HistoryOrderMap">
     select 
-    o.ORDERID, ORDERTIME, ROUNDID, i.ITEMNAMECN, d.DETAILAMOUNT, d.ACTUALAMOUNT, d.RETURNAMOUNT, d.ACTUALAMOUNT+d.RETURNAMOUNT AS WINAMOUNT
-    from lottery_order o inner join lottery_order_detail d on o.ORDERID=d.ORDERID left join lottery_item i on d.ITEMNO=i.ITEMNO
-    where o.ACCOUNTID = #{accountId,jdbcType=INTEGER}
+    o.ORDERID, o.ORDERTIME, r.LOTTERYTERM, getItemNameByNo(d.ITEMNO) as ITEMNAMECN, d.DETAILAMOUNT, d.ACTUALAMOUNT, d.RETURNAMOUNT, d.ACTUALAMOUNT+d.RETURNAMOUNT AS WINAMOUNT
+    from lottery_order o,lottery_order_detail d,lottery_round r
+    where o.ORDERID=d.ORDERID and o.ROUNDID=r.ROUNDID and o.ACCOUNTID = #{accountId,jdbcType=INTEGER}
 	<if test="startTime != null and endTime != null">
 	and Date(ORDERTIME) between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
 	</if>

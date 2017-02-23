@@ -13,8 +13,8 @@ public class HistoryOrderDto {
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Date orderTime;
 
-	@ApiModelProperty(value = "游戏ID", required = true)
-	private Integer roundId;
+	@ApiModelProperty(value = "游戏局号", required = true)
+	private String lotteryTerm;
 	
 	@ApiModelProperty(value = "玩法", required = true)
 	private String itemNameCN;
@@ -47,12 +47,12 @@ public class HistoryOrderDto {
 		this.orderTime = orderTime;
 	}
 
-	public Integer getRoundId() {
-		return roundId;
+	public String getLotteryTerm() {
+		return lotteryTerm;
 	}
 
-	public void setRoundId(Integer roundId) {
-		this.roundId = roundId;
+	public void setLotteryTerm(String lotteryTerm) {
+		this.lotteryTerm = lotteryTerm;
 	}
 
 	public String getItemNameCN() {
