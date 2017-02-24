@@ -9,7 +9,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.lottery.api.filter.InvalidClientException;
+import com.lottery.api.filter.LockedClientException;
+import com.lottery.orm.result.BaseRestResult;
 import com.lottery.orm.result.RestResult;
+import com.lottery.orm.util.MessageTool;
 
 @ControllerAdvice
 public class ControllerValidationHandler {
@@ -35,4 +39,22 @@ public class ControllerValidationHandler {
 		}
 		return message;
 	}
+	
+	@ExceptionHandler(value = InvalidClientException.class)
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	@ResponseBody
+    public BaseRestResult exception(InvalidClientException exception) {
+		BaseRestResult result = new BaseRestResult();
+		result.setCode(MessageTool.InvlidClientCode);
+		return result;
+    }
+	
+	@ExceptionHandler(value = LockedClientException.class)
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	@ResponseBody
+    public BaseRestResult exception(LockedClientException exception) {
+		BaseRestResult result = new BaseRestResult();
+		result.setCode(MessageTool.Code_5001);
+		return result;
+    }
 }

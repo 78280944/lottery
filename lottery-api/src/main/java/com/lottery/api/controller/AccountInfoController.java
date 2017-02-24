@@ -9,6 +9,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,12 +20,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.lottery.api.dto.AccountInfoVo;
 import com.lottery.api.dto.LoginParamVo;
 import com.lottery.api.dto.PlayAccountInfoVo;
-import com.lottery.api.dto.RemarkInfoVo;
 import com.lottery.api.dto.UpdateAccountVo;
-import com.lottery.api.dto.UpdatePalyAccountVo;
-import com.lottery.api.dto.UpdatePlayAmountVo;
-import com.lottery.api.dto.UpdatePlayPassVo;
-import com.lottery.api.dto.UpdateSubAccAuserVo;
+import com.lottery.api.util.Des3Util;
 import com.lottery.api.util.ToolsUtil;
 import com.lottery.orm.bo.AccountDetail;
 import com.lottery.orm.bo.AccountInfo;
@@ -39,10 +36,8 @@ import com.lottery.orm.result.AccountResult;
 import com.lottery.orm.result.RemarkResult;
 import com.lottery.orm.result.RestResult;
 import com.lottery.orm.service.AccountInfoService;
-import com.lottery.orm.util.EnumType;
 import com.lottery.orm.util.MessageTool;
 import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiModelProperty;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
 
@@ -66,6 +61,12 @@ public class AccountInfoController {
 	
 	@Autowired
     private OffAccountInfoMapper offAccountInfoMapper;
+	
+	@Value("${jwt.splitter}")
+    private String tokenSplitter;
+	
+	@Value("${jwt.secret}")
+    private String tokenSecret;
 
 	
 	@ApiOperation(value = "获取玩家或者代理商、子代理商信息", notes = "获取玩家或者代理商、子代理商信息", httpMethod = "POST")
@@ -121,6 +122,7 @@ public class AccountInfoController {
 			    rAcDto.setLeriskamount(leOffAccountInfo.getRiskamount());
 				//System.out.println("55---------"+accountDetail.getMoney());
 				rAcDto.setAccountAmount(null==accountDetail.getMoney()||"".equals(accountDetail.getMoney())||BigDecimal.valueOf(0) == accountDetail.getMoney()?BigDecimal.valueOf(0):accountDetail.getMoney());
+				rAcDto.setToken((new Des3Util()).encode(accountDetail.getAccountid()+tokenSplitter+tokenSecret));
 				result.success(rAcDto);
 		    }else {
 		    	OffAccountInfo offparaInfo = mapper.map(param, OffAccountInfo.class);
@@ -152,6 +154,7 @@ public class AccountInfoController {
 					rAcDto.setAccountID(accountDetail.getAccountid());
 					rAcDto.setAccountAmount(null==accountDetail.getMoney()||"".equals(accountDetail.getMoney())||BigDecimal.valueOf(0) == accountDetail.getMoney()?BigDecimal.valueOf(0):accountDetail.getMoney());
 					rAcDto.setRiskamount(null==offaccountInfo.getRiskamount()||"".equals(offaccountInfo.getRiskamount()) ?"":offaccountInfo.getRiskamount());
+					rAcDto.setToken((new Des3Util()).encode(accountDetail.getAccountid()+tokenSplitter+tokenSecret));
 					result.success(rAcDto);	
 		    	}else
 		    	   result.fail(MessageTool.Code_3001);

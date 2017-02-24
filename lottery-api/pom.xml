@@ -16,6 +16,10 @@
 					<artifactId>spring-dao</artifactId>
 					<groupId>org.springframework</groupId>
 				</exclusion>
+				<exclusion>
+					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 
@@ -38,10 +42,10 @@
 		</dependency>
 
 		<!-- Servlet相关 -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>tomcat</groupId>
 			<artifactId>servlet-api</artifactId>
-		</dependency>
+		</dependency> -->
 
 		<!-- Log相关 -->
 		<dependency>

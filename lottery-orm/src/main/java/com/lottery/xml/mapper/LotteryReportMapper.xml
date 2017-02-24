@@ -2,12 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lottery.orm.dao.LotteryReportMapper">
   <resultMap id="PlayerWinReportMap" type="com.lottery.orm.dto.PlayerWinReportDto">
-    <result column="ACCOUNTID" jdbcType="INTEGER" property="accountId" />
     <result column="USERNAME" jdbcType="VARCHAR" property="userName" />
     <result column="SUPUSERNAME" jdbcType="VARCHAR" property="supUserName" />
-    <result column="LOTTERYTERM" jdbcType="VARCHAR" property="lotteryTerm" />
-    <result column="ORDERID" jdbcType="INTEGER" property="orderId" />
-    <result column="ORDERTIME" jdbcType="TIMESTAMP" property="orderTime" />
     <result column="ORDERAMOUNT" jdbcType="DECIMAL" property="orderAmount" />
     <result column="ACTUALAMOUNT" jdbcType="DECIMAL" property="actualAmount" />
     <result column="RETURNAMOUNT" jdbcType="DECIMAL" property="returnAmount" />
@@ -56,7 +52,7 @@
   
   <select id="selectWinReportByPlayer" resultMap="PlayerWinReportMap">
     select 
-    a.ACCOUNTID, a.USERNAME, a.SUPUSERNAME,r.LOTTERYTERM, o.ORDERID, o.ORDERTIME, ORDERAMOUNT, ACTUALAMOUNT, RETURNAMOUNT, ACTUALAMOUNT+RETURNAMOUNT as WINAMOUNT, SYSTEMAMOUNT
+    a.USERNAME, a.SUPUSERNAME, sum(ORDERAMOUNT) as ORDERAMOUNT, sum(ACTUALAMOUNT) as ACTUALAMOUNT, sum(RETURNAMOUNT) as RETURNAMOUNT, sum(ACTUALAMOUNT+RETURNAMOUNT) as WINAMOUNT, sum(SYSTEMAMOUNT) as SYSTEMAMOUNT
     from account_detail a, lottery_order o, lottery_round r
     where a.ACCOUNTID = o.ACCOUNTID and o.ROUNDID=r.ROUNDID and o.PRIZETIME is not null
 	<if test="startTime != null and endTime != null">
@@ -76,7 +72,8 @@
 	      WHERE FIND_IN_SET(supusername, @Ids)
 	   ) temp2 )
 	)]]>
-	order by o.ORDERTIME desc
+	group by a.USERNAME, a.SUPUSERNAME
+	order by a.USERNAME
 	<if test="beginRow != null and pageSize !=null">
 	limit #{beginRow,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
 	</if>
@@ -103,8 +100,8 @@
 	      WHERE FIND_IN_SET(supusername, @Ids)
 	   ) temp2 )
 	)]]>
-    group by a.ACCOUNTID
-    order by o.ORDERTIME desc
+    group by a.USERNAME
+    order by a.USERNAME
 	<if test="beginRow != null and pageSize !=null">
 	limit #{beginRow,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
 	</if>

@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+import org.joda.time.Minutes;
 import org.quartz.CronScheduleBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,10 +49,16 @@ public class LotteryRoundService {
 
 	// 添加投注单
 	public boolean addLotteryRound(LotteryRound round) throws Exception {
-		round.setRoundstatus(EnumType.RoundStatus.Open.ID);
-		round.setStarttime(new Date());
+		
 		DateTime openTime = new DateTime(round.getOpentime());
-		round.setClosetime(openTime.minusMinutes(2).toDate());//开奖前2分钟封盘
+		DateTime nowTime = new DateTime(new Date());
+		DateTime closeTime = openTime.minusMinutes(2);//开奖前2分钟封盘
+		if(Minutes.minutesBetween(nowTime, closeTime).getMinutes()>10){//如果封盘离现在的时间超过10分钟,则从开始时间往后推8分钟来确定封盘时间
+			closeTime = nowTime.plusMinutes(8);
+		}
+		round.setRoundstatus(EnumType.RoundStatus.Open.ID);
+		round.setStarttime(nowTime.toDate());
+		round.setClosetime(closeTime.toDate());//开奖前2分钟封盘
 		LotteryRound existRound = customLotteryMapper.selectRoundByTypeAndTerm(round.getLotterytype(), round.getLotteryterm());
 		if(existRound==null){
 			List<LotteryItem> itemList = customLotteryMapper.selectItemByLotteryType(round.getLotterytype());

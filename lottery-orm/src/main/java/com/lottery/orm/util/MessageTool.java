@@ -12,6 +12,7 @@ public class MessageTool {
 	public final static int SuccessCode = 2000;
 	public final static int FailCode = 3000;
 	public final static int ErrorCode = 4000;
+	public final static int InvlidClientCode = 5000;
 	public final static int Code_1004 = 1004;
 	public final static int Code_1005 = 1005;
 	public final static int Code_1006 = 1006;
@@ -34,6 +35,8 @@ public class MessageTool {
 	public final static int Code_3007 = 3007;
 	
 	public final static int Code_4001 = 4001;
+	public final static int Code_5000 = 5000;
+	public final static int Code_5001 = 5001;
 	
 	private static Properties prop = new Properties();
 	static{

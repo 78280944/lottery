@@ -60,6 +60,7 @@ public class BaseRestResult {
 
 	public void setCode(int code) {
 		this.code = code;
+		this.message = MessageTool.getMsg(code);
 	}
 
 	public String getMessage() {

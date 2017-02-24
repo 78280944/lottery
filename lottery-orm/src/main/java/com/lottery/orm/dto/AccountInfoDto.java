@@ -51,6 +51,9 @@ public class AccountInfoDto extends BaseAccountDto {
 	@ApiModelProperty(value = "上级风险限额", required = true)
 	private String leriskamount;
 	
+	@ApiModelProperty(value = "接口口令", required = true)
+	private String token;
+	
 	/*
 	public Double getLelimited() {
 		return lelimited;
@@ -164,4 +167,12 @@ public class AccountInfoDto extends BaseAccountDto {
 		this.accountAmount = accountAmount;
 	}
 
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+	
 }

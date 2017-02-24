@@ -5,8 +5,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import com.lottery.api.filter.ResponseInterceptor;
 import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
 import com.mangofactory.swagger.models.dto.ApiInfo;
 import com.mangofactory.swagger.paths.SwaggerPathProvider;
@@ -14,9 +17,9 @@ import com.mangofactory.swagger.plugin.EnableSwagger;
 import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
 
 @Configuration
-@EnableWebMvc
 @EnableSwagger
-public class CustomJavaPluginConfig extends WebMvcConfigurerAdapter {
+@EnableWebMvc
+public class CustomJavaPluginConfig {
 
 	private SpringSwaggerConfig springSwaggerConfig;
 
@@ -49,12 +52,12 @@ public class CustomJavaPluginConfig extends WebMvcConfigurerAdapter {
 		return apiInfo;
 	}
 
-	@Override
+	/*@Override
 	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
 		configurer.enable();
-	}
+	}*/
 
-	class GtPaths extends SwaggerPathProvider {
+	/* class GtPaths extends SwaggerPathProvider {
 
 		@Override
 		protected String applicationPath() {
@@ -66,5 +69,19 @@ public class CustomJavaPluginConfig extends WebMvcConfigurerAdapter {
 			return "/restapi";
 		}
 	}
-
+	
+	@Bean
+	ResponseInterceptor responseInterceptor() {
+         return new ResponseInterceptor();
+    }
+	
+	@Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(responseInterceptor()).addPathPatterns("/**").excludePathPatterns("/swagger/**").excludePathPatterns("/account/getAccountInfo");
+    }
+	 
+	 @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/**").addResourceLocations("/");
+    }*/
 }
