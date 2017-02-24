@@ -68,14 +68,29 @@
 			<generatedKey column="serialno" sqlStatement="MySql" identity="true"/> 
 	    </table> -->
 	    
-	   <table tableName="lottery_round" domainObjectName="LotteryRound"
+	   <!-- <table tableName="lottery_round" domainObjectName="LotteryRound"
 	    	enableCountByExample="false"
 			enableUpdateByExample="false" 
 			enableDeleteByExample="false"
 			enableSelectByExample="false" 
 			selectByExampleQueryId="false">
 			<generatedKey column="roundid" sqlStatement="MySql" identity="true"/> 
-	    </table>
+	    </table> -->
+	    <!-- <table tableName="lottery_order" domainObjectName="LotteryOrder"
+	    	enableCountByExample="false"
+			enableUpdateByExample="false" 
+			enableDeleteByExample="false"
+			enableSelectByExample="false" 
+			selectByExampleQueryId="false">
+			<generatedKey column="orderid" sqlStatement="MySql" identity="true"/> 
+	    </table> -->
 	    
+	    <table tableName="lottery_order_detail" domainObjectName="LotteryOrderDetail"
+	    	enableCountByExample="false"
+			enableUpdateByExample="false" 
+			enableDeleteByExample="false"
+			enableSelectByExample="false" 
+			selectByExampleQueryId="false">
+	    </table>
 	</context>
 </generatorConfiguration>
