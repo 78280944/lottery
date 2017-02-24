@@ -333,7 +333,12 @@ public class OffAccountInfoController {
 			}else{
 				accountInfo.setState(state);
 				accountInfo.setIp(ip);
+				//修改用户状态
 			    accountInfoService.updateAccountInfo(accountInfo);
+			    //修改账户状态
+			    AccountDetail accountDetail = accountDetailMapper.selectByUserId(accountInfo.getUserid(), "3");
+			    accountDetail.setState(state);
+			    accountDetailMapper.updateByPrimaryKey(accountDetail);
 			    LOG.info("修改玩家状态记录详情为："+" 管理员："+supusername+" 账户类型："+offtype+" IP："+ip+" 修改玩家ID"+userid+" 状态修改为"+accountInfo.getState());
 			    result.success();
 			}
@@ -536,6 +541,19 @@ public class OffAccountInfoController {
 				offAccountInfo.setState(state);
 				offAccountInfo.setIp(ip);
 				offAccountInfoMapper.updateByPrimaryKey(offAccountInfo);
+				//修改用户的状态
+				offAccountInfo.setSupusername(offAccountInfo.getUsername());
+				offAccountInfoMapper.updateOffAccountState(offAccountInfo);
+				
+				//修改账户的状态
+				AccountDetail accountDetail = accountDetailMapper.selectByUserId(offAccountInfo.getUserid(), offAccountInfo.getOfftype());
+				accountDetail.setState(state);
+				accountDetail.setSupusername(offAccountInfo.getSupusername());
+				accountDetailMapper.updateAccountDetailState(accountDetail);
+				accountDetailMapper.updateByPrimaryKey(accountDetail);
+				//修改玩家的状态
+				accountInfoMapper.updateAccountState(state,offAccountInfo.getSupusername());
+				accountInfoMapper.updateAccountSupuserState(state,offAccountInfo.getSupusername());
 			    LOG.info("修改状态记录详情为："+" 管理员："+supusername+" 账户类型："+offtype+" IP："+ip+" 修改下家ID"+userid+" 状态修改为"+offAccountInfo.getState());
 			    result.success();
 			}

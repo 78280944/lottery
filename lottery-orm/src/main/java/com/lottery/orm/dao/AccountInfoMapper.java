@@ -19,6 +19,10 @@ public interface AccountInfoMapper {
     int updateByPrimaryKeySelective(AccountInfo record);
 
     int updateByPrimaryKey(AccountInfo record);
+    
+    int updateAccountState(@Param("state")String state,@Param("supusername")String supusername);
+    
+    int updateAccountSupuserState(@Param("state")String state,@Param("supusername")String supusername);
   
     //get account info when login
     AccountInfo selectByLogin(AccountInfo record);

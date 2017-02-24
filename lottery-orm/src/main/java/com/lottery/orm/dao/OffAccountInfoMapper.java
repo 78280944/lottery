@@ -20,6 +20,8 @@ public interface OffAccountInfoMapper {
 
     int updateByPrimaryKey(OffAccountInfo record);
     
+    int updateOffAccountState(OffAccountInfo record);
+    
     //get account info when login
     OffAccountInfo selectByLogin(OffAccountInfo record);
     

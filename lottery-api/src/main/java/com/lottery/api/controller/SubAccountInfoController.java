@@ -251,6 +251,10 @@ public class SubAccountInfoController {
 			}else{
 				offAccountInfo.setState(state);
 				offAccountInfoMapper.updateByPrimaryKey(offAccountInfo);
+				//修改账户状态
+				AccountDetail accountDetail = accountDetailMapper.selectByUserId(offAccountInfo.getUserid(), offAccountInfo.getOfftype());
+				accountDetail.setState(state);
+				accountDetailMapper.updateByPrimaryKey(accountDetail);
 			    LOG.info("修改状态记录详情为："+" 管理员："+supusername+" 账户类型："+offtype+" IP："+ip+" 修改下家ID"+userid+" 状态修改为"+offAccountInfo.getState());
 			    result.success();
 			}

@@ -34,9 +34,9 @@ public class MessageTool {
 	public final static int Code_3007 = 3007;
 	
 	public final static int Code_4001 = 4001;
-	public final static int Online = 0001;
-	public final static int Share = 0002;
-	public final static int Rule = 0003;
+	public final static int Online = 9001;
+	public final static int Share = 9002;
+	public final static int Rule = 9003;
 
 	private static Properties prop = new Properties();
 	static{

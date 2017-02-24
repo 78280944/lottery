@@ -185,6 +185,20 @@
       Attribute2 = #{attribute2,jdbcType=VARCHAR}
     where Userid = #{userid,jdbcType=INTEGER}
   </update>
+  
+  <update id="updateAccountDetailState" parameterType="com.lottery.orm.bo.AccountDetail" >
+    update account_detail
+    set State = #{state,jdbcType=CHAR}
+   	<![CDATA[where FIND_IN_SET(username, 
+	   (SELECT GROUP_CONCAT(Level SEPARATOR ',') FROM (
+	      SELECT @Ids := (SELECT GROUP_CONCAT(username SEPARATOR ',') FROM account_detail WHERE FIND_IN_SET(supusername, @Ids) ) Level
+	      FROM account_detail
+	      JOIN (SELECT @Ids := #{supusername,jdbcType=VARCHAR}) temp1
+	      WHERE FIND_IN_SET(supusername, @Ids)
+	   ) temp2 )
+	)]]>
+  </update>  
+  
   <select id="selectByUserId" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
