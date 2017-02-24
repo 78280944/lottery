@@ -54,53 +54,7 @@ public class SubAccountInfoController {
 	@Autowired
     private AccountDetailMapper accountDetailMapper;
 	
-	/*
-	@ApiOperation(value = "获取子帐号信息", notes = "获取子帐号信息", httpMethod = "POST")
-	@RequestMapping(value = "/getSubAccountInfo", method = RequestMethod.POST)
-	@ResponseBody
-	public SubAccountResult getSubAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody LoginParamVo param) throws Exception {
-		SubAccountResult result = new SubAccountResult();
-		try {
-			
-			String username = param.getUsername();
-			String password = param.getPassword();
-
-			//参数合规性校验，必要参数不能为空
-			if (ToolsUtil.isEmptyTrim(username)||ToolsUtil.isEmptyTrim(password)){
-			      result.fail(MessageTool.Code_2002);
-			      LOG.info(result.getMessage());
-			      return result;
-			}
-			password = DigestUtils.md5Hex(password);
-			OffAccountInfo paraInfo = mapper.map(param, OffAccountInfo.class);
-		    //SubAccountInfo SubAccountInfo = SubAccountInfoService.getSubAccountInfoByLogin(paraInfo);
-		    OffAccountInfo SubAccountInfo = offAccountInfoMapper.selectByLogin(paraInfo);
-			   
-		    if(SubAccountInfo!=null){
-		      SubAccountDto rAcDto = new SubAccountDto();
-		      rAcDto.setUserid(null==SubAccountInfo.getUserid()||"".equals(SubAccountInfo.getUserid())||0==SubAccountInfo.getUserid() ?0:SubAccountInfo.getUserid());
-		      rAcDto.setUsername(null==SubAccountInfo.getUsername()||"".equals(SubAccountInfo.getUsername()) ?"":SubAccountInfo.getUsername());
-		      rAcDto.setAusername(null==SubAccountInfo.getAusername()||"".equals(SubAccountInfo.getAusername()) ?"":SubAccountInfo.getAusername());
-		      rAcDto.setPassword(null==SubAccountInfo.getPassword()||"".equals(SubAccountInfo.getPassword()) ?"":SubAccountInfo.getPassword());
-		      rAcDto.setQuery(null==SubAccountInfo.getQuery()||"".equals(SubAccountInfo.getQuery()) ?"":SubAccountInfo.getQuery());
-		      rAcDto.setManage(null==SubAccountInfo.getManage()||"".equals(SubAccountInfo.getManage()) ?"":SubAccountInfo.getManage());
-		      rAcDto.setState(null==SubAccountInfo.getState()||"".equals(SubAccountInfo.getState()) ?"":SubAccountInfo.getState());
-		      rAcDto.setSupusername(null==SubAccountInfo.getSupusername()||"".equals(SubAccountInfo.getSupusername()) ?"":SubAccountInfo.getSupusername());
-		      rAcDto.setLevel(null==SubAccountInfo.getLevel()||"".equals(SubAccountInfo.getLevel()) ?"":SubAccountInfo.getLevel());
-		      rAcDto.setOfftype(null==SubAccountInfo.getOfftype()||"".equals(SubAccountInfo.getOfftype()) ?"":SubAccountInfo.getOfftype());		      
-		      result.success(rAcDto);        
-		    }else{
-		      result.fail(MessageTool.Code_3001);
-		    }
-			LOG.info(result.getMessage());
-		} catch (Exception e) {
-			result.error();
-			LOG.error(e.getMessage(),e);
-		}
-		return result;
-
-	}
-	*/
+	
 	@ApiOperation(value = "新增子帐号", notes = "新增子帐号", httpMethod = "POST")
 	@RequestMapping(value = "/addSubAccountInfo", method = RequestMethod.POST)
 	@ResponseBody
@@ -135,24 +89,14 @@ public class SubAccountInfoController {
 			      return result;
 		        }
 			}
-			/*
-			if (null!=manage||!"".equals(manage)){
-				 if (ToolsUtil.checkManage(manage)){
-			      result.fail("管理权限设置",MessageTool.Code_1005);
-			      LOG.info(result.getMessage());
-			      return result;
-				 }
-			}*/
-			//玩家是否存在，用户名不能一致
+
 			
 			OffAccountInfo paraInfo = mapper.map(param, OffAccountInfo.class);
 			OffAccountInfo accountInfo = offAccountInfoMapper.selectByUsername(paraInfo.getUsername());
 		    if (accountInfo!=null){
 			      result.fail(username,MessageTool.Code_2005);
 		    }else{
-		    	System.out.println("0-----"+password);
 		    	paraInfo.setPassword(DigestUtils.md5Hex(password));
-				System.out.println("1-----"+param.getPassword());
 			    paraInfo.setState("1");//默认状态正常
 			    paraInfo.setOfftype("2");
 			    paraInfo.setManage("");
@@ -169,78 +113,7 @@ public class SubAccountInfoController {
 		return result;
 	}
 	
-	/*
-	@ApiOperation(value = "修改子帐号", notes = "修改子帐号", httpMethod = "POST")
-	@RequestMapping(value = "/updateSubAccountInfo", method = RequestMethod.POST)
-	@ResponseBody
-	public RestResult updateSubAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody UpdateSubAccountVo param) throws Exception {
-		RestResult result = new RestResult();
-		try {
-			String username = param.getUsername();
-			String password = param.getPassword();
-			String supusername = param.getSupusername();	
-			String level = param.getLevel();
-			String query = param.getQuery();
-			String manage = param.getManage();
-			
-			//参数合规性校验，必要参数不能为空
-			if (ToolsUtil.isEmptyTrim(username)){
-			      result.fail("用户名",MessageTool.Code_2002);
-			      LOG.info(result.getMessage());
-			      return result;
-			}
-			
-			//操作管理，必要参数不能为空		
-			if (ToolsUtil.isEmptyTrim(supusername)||ToolsUtil.isEmptyTrim(level)){
-			      result.fail("管理操作员,代理级别",MessageTool.Code_2002);
-			      LOG.info(result.getMessage());
-			      return result;
-			}
-			
-			if (null!=query||!"".equals(query)){
-		        if (ToolsUtil.checkQuery(query)){
-			      result.fail("查询权限设置",MessageTool.Code_1005);
-			      LOG.info(result.getMessage());
-			      return result;
-		        }
-			}
-			
-			if (null!=manage||!"".equals(manage)){
-				 if (ToolsUtil.checkManage(manage)){
-			      result.fail("管理权限设置",MessageTool.Code_1005);
-			      LOG.info(result.getMessage());
-			      return result;
-				 }
-			}
-			
-			OffAccountInfo SubAccountInfo = offAccountInfoMapper.selectByPrimaryKey(param.getUserid());
-			if(SubAccountInfo==null){
-				result.fail(MessageTool.Code_3001);
-			}else{
-				password = DigestUtils.md5Hex(password);	
-			    OffAccountInfo paraInfo = mapper.map(param, OffAccountInfo.class);
-			    paraInfo.setUsername(null==param.getUsername()||"".equals(param.getUsername()) ? SubAccountInfo.getUsername():param.getUsername());
-			    paraInfo.setAusername(null==param.getAusername()||"".equals(param.getAusername()) ? SubAccountInfo.getAusername():param.getAusername());
-			    paraInfo.setPassword(null==param.getPassword()||"".equals(param.getPassword()) ? SubAccountInfo.getPassword():password);
-			    paraInfo.setQuery(null==param.getQuery()||"".equals(param.getQuery()) ? SubAccountInfo.getQuery():param.getQuery());
-			    paraInfo.setManage(null==param.getManage()||"".equals(param.getManage()) ? SubAccountInfo.getManage():param.getManage());
-			    paraInfo.setLevel(null==param.getLevel()||"".equals(param.getLevel()) ? SubAccountInfo.getLevel():param.getLevel());
-			    paraInfo.setOfftype(SubAccountInfo.getOfftype());   
-			    paraInfo.setState(null==param.getState()||"".equals(param.getState()) ?  SubAccountInfo.getState():param.getState());
-			    paraInfo.setUpdateip(null==param.getIp()||"".equals(param.getIp()) ? SubAccountInfo.getIp():param.getIp());
-			    paraInfo.setUpdatedate(new Date());
-			    offAccountInfoService.updateOffAccountInfo(paraInfo,"2");
-			    
-			    result.success();
-			}
-			LOG.info(result.getMessage());
-		} catch (Exception e) {
-			result.error();
-			LOG.error(e.getMessage(),e);
-		}
-		return result;
-	}
-*/
+
 	@ApiOperation(value = "获取该代理的子账号列表", notes = "获取该代理的子账号列表", httpMethod = "POST")
 	@RequestMapping(value = "/getAllSubAccountInfo", method = RequestMethod.POST)
 	@ResponseBody

@@ -88,7 +88,6 @@ public class AccountInfoController {
 		    AccountInfo paraInfo = mapper.map(param, AccountInfo.class);
 		    AccountInfo accountInfo = accountInfoMapper.selectByLogin(paraInfo);
 		    if(accountInfo!=null){
-		    	System.out.println("9---"+accountInfo.getUserid());
 		    	AccountDetail accountDetail = accountDetailMapper.selectByUserId(accountInfo.getUserid(), "3");
 		    	//获取上级的限额等信息
 			    OffAccountInfo leOffAccountInfo = offAccountInfoMapper.selectByUsername(accountInfo.getSupusername());
@@ -119,12 +118,10 @@ public class AccountInfoController {
 			    rAcDto.setLepercentage(leOffAccountInfo.getPercentage());
 			    rAcDto.setLeratio(leOffAccountInfo.getRatio());
 			    rAcDto.setLeriskamount(leOffAccountInfo.getRiskamount());
-				//System.out.println("55---------"+accountDetail.getMoney());
 				rAcDto.setAccountAmount(null==accountDetail.getMoney()||"".equals(accountDetail.getMoney())||BigDecimal.valueOf(0) == accountDetail.getMoney()?BigDecimal.valueOf(0):accountDetail.getMoney());
 				result.success(rAcDto);
 		    }else {
 		    	OffAccountInfo offparaInfo = mapper.map(param, OffAccountInfo.class);
-		    	System.out.println("8-------"+offparaInfo.getUsername()+".."+offparaInfo.getPassword());
 		    	OffAccountInfo offaccountInfo = offAccountInfoMapper.selectByLogin(offparaInfo);
 		    	if (offaccountInfo!=null){
 			    	AccountDetail accountDetail = accountDetailMapper.selectByUserId(offaccountInfo.getUserid(), offaccountInfo.getOfftype());
@@ -202,24 +199,6 @@ public class AccountInfoController {
 			      return result;
 			}
 			
-			/*
-			//6-14位数字、字母、符号组合
-			if (ToolsUtil.validateSignName(password)){
-			      result.fail("密码",MessageTool.Code_1007);
-			      LOG.info(result.getMessage());
-			      return result;
-			}
-			*/
-			/*
-			//数字型
-			if (null != limited){
-				if (ToolsUtil.isNumeric(String.valueOf(limited))){
-				      result.fail("点数限额",MessageTool.Code_1004);
-				      LOG.info(result.getMessage());
-				      return result;		
-				}
-			}
-			*/
 			//数字型
 			if (null != ratio){
 				if (ToolsUtil.isNumeric(String.valueOf(ratio))){
@@ -277,10 +256,7 @@ public class AccountInfoController {
 			      return result;
 			}
 			
-			System.out.println("--4-------------"+phone);
 			AccountInfo accountInfo = accountInfoMapper.selectByPrimaryKey(param.getUserid());
-			
-			System.out.println("--345-------------"+accountInfo.getPhone());
 			if(accountInfo==null){
 			      result.fail(MessageTool.Code_3001);
 			}else{
@@ -303,7 +279,6 @@ public class AccountInfoController {
 			    paraInfo.setSupusername(accountInfo.getSupusername());
 			    paraInfo.setLevel(accountInfo.getLevel());
 			    paraInfo.setLimited(Double.parseDouble("0.0"));
-			    System.out.println("id.."+paraInfo.getUserid());
 			    accountInfoService.updateAccountInfo(paraInfo);
 			    result.success();
 			}
@@ -314,128 +289,6 @@ public class AccountInfoController {
 		}
 		return result;
 	}
-	
-	
-	
-	
-	
-	/*
-	@ApiOperation(value = "代理用户修改玩家", notes = "代理用户修改玩家", httpMethod = "POST")
-	@RequestMapping(value = "/updatePlayAccountInfo", method = RequestMethod.POST)
-	@ResponseBody
-	public RestResult updateAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody UpdatePalyAccountVo param) throws Exception {
-		RestResult result = new RestResult();
-		try {
-			int userid = param.getUserid();
-			String username = param.getUsername();
-			String ausername = param.getAusername();
-			String password = param.getPassword();
-			String supusername = param.getSupusername();
-			String level = param.getLevel();
-			String state = param.getState();
-			Double limited =  null;
-			Double ratio = null;
-			
-			if (null != param.getLimited())
-				limited = param.getLimited();
-			if (null != param.getRatio())
-				ratio = param.getRatio();
-			
-			
-			//参数合规性校验，必要参数不能为空
-			if (ToolsUtil.isEmptyTrim(username)){
-			      result.fail("用户名",MessageTool.Code_2002);
-			      LOG.info(result.getMessage()); 
-			      return result;
-			}
-			
-			if (ToolsUtil.isEmptyTrim(supusername)||ToolsUtil.isEmptyTrim(level)){
-			      result.fail("管理操作员，代理级别",MessageTool.Code_2002);
-			      LOG.info(result.getMessage());
-			      return result;
-			}
-			
-			if (0==userid){
-			      result.fail("用户ID",MessageTool.Code_2002);
-			      LOG.info(result.getMessage());
-			      return result;
-			}
-			/*
-			//最长14个英文或者数字组合
-			if (ToolsUtil.validatName(username)){
-			      result.fail("用户名",MessageTool.Code_1006);
-			      LOG.info(result.getMessage());
-			      return result;
-			}
-			
-			
-			//6-14位数字、字母、符号组合
-			if (ToolsUtil.validateSignName(password)){
-			      result.fail("密码",MessageTool.Code_1007);
-			      LOG.info(result.getMessage());
-			      return result;
-			}
-			*/
-			
-			/*
-			//数字型
-			if (null != limited){
-				if (ToolsUtil.isNumeric(String.valueOf(limited))){
-				      result.fail("点数限额",MessageTool.Code_1004);
-				      LOG.info(result.getMessage());
-				      return result;		
-				}
-			}
-			
-			//数字型
-			if (null != ratio){
-				if (ToolsUtil.isNumeric(String.valueOf(ratio))){
-				      result.fail("洗码比",MessageTool.Code_1004);
-				      LOG.info(result.getMessage());
-				      return result;		
-				}
-			}
-			
-			
-			//状态判断
-			if (ToolsUtil.betweenRange(state)){
-			      result.fail("状态",MessageTool.Code_1005);
-			      LOG.info(result.getMessage());
-			      return result;	
-			}
-			
-			AccountInfo accountInfo = accountInfoMapper.selectByPrimaryKey(param.getUserid());
-			if(accountInfo==null){
-			      result.fail(MessageTool.Code_3001);
-			}else{
-				password = DigestUtils.md5Hex(password);	
-			    AccountInfo paraInfo = mapper.map(param, AccountInfo.class);
-			    System.out.println("9-----------"+password+"..."+limited+".."+paraInfo.getLimited());
-			    AccountInfo accountInfocheck = accountInfoMapper.selectByUserAndId(paraInfo);
-			    if (accountInfocheck!=null){
-				      result.fail(username,MessageTool.Code_2005);
-				      LOG.info(result.getMessage());
-				      return result;	
-			    }
-			    paraInfo.setUsername(null==param.getUsername()||"".equals(param.getUsername()) ? accountInfo.getUsername():param.getUsername());
-			    paraInfo.setAusername(null==param.getAusername()||"".equals(param.getAusername()) ? accountInfo.getAusername():param.getAusername());
-			    paraInfo.setPassword(null==param.getPassword()||"".equals(param.getPassword()) ? accountInfo.getPassword():password);
-			    paraInfo.setLimited(null==param.getLimited()||"".equals(param.getLimited())||0.0==param.getLimited() ? accountInfo.getLimited():param.getLimited());
-			    paraInfo.setRatio(null==param.getRatio()||"".equals(param.getRatio())||0.0==param.getRatio() ? accountInfo.getRatio():param.getRatio());
-			    paraInfo.setState(null==param.getState()||"".equals(param.getState()) ?  accountInfo.getState():param.getState());
-			    paraInfo.setUpdateip(null==param.getIp()||"".equals(param.getIp()) ? accountInfo.getIp():param.getIp());
-			    paraInfo.setUpdatedate(new Date());
-			    accountInfoService.updateAccountInfo(paraInfo);
-			    result.success();
-			}
-			LOG.info(result.getMessage());
-		} catch (Exception e) {
-			result.error();
-			LOG.error(e.getMessage(),e);
-		}
-		return result;
-	}
-      */
 	
 	
 	@ApiOperation(value = "获取玩家列表", notes = "获取该代理下的玩家列表", httpMethod = "POST")
@@ -444,7 +297,6 @@ public class AccountInfoController {
 	public AccountListResult getAllAccountInfo(@ApiParam(value = "Json参数", required = true) @Validated @RequestBody AccountInfoVo param) throws Exception {
 	    AccountListResult result = new AccountListResult();
 		try {
-			//OffAccountInfo offacount = offAccountInfoMapper.selectByUseridAndType(param.getUserid(), EnumType.OffType.Agency.ID);
 			OffAccountInfo offacount = offAccountInfoMapper.selectByPrimaryKey(param.getUserid());
 			if (offacount==null){
 				result.fail(MessageTool.Code_3001);
