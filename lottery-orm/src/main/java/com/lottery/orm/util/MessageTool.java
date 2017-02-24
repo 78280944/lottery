@@ -37,7 +37,10 @@ public class MessageTool {
 	public final static int Code_4001 = 4001;
 	public final static int Code_5000 = 5000;
 	public final static int Code_5001 = 5001;
-	
+	public final static int Online = 9001;
+	public final static int Share = 9002;
+	public final static int Rule = 9003;
+
 	private static Properties prop = new Properties();
 	static{
 		try {

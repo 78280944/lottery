@@ -13,6 +13,8 @@ public interface AccountDetailMapper {
 
     AccountDetail selectByPrimaryKey(Integer accountid);
 
+    int updateAccountDetailState(AccountDetail record);
+    
     int updateByPrimaryKeySelective(AccountDetail record);
 
     int updateByPrimaryKey(AccountDetail record);
