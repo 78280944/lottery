@@ -350,9 +350,9 @@ public class AccountInfoController {
 	public RemarkResult getAllAccountInfo() throws Exception {
 		RemarkResult result = new RemarkResult();
 		RemarkDto remark = new RemarkDto();
-		String online = "9151206965";
-		String share = "https://www.pgyer.com/EIAE";
-		String rule = "http://lottery.puzongsoft.com/rule.html";
+		String online = MessageTool.getMsg(MessageTool.Online);
+		String share = MessageTool.getMsg(MessageTool.Share);
+		String rule = MessageTool.getMsg(MessageTool.Rule);
 			
 		remark.setOnline(online);
 		remark.setShare(share);
