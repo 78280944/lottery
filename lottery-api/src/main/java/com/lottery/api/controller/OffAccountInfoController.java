@@ -137,6 +137,14 @@ public class OffAccountInfoController {
 		    if(OffAccountInfo!=null){ 	
 		    	result.fail(username,MessageTool.Code_2005);
 		    }else{
+		    	//用户名判断重复性
+		    	AccountInfo accountInfo = accountInfoMapper.selectByUsername(paraInfo.getUsername());
+		    	if (accountInfo!=null){
+		    		result.fail(username,MessageTool.Code_2005);
+				    LOG.info(result.getMessage());
+				    return result;
+		    	}
+		    	
 				//洗码比逻辑 
 		    	OffAccountInfo = offAccountInfoMapper.selectByUsername(paraInfo.getSupusername());
 		    	if (OffAccountInfo==null){
@@ -326,7 +334,11 @@ public class OffAccountInfoController {
 			      LOG.info(result.getMessage());
 			      return result;
 			}
-			
+			if (!(state.equals("0")||state.equals("1"))){
+			      result.fail("状态",MessageTool.Code_1005);
+			      LOG.info(result.getMessage());
+			      return result;
+			}
 			AccountInfo accountInfo = accountInfoMapper.selectByPrimaryKey(param.getUserid());
 			if(accountInfo==null){
 			      result.fail(MessageTool.Code_3001);
@@ -530,6 +542,12 @@ public class OffAccountInfoController {
 			
 			if (0==userid){
 			      result.fail("用户ID",MessageTool.Code_2002);
+			      LOG.info(result.getMessage());
+			      return result;
+			}
+			
+			if (!(state.equals("0")||state.equals("1"))){
+			      result.fail("状态",MessageTool.Code_1005);
 			      LOG.info(result.getMessage());
 			      return result;
 			}

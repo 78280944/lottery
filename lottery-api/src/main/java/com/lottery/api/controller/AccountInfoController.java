@@ -228,6 +228,13 @@ public class AccountInfoController {
 		    if (accountInfo!=null){
 			      result.fail(username,MessageTool.Code_2005);
 		    }else{
+		    	//代理账户是否存在，用户名不能一致
+		    	OffAccountInfo offAccountInfo = offAccountInfoMapper.selectByUsername(paraInfo.getUsername());
+		    	if (offAccountInfo!=null){
+				      result.fail(username,MessageTool.Code_2005);
+				      LOG.info(result.getMessage());
+				      return result;	
+		    	}
 			    paraInfo.setState("1");//默认状态正常
 			    paraInfo.setInputdate(new Date());
 			    paraInfo.setLimited(Double.parseDouble("0.0"));
