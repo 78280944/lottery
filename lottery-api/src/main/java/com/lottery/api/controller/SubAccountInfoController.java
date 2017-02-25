@@ -23,8 +23,10 @@ import com.lottery.api.dto.UpdateSubAccRightVo;
 import com.lottery.api.dto.UpdateSubAccStateVo;
 import com.lottery.api.util.ToolsUtil;
 import com.lottery.orm.bo.AccountDetail;
+import com.lottery.orm.bo.AccountInfo;
 import com.lottery.orm.bo.OffAccountInfo;
 import com.lottery.orm.dao.AccountDetailMapper;
+import com.lottery.orm.dao.AccountInfoMapper;
 import com.lottery.orm.dao.OffAccountInfoMapper;
 import com.lottery.orm.dto.SubAccountDto;
 import com.lottery.orm.result.RestResult;
@@ -54,6 +56,8 @@ public class SubAccountInfoController {
 	@Autowired
     private AccountDetailMapper accountDetailMapper;
 	
+	@Autowired
+    private AccountInfoMapper accountInfoMapper;
 	
 	@ApiOperation(value = "新增子帐号", notes = "新增子帐号", httpMethod = "POST")
 	@RequestMapping(value = "/addSubAccountInfo", method = RequestMethod.POST)
@@ -90,12 +94,19 @@ public class SubAccountInfoController {
 		        }
 			}
 
-			
 			OffAccountInfo paraInfo = mapper.map(param, OffAccountInfo.class);
-			OffAccountInfo accountInfo = offAccountInfoMapper.selectByUsername(paraInfo.getUsername());
-		    if (accountInfo!=null){
+			OffAccountInfo offAccountInfo = offAccountInfoMapper.selectByUsername(paraInfo.getUsername());
+		    if (offAccountInfo!=null){
 			      result.fail(username,MessageTool.Code_2005);
 		    }else{
+		    	//账户唯一性判断
+		    	AccountInfo accountInfo = accountInfoMapper.selectByUsername(paraInfo.getUsername());
+		    	if (accountInfo!=null){
+		    		result.fail(username,MessageTool.Code_2005);
+				    LOG.info(result.getMessage());
+				    return result;
+		    	}
+		    	
 		    	paraInfo.setPassword(DigestUtils.md5Hex(password));
 			    paraInfo.setState("1");//默认状态正常
 			    paraInfo.setOfftype("2");

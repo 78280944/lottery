@@ -89,6 +89,13 @@ public class AccountInfoController {
 		    AccountInfo paraInfo = mapper.map(param, AccountInfo.class);
 		    AccountInfo accountInfo = accountInfoMapper.selectByLogin(paraInfo);
 		    if(accountInfo!=null){
+		    	//冻结状态
+		    	if (accountInfo.getState().equals("0")){
+				      result.fail(MessageTool.Code_5001);
+				      LOG.info(result.getMessage());
+				      return result;
+		    	}
+		    	
 		    	AccountDetail accountDetail = accountDetailMapper.selectByUserId(accountInfo.getUserid(), "3");
 		    	//获取上级的限额等信息
 			    OffAccountInfo leOffAccountInfo = offAccountInfoMapper.selectByUsername(accountInfo.getSupusername());
@@ -126,6 +133,12 @@ public class AccountInfoController {
 		    	OffAccountInfo offparaInfo = mapper.map(param, OffAccountInfo.class);
 		    	OffAccountInfo offaccountInfo = offAccountInfoMapper.selectByLogin(offparaInfo);
 		    	if (offaccountInfo!=null){
+			    	//冻结状态
+			    	if (offaccountInfo.getState().equals("0")){
+					      result.fail(MessageTool.Code_5001);
+					      LOG.info(result.getMessage());
+					      return result;
+			    	}
 			    	AccountDetail accountDetail = accountDetailMapper.selectByUserId(offaccountInfo.getUserid(), offaccountInfo.getOfftype());
 			    	if (accountDetail == null){
 					      result.fail(MessageTool.Code_3002);
@@ -218,6 +231,13 @@ public class AccountInfoController {
 		    if (accountInfo!=null){
 			      result.fail(username,MessageTool.Code_2005);
 		    }else{
+		    	//代理账户是否存在，用户名不能一致
+		    	OffAccountInfo offAccountInfo = offAccountInfoMapper.selectByUsername(paraInfo.getUsername());
+		    	if (offAccountInfo!=null){
+				      result.fail(username,MessageTool.Code_2005);
+				      LOG.info(result.getMessage());
+				      return result;	
+		    	}
 			    paraInfo.setState("1");//默认状态正常
 			    paraInfo.setInputdate(new Date());
 			    paraInfo.setLimited(Double.parseDouble("0.0"));
