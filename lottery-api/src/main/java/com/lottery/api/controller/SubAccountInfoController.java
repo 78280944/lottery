@@ -255,6 +255,11 @@ public class SubAccountInfoController {
 			      LOG.info(result.getMessage());
 			      return result;
 			}
+			if (!(state.equals("0")||state.equals("1"))){
+			      result.fail("状态",MessageTool.Code_1005);
+			      LOG.info(result.getMessage());
+			      return result;
+			}
 			
 			OffAccountInfo offAccountInfo = offAccountInfoMapper.selectByPrimaryKey(param.getUserid());
 			if(offAccountInfo==null){
