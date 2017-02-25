@@ -21,6 +21,7 @@ import com.lottery.api.dto.AccountInfoVo;
 import com.lottery.api.dto.LoginParamVo;
 import com.lottery.api.dto.PlayAccountInfoVo;
 import com.lottery.api.dto.UpdateAccountVo;
+import com.lottery.api.filter.LockedClientException;
 import com.lottery.api.util.Des3Util;
 import com.lottery.api.util.ToolsUtil;
 import com.lottery.orm.bo.AccountDetail;
@@ -97,6 +98,10 @@ public class AccountInfoController {
 				      LOG.info(result.getMessage());
 				      return result;
 				  }
+				
+				if(accountDetail.getState().equals("0")){
+					throw new LockedClientException();
+				}
 				    	
 				AccountInfoDto rAcDto = new AccountInfoDto();
 				rAcDto.setUserid(null==accountInfo.getUserid()||"".equals(accountInfo.getUserid())||0.0==accountInfo.getUserid() ?0:accountInfo.getUserid());
@@ -132,6 +137,9 @@ public class AccountInfoController {
 					      LOG.info(result.getMessage());
 					      return result;
 			    	}
+			    	if(accountDetail.getState().equals("0")){
+						throw new LockedClientException();
+					}
 					AccountInfoDto rAcDto = new AccountInfoDto();
 					rAcDto.setUserid(null==offaccountInfo.getUserid()||"".equals(offaccountInfo.getUserid())||0.0==offaccountInfo.getUserid() ?0:offaccountInfo.getUserid());
 					rAcDto.setUsername(offaccountInfo.getUsername());
@@ -157,7 +165,9 @@ public class AccountInfoController {
 		    	   result.fail(MessageTool.Code_3001);
 		    }
 			LOG.info(username+","+result.getMessage()+","+new Date());
-		} catch (Exception e) {
+		} catch (LockedClientException e) {
+			throw new LockedClientException();
+		}catch (Exception e) {
 			result.error();
 			LOG.error(e.getMessage(),e);
 		}
