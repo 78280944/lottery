@@ -96,6 +96,7 @@
 		   <mvc:exclude-mapping path="/api-docs/**/*" />
 		   <mvc:exclude-mapping path="/api-docs" />
 		   <mvc:exclude-mapping path="/account/getAccountInfo" />
+		   <mvc:exclude-mapping path="/account/getRemarkInfo" />
 		   <mvc:exclude-mapping path="/rule.html" />
 		   <ref bean="responseInterceptor"/>
 	  </mvc:interceptor>

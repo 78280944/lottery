@@ -29,16 +29,6 @@ public class ResponseInterceptor extends HandlerInterceptorAdapter {
 	@Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String clientToken = null;
-        System.out.println("preHandle");
-        //String requestURI = request.getRequestURI();
-        
-/*    	if (requestURI.contains("/account/getAccountInfo")) {
-    	    return true;
-    	}
-*/
-        if(handler instanceof ResourceHttpRequestHandler){
-        	return true;
-        }
         try {
             clientToken = request.getHeader(tokenHeader);
         } catch (Exception e) {

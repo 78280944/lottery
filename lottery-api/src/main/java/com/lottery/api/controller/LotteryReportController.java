@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.lottery.api.dto.AgencyWinVo;
 import com.lottery.api.dto.ReportParamVo;
 import com.lottery.api.dto.TradeReportVo;
 import com.lottery.orm.bo.AccountDetail;
@@ -112,7 +113,7 @@ public class LotteryReportController {
 	@RequestMapping(value = "/getAgencyWinReport", method = RequestMethod.POST)
 	@ResponseBody
 	public AgencyWinReportResult getAgencyWinReport(
-			@ApiParam(value = "Json参数", required = true) @Validated @RequestBody ReportParamVo param) throws Exception {
+			@ApiParam(value = "Json参数", required = true) @Validated @RequestBody AgencyWinVo param) throws Exception {
 		AgencyWinReportResult result = new AgencyWinReportResult();
 		try {
 			Date startTime = param.getStartTime();
@@ -125,7 +126,7 @@ public class LotteryReportController {
 			AccountDetail accountDetail = accountDetailMapper.selectByPrimaryKey(param.getAccountId());
 			if(accountDetail.getOfftype().equals(EnumType.OffType.Admin.ID)||accountDetail.getOfftype().equals(EnumType.OffType.Agency.ID)){
 				List<AgencyWinReportDto> accountList = lotteryReportMapper.selectWinReportByAgency(startTime,
-						endTime, accountDetail.getUsername(), param.getBeginRow(), param.getPageSize());
+						endTime, accountDetail.getUsername(), param.getLevel(), param.getBeginRow(), param.getPageSize());
 				result.success(accountList);
 			}else{
 				result.fail("该账户不是代理账户");

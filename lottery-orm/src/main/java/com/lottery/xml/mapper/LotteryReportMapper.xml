@@ -92,6 +92,9 @@
 	<if test="startTime == null and endTime != null">
 	and Date(ORDERTIME) <![CDATA[<=]]> #{endTime,jdbcType=TIMESTAMP}
 	</if>
+	<if test="level != null and level!=''">
+	and level = #{level,jdbcType=VARCHAR}
+	</if>
 	<![CDATA[and a.OFFTYPE='1' and FIND_IN_SET(a.username, 
 	   (SELECT GROUP_CONCAT(Level SEPARATOR ',') FROM (
 	      SELECT @Ids := (SELECT GROUP_CONCAT(username SEPARATOR ',') FROM account_detail WHERE FIND_IN_SET(supusername, @Ids) ) Level

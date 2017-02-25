@@ -17,7 +17,9 @@
 	   <property name="validationMessageSource" ref="validatemessageSource"/> -->
 	</bean>
 	
+	<mvc:resources location="/" mapping="/*.html"/>
 	<mvc:resources location="/swagger/" mapping="/swagger/**"/>
+	
 	<!-- <bean id="validatemessageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">  
 	    <property name="basename" value="classpath:validatemessages"/>  
 	    <property name="fileEncodings" value="utf-8"/>  
