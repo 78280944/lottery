@@ -41,7 +41,7 @@ public class ControllerValidationHandler {
 	}
 	
 	@ExceptionHandler(value = InvalidClientException.class)
-	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
     public BaseRestResult exception(InvalidClientException exception) {
 		BaseRestResult result = new BaseRestResult();
@@ -50,7 +50,7 @@ public class ControllerValidationHandler {
     }
 	
 	@ExceptionHandler(value = LockedClientException.class)
-	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
     public BaseRestResult exception(LockedClientException exception) {
 		BaseRestResult result = new BaseRestResult();

@@ -4,7 +4,8 @@ import com.lottery.orm.bo.LotteryRoundItem;
 import com.lottery.orm.bo.LotteryRoundItemKey;
 
 public interface LotteryRoundItemMapper {
-    int deleteByPrimaryKey(LotteryRoundItemKey key);
+
+	int deleteByPrimaryKey(LotteryRoundItemKey key);
 
     int insert(LotteryRoundItem record);
 

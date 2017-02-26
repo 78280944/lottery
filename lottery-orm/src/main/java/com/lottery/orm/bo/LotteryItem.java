@@ -7,17 +7,15 @@ public class LotteryItem {
 
 	private String itemno;
 
-	private String itemname;
+	private String winitem;
+
+	private String drawitem;
 
 	private String itemtype;
 
 	private String itemgroup;
 
 	private Double itemscale;
-
-	private Double itemodds;
-
-	private Double itembonus;
 
 	private String itemnamecn;
 
@@ -45,12 +43,20 @@ public class LotteryItem {
 		this.itemno = itemno == null ? null : itemno.trim();
 	}
 
-	public String getItemname() {
-		return itemname;
+	public String getWinitem() {
+		return winitem;
 	}
 
-	public void setItemname(String itemname) {
-		this.itemname = itemname == null ? null : itemname.trim();
+	public void setWinitem(String winitem) {
+		this.winitem = winitem == null ? null : winitem.trim();
+	}
+
+	public String getDrawitem() {
+		return drawitem;
+	}
+
+	public void setDrawitem(String drawitem) {
+		this.drawitem = drawitem == null ? null : drawitem.trim();
 	}
 
 	public String getItemtype() {
@@ -77,22 +83,6 @@ public class LotteryItem {
 		this.itemscale = itemscale;
 	}
 
-	public Double getItemodds() {
-		return itemodds;
-	}
-
-	public void setItemodds(Double itemodds) {
-		this.itemodds = itemodds;
-	}
-
-	public Double getItembonus() {
-		return itembonus;
-	}
-
-	public void setItembonus(Double itembonus) {
-		this.itembonus = itembonus;
-	}
-
 	public String getItemnamecn() {
 		return itemnamecn;
 	}
@@ -100,7 +90,7 @@ public class LotteryItem {
 	public void setItemnamecn(String itemnamecn) {
 		this.itemnamecn = itemnamecn == null ? null : itemnamecn.trim();
 	}
-    
+
     public boolean equals(Object o) {
         if (o instanceof LotteryItem) {
             LotteryItem i = (LotteryItem) o;

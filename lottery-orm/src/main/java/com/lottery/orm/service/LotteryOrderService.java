@@ -76,6 +76,7 @@ public class LotteryOrderService {
 	public boolean updateOrderByRound(LotteryRound round, LotteryOrder order, List<LotteryItem> itemList) {
 		Double windOrder = 0.0;
 		Double lossOrder = 0.0;
+		Double drawOrder = 0.0;//和局
 		Double playerPrize = 0.0;//奖金，其中包含派彩跟抽水
 		Double playerReturn = 0.0;// 给玩家的返利
 		AccountDetail account = accountDetailMapper.selectByPrimaryKey(order.getAccountid());
@@ -83,22 +84,27 @@ public class LotteryOrderService {
 			LotteryItem tempItem = new LotteryItem();
 			tempItem.setItemno(detail.getItemno());
 			LotteryItem item = itemList.get(itemList.indexOf(tempItem));
-			Double returnAmount = detail.getDetailamount() * account.getRatio();
-			detail.setReturnamount(returnAmount);
-			playerReturn += returnAmount;
-			if (isWinPrize(round, item)) {
+			Double returnAmount = detail.getDetailamount() * account.getRatio();//返利计算
+			int winResult = isWinPrize(round, item);
+			if (winResult==1) {
 				Double prizeAmount = detail.getDetailamount() * (detail.getItemscale() - 1);
 				detail.setPrizeamount(prizeAmount);
 				detail.setActualamount(prizeAmount);
 				windOrder += detail.getDetailamount();
 				playerPrize += prizeAmount;
 				
-				
-			} else {
+			}else if(winResult==0){
+				returnAmount = 0.0;//和局没有返利
+				drawOrder += detail.getDetailamount();
+				detail.setPrizeamount(0.0);
+				detail.setActualamount(0.0);
+			}else {
 				lossOrder += detail.getDetailamount();
 				detail.setPrizeamount(0.0);
 				detail.setActualamount(-detail.getDetailamount());
 			}
+			detail.setReturnamount(returnAmount);
+			playerReturn += returnAmount;
 			lotteryOrderDetailMapper.updateByPrimaryKeySelective(detail);
 		}
 		
@@ -107,7 +113,8 @@ public class LotteryOrderService {
 		if(parentAccounts.size()<1){
 			return false;
 		}
-		AccountDetail systemAccount = parentAccounts.get(0);// 系统账户
+		//AccountDetail systemAccount = parentAccounts.get(0);// 系统账户
+		AccountDetail systemAccount = accountDetailMapper.selectByPrimaryKey(1);// 系统账户
 		Double systemCommision = (windOrder+lossOrder) * 0.005;// 系统平台抽取佣金, 即公司损益
 		
 		Double playerWinloss = 0.0;//玩家的输赢,不包含返利的计算
@@ -126,9 +133,10 @@ public class LotteryOrderService {
 		lotteryOrderMapper.updateByPrimaryKeySelective(order);
 		
 		
-		if(windOrder>0.0){
-			addTradeInfo(account, order, windOrder, EnumType.RalativeType.Order.ID);//玩家中奖项的本金返还
+		if(windOrder+drawOrder>0.0){
+			addTradeInfo(account, order, windOrder+drawOrder, EnumType.RalativeType.Order.ID);//玩家中奖跟和局的本金返还
 		}
+		
 		if(playerPrize>0.0){
 			addTradeInfo(account, order, playerPrize, EnumType.RalativeType.PlayerWin.ID);//玩家派彩
 		}
@@ -169,8 +177,8 @@ public class LotteryOrderService {
 	}
 
 	// 根据中奖结果判断是否中奖
-	private boolean isWinPrize(LotteryRound round, LotteryItem item) {
-		String[] orderNumbers = item.getItemname().split(",");
+	private int isWinPrize(LotteryRound round, LotteryItem item) {
+		String[] winNumbers = item.getWinitem().split(",");
 		String[] prizeNumbers = round.getOriginresult().split(",");
 		int prizeNumber = Integer.parseInt(prizeNumbers[prizeNumbers.length-1]);
 		int cronNumber = Integer.parseInt(round.getResultstr());
@@ -181,19 +189,26 @@ public class LotteryOrderService {
 
 		// String[] prizeNumbers = round.getResultstr().split(",");
 		if (item.getItemtype().equals(EnumType.ItemType.Type_01.ID)) {
-			for (int i = 0; i < orderNumbers.length; i++) {
-				if (orderNumbers[i].equals(String.valueOf(cronNumber))) {
-					return true;
+			for (int i = 0; i < winNumbers.length; i++) {
+				if (winNumbers[i].equals(String.valueOf(cronNumber))) {
+					return 1;
+				}else if(StringUtils.isNotBlank(item.getDrawitem())){
+					String[] drawNumbers = item.getDrawitem().split(",");
+					for (int j = 0; j < drawNumbers.length; j++) {
+						if (drawNumbers[j].equals(String.valueOf(cronNumber))) {
+							return 0;
+						}
+					}
 				}
 			}
 		} else if (item.getItemtype().equals(EnumType.ItemType.Type_02.ID)) {
-			for (int i = 0; i < orderNumbers.length; i++) {
-				if (orderNumbers[i].equals(String.valueOf(prizeNumber))) {
-					return true;
+			for (int i = 0; i < winNumbers.length; i++) {
+				if (winNumbers[i].equals(String.valueOf(prizeNumber))) {
+					return 1;
 				}
 			}
 		}
-		return false;
+		return -1;
 	}
 
 	/*

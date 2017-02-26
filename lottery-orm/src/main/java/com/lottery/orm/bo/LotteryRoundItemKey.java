@@ -3,10 +3,11 @@ package com.lottery.orm.bo;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 public class LotteryRoundItemKey {
-    @ApiModelProperty(value = "游戏ID", required = true)
+
+	@ApiModelProperty(value = "游戏ID", required = true)
     private Integer roundid;
     
-    @ApiModelProperty(value = "投注项编号", required = true)
+    @ApiModelProperty(value = "投注项编�?", required = true)
     private String itemno;
 
     public Integer getRoundid() {

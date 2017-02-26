@@ -70,8 +70,6 @@ public class LotteryRoundService {
 					roundItem.setRoundid(round.getRoundid());
 					roundItem.setItemno(item.getItemno());
 					roundItem.setItemscale(item.getItemscale());
-					roundItem.setItemodds(item.getItemodds());
-					roundItem.setItembonus(item.getItembonus());
 					roundItemMapper.insertSelective(roundItem);
 					roundItemList.add(roundItem);
 				}

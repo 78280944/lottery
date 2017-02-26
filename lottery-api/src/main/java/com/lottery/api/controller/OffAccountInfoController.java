@@ -566,9 +566,11 @@ public class OffAccountInfoController {
 				//修改账户的状态
 				AccountDetail accountDetail = accountDetailMapper.selectByUserId(offAccountInfo.getUserid(), offAccountInfo.getOfftype());
 				accountDetail.setState(state);
+				accountDetailMapper.updateByPrimaryKey(accountDetail);
+				
 				accountDetail.setSupusername(offAccountInfo.getSupusername());
 				accountDetailMapper.updateAccountDetailState(accountDetail);
-				accountDetailMapper.updateByPrimaryKey(accountDetail);
+				
 				//修改玩家的状态
 				accountInfoMapper.updateAccountState(state,offAccountInfo.getSupusername());
 				accountInfoMapper.updateAccountSupuserState(state,offAccountInfo.getSupusername());

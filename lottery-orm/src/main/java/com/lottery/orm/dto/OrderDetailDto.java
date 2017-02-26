@@ -7,10 +7,7 @@ public class OrderDetailDto {
 	private String itemno;
 	
 	@ApiModelProperty(value = "投注项赔率", required = true)
-    private Double itemodds;
-
-	@ApiModelProperty(value = "投注项抽水比例", required = true)
-    private Double itembonus;
+    private Double itemscale;
 
 	@ApiModelProperty(value = "投注项金额", required = true)
     private Double detailamount;
@@ -23,23 +20,15 @@ public class OrderDetailDto {
         this.itemno = itemno == null ? null : itemno.trim();
     }
 
-    public Double getItemodds() {
-        return itemodds;
-    }
+    public Double getItemscale() {
+		return itemscale;
+	}
 
-    public void setItemodds(Double itemodds) {
-        this.itemodds = itemodds;
-    }
+	public void setItemscale(Double itemscale) {
+		this.itemscale = itemscale;
+	}
 
-    public Double getItembonus() {
-        return itembonus;
-    }
-
-    public void setItembonus(Double itembonus) {
-        this.itembonus = itembonus;
-    }
-
-    public Double getDetailamount() {
+	public Double getDetailamount() {
         return detailamount;
     }
 

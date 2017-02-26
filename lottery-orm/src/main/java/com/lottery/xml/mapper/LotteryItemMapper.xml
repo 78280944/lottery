@@ -5,17 +5,15 @@
     <id column="ITEMID" jdbcType="INTEGER" property="itemid" />
     <result column="LOTTERYTYPE" jdbcType="VARCHAR" property="lotterytype" />
     <result column="ITEMNO" jdbcType="VARCHAR" property="itemno" />
-    <result column="ITEMNAME" jdbcType="VARCHAR" property="itemname" />
+    <result column="WINITEM" jdbcType="VARCHAR" property="winitem" />
+    <result column="DRAWITEM" jdbcType="VARCHAR" property="drawitem" />
     <result column="ITEMTYPE" jdbcType="VARCHAR" property="itemtype" />
     <result column="ITEMGROUP" jdbcType="VARCHAR" property="itemgroup" />
     <result column="ITEMSCALE" jdbcType="DOUBLE" property="itemscale" />
-    <result column="ITEMODDS" jdbcType="DOUBLE" property="itemodds" />
-    <result column="ITEMBONUS" jdbcType="DOUBLE" property="itembonus" />
     <result column="ItemNameCN" jdbcType="VARCHAR" property="itemnamecn" />
   </resultMap>
   <sql id="Base_Column_List">
-    ITEMID, LOTTERYTYPE, ITEMNO, ITEMNAME, ITEMTYPE, ITEMGROUP, ITEMSCALE, ITEMODDS, 
-    ITEMBONUS, ItemNameCN
+    ITEMID, LOTTERYTYPE, ITEMNO, WINITEM, DRAWITEM, ITEMTYPE, ITEMGROUP, ITEMSCALE, ItemNameCN
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -31,14 +29,12 @@
     <selectKey keyProperty="itemid" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into lottery_item (LOTTERYTYPE, ITEMNO, ITEMNAME, 
-      ITEMTYPE, ITEMGROUP, ITEMSCALE, 
-      ITEMODDS, ITEMBONUS, ItemNameCN
-      )
-    values (#{lotterytype,jdbcType=VARCHAR}, #{itemno,jdbcType=VARCHAR}, #{itemname,jdbcType=VARCHAR}, 
-      #{itemtype,jdbcType=VARCHAR}, #{itemgroup,jdbcType=VARCHAR}, #{itemscale,jdbcType=DOUBLE}, 
-      #{itemodds,jdbcType=DOUBLE}, #{itembonus,jdbcType=DOUBLE}, #{itemnamecn,jdbcType=VARCHAR}
-      )
+    insert into lottery_item (LOTTERYTYPE, ITEMNO, WINITEM, 
+      DRAWITEM, ITEMTYPE, ITEMGROUP, 
+      ITEMSCALE, ItemNameCN)
+    values (#{lotterytype,jdbcType=VARCHAR}, #{itemno,jdbcType=VARCHAR}, #{winitem,jdbcType=VARCHAR}, 
+      #{drawitem,jdbcType=VARCHAR}, #{itemtype,jdbcType=VARCHAR}, #{itemgroup,jdbcType=VARCHAR}, 
+      #{itemscale,jdbcType=DOUBLE}, #{itemnamecn,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.lottery.orm.bo.LotteryItem">
     <selectKey keyProperty="itemid" order="AFTER" resultType="java.lang.Integer">
@@ -52,8 +48,11 @@
       <if test="itemno != null">
         ITEMNO,
       </if>
-      <if test="itemname != null">
-        ITEMNAME,
+      <if test="winitem != null">
+        WINITEM,
+      </if>
+      <if test="drawitem != null">
+        DRAWITEM,
       </if>
       <if test="itemtype != null">
         ITEMTYPE,
@@ -63,12 +62,6 @@
       </if>
       <if test="itemscale != null">
         ITEMSCALE,
-      </if>
-      <if test="itemodds != null">
-        ITEMODDS,
-      </if>
-      <if test="itembonus != null">
-        ITEMBONUS,
       </if>
       <if test="itemnamecn != null">
         ItemNameCN,
@@ -81,8 +74,11 @@
       <if test="itemno != null">
         #{itemno,jdbcType=VARCHAR},
       </if>
-      <if test="itemname != null">
-        #{itemname,jdbcType=VARCHAR},
+      <if test="winitem != null">
+        #{winitem,jdbcType=VARCHAR},
+      </if>
+      <if test="drawitem != null">
+        #{drawitem,jdbcType=VARCHAR},
       </if>
       <if test="itemtype != null">
         #{itemtype,jdbcType=VARCHAR},
@@ -92,12 +88,6 @@
       </if>
       <if test="itemscale != null">
         #{itemscale,jdbcType=DOUBLE},
-      </if>
-      <if test="itemodds != null">
-        #{itemodds,jdbcType=DOUBLE},
-      </if>
-      <if test="itembonus != null">
-        #{itembonus,jdbcType=DOUBLE},
       </if>
       <if test="itemnamecn != null">
         #{itemnamecn,jdbcType=VARCHAR},
@@ -113,8 +103,11 @@
       <if test="itemno != null">
         ITEMNO = #{itemno,jdbcType=VARCHAR},
       </if>
-      <if test="itemname != null">
-        ITEMNAME = #{itemname,jdbcType=VARCHAR},
+      <if test="winitem != null">
+        WINITEM = #{winitem,jdbcType=VARCHAR},
+      </if>
+      <if test="drawitem != null">
+        DRAWITEM = #{drawitem,jdbcType=VARCHAR},
       </if>
       <if test="itemtype != null">
         ITEMTYPE = #{itemtype,jdbcType=VARCHAR},
@@ -124,12 +117,6 @@
       </if>
       <if test="itemscale != null">
         ITEMSCALE = #{itemscale,jdbcType=DOUBLE},
-      </if>
-      <if test="itemodds != null">
-        ITEMODDS = #{itemodds,jdbcType=DOUBLE},
-      </if>
-      <if test="itembonus != null">
-        ITEMBONUS = #{itembonus,jdbcType=DOUBLE},
       </if>
       <if test="itemnamecn != null">
         ItemNameCN = #{itemnamecn,jdbcType=VARCHAR},
@@ -141,12 +128,11 @@
     update lottery_item
     set LOTTERYTYPE = #{lotterytype,jdbcType=VARCHAR},
       ITEMNO = #{itemno,jdbcType=VARCHAR},
-      ITEMNAME = #{itemname,jdbcType=VARCHAR},
+      WINITEM = #{winitem,jdbcType=VARCHAR},
+      DRAWITEM = #{drawitem,jdbcType=VARCHAR},
       ITEMTYPE = #{itemtype,jdbcType=VARCHAR},
       ITEMGROUP = #{itemgroup,jdbcType=VARCHAR},
       ITEMSCALE = #{itemscale,jdbcType=DOUBLE},
-      ITEMODDS = #{itemodds,jdbcType=DOUBLE},
-      ITEMBONUS = #{itembonus,jdbcType=DOUBLE},
       ItemNameCN = #{itemnamecn,jdbcType=VARCHAR}
     where ITEMID = #{itemid,jdbcType=INTEGER}
   </update>

@@ -23,6 +23,9 @@ public class AgencyWinReportDto {
 	
 	@ApiModelProperty(value = "公司损益", required = true)
 	private Double systemAmount;
+	
+	@ApiModelProperty(value = "公司输赢", required = true)
+	private Double companyWin;
 
 	
 	public String getUserName() {
@@ -79,6 +82,14 @@ public class AgencyWinReportDto {
 
 	public void setSystemAmount(Double systemAmount) {
 		this.systemAmount = systemAmount;
+	}
+
+	public Double getCompanyWin() {
+		return companyWin;
+	}
+
+	public void setCompanyWin(Double companyWin) {
+		this.companyWin = companyWin;
 	}
 
 }

@@ -18,6 +18,7 @@
     <result column="PERCENTAGE" jdbcType="DECIMAL" property="percentage" />
     <result column="WINAMOUNT" jdbcType="DECIMAL" property="winAmount" />
     <result column="SYSTEMAMOUNT" jdbcType="DECIMAL" property="systemAmount" />
+    <result column="COMPANYWIN" jdbcType="DECIMAL" property="companyWin" />
   </resultMap>
   <resultMap id="TradeReportMap" type="com.lottery.orm.dto.TradeReportDto">
     <result column="ACCOUNTID" jdbcType="INTEGER" property="accountId" />
@@ -80,9 +81,9 @@
   </select>
   <select id="selectWinReportByAgency" resultMap="AgencyWinReportMap">
     select 
-    a.USERNAME, SUM(ORDERAMOUNT) as ORDERAMOUNT, SUM(-ACTUALAMOUNT) as ACTUALAMOUNT, SUM(RETURNAMOUNT+SYSTEMAMOUNT) as FEEAMOUNT, AVG(PERCENTAGE) as PERCENTAGE, SUM(r.TRADEAMOUNT) as WINAMOUNT, SUM(SYSTEMAMOUNT) as SYSTEMAMOUNT
-    from account_detail a, lottery_order o,trade_info r
-    where a.ACCOUNTID = r.ACCOUNTID and o.ORDERID=r.RELATIVEID and r.RELATIVETYPE='AgencyWin' and o.PRIZETIME is not null
+    a.USERNAME, SUM(ORDERAMOUNT) as ORDERAMOUNT, SUM(-ACTUALAMOUNT) as ACTUALAMOUNT, SUM(RETURNAMOUNT+SYSTEMAMOUNT) as FEEAMOUNT, AVG(PERCENTAGE) as PERCENTAGE, SUM(r.TRADEAMOUNT) as WINAMOUNT, SUM(SYSTEMAMOUNT) as SYSTEMAMOUNT, SUM(s.TRADEAMOUNT) as COMPANYWIN
+    from account_detail a, lottery_order o,trade_info r,(select * from trade_info where RELATIVETYPE='AgencyWin' and ACCOUNTID=2) s
+    where a.ACCOUNTID = r.ACCOUNTID and o.ORDERID=r.RELATIVEID and o.ORDERID=s.RELATIVEID and r.RELATIVETYPE='AgencyWin' and o.PRIZETIME is not null
 	<if test="startTime != null and endTime != null">
 	and Date(ORDERTIME) between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
 	</if>
@@ -95,7 +96,8 @@
 	<if test="level != null and level!=''">
 	and level = #{level,jdbcType=VARCHAR}
 	</if>
-	<![CDATA[and a.OFFTYPE='1' and FIND_IN_SET(a.username, 
+	and a.OFFTYPE='1' and (a.username=#{supUsername,jdbcType=VARCHAR} or 
+	<![CDATA[ FIND_IN_SET(a.username, 
 	   (SELECT GROUP_CONCAT(Level SEPARATOR ',') FROM (
 	      SELECT @Ids := (SELECT GROUP_CONCAT(username SEPARATOR ',') FROM account_detail WHERE FIND_IN_SET(supusername, @Ids) ) Level
 	      FROM account_detail
@@ -103,6 +105,7 @@
 	      WHERE FIND_IN_SET(supusername, @Ids)
 	   ) temp2 )
 	)]]>
+	)
     group by a.USERNAME
     order by a.USERNAME
 	<if test="beginRow != null and pageSize !=null">
@@ -111,7 +114,7 @@
   </select>
   <select id="selectByTradeReport" resultMap="TradeReportMap">
     select 
-    a.ACCOUNTID, a.USERNAME, a.SUPUSERNAME, r.LOTTERYTERM, o.ORDERID, o.ORDERTIME, getItemNameByNo(d.ITEMNO) as ITEMNAMECN, o.ORDERAMOUNT, o.ACTUALAMOUNT+o.RETURNAMOUNT as WINAMOUNT, o.ACCOUNTAMOUNT
+    a.ACCOUNTID, a.USERNAME, a.SUPUSERNAME, r.LOTTERYTERM, o.ORDERID, o.ORDERTIME, getItemNameByNo(d.ITEMNO) as ITEMNAMECN, d.DETAILAMOUNT as ORDERAMOUNT, d.ACTUALAMOUNT+d.RETURNAMOUNT as WINAMOUNT, o.ACCOUNTAMOUNT
     from account_detail a, lottery_order o, lottery_round r, lottery_order_detail d
     where a.ACCOUNTID = o.ACCOUNTID and o.ROUNDID = r.ROUNDID and o.ORDERID=d.ORDERID and o.PRIZETIME is not null and a.USERNAME = #{userName,jdbcType=VARCHAR}
 	<if test="startTime != null and endTime != null">
