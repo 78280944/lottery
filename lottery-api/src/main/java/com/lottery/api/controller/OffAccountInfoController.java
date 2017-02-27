@@ -163,7 +163,7 @@ public class OffAccountInfoController {
 				      return result;	
 				}
 
-			    paraInfo.setQuery("M1,M2,Y3,Y4,Y5");
+			    paraInfo.setQuery("M1,M2");
 			    paraInfo.setManage("");
 			    paraInfo.setState("1");//默认状态正常
 			    paraInfo.setLevel(ToolsUtil.decideLevel(level));

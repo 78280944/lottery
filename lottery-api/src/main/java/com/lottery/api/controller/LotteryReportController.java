@@ -97,8 +97,12 @@ public class LotteryReportController {
 							endTime, accountDetail.getUsername(), param.getBeginRow(), param.getPageSize());
 				
 				result.success(accountList);
+			}else if(accountDetail.getOfftype().equals(EnumType.OffType.Sub.ID)){
+				List<PlayerWinReportDto> accountList = lotteryReportMapper.selectWinReportByPlayer(startTime,
+						endTime, accountDetail.getSupusername(), param.getBeginRow(), param.getPageSize());
+				result.success(accountList);
 			}else{
-				result.fail("该账户不是代理账户");
+				result.fail("该账户无权限查询");
 			}
 			LOG.info(result.getMessage());
 		} catch (Exception e) {
@@ -128,8 +132,12 @@ public class LotteryReportController {
 				List<AgencyWinReportDto> accountList = lotteryReportMapper.selectWinReportByAgency(startTime,
 						endTime, accountDetail.getUsername(), param.getLevel(), param.getBeginRow(), param.getPageSize());
 				result.success(accountList);
+			}else if(accountDetail.getOfftype().equals(EnumType.OffType.Sub.ID)){
+				List<AgencyWinReportDto> accountList = lotteryReportMapper.selectWinReportByAgency(startTime,
+						endTime, accountDetail.getSupusername(), param.getLevel(), param.getBeginRow(), param.getPageSize());
+				result.success(accountList);
 			}else{
-				result.fail("该账户不是代理账户");
+				result.fail("该账户无权限查询");
 			}
 			
 			
@@ -161,8 +169,12 @@ public class LotteryReportController {
 				List<InoutReportDto> accountList = lotteryReportMapper.selectByInoutReport(startTime,
 						endTime, accountDetail.getUsername(), EnumType.OffType.Play.ID, param.getBeginRow(), param.getPageSize());
 				result.success(accountList);
+			}else if(accountDetail.getOfftype().equals(EnumType.OffType.Sub.ID)){
+				List<InoutReportDto> accountList = lotteryReportMapper.selectByInoutReport(startTime,
+						endTime, accountDetail.getSupusername(), EnumType.OffType.Play.ID, param.getBeginRow(), param.getPageSize());
+				result.success(accountList);
 			}else{
-				result.fail("该账户不是代理账户");
+				result.fail("该账户无权限查询");
 			}
 			
 			LOG.info(result.getMessage());
@@ -193,8 +205,12 @@ public class LotteryReportController {
 				List<InoutReportDto> accountList = lotteryReportMapper.selectByInoutReport(startTime,
 						endTime, accountDetail.getUsername(), EnumType.OffType.Agency.ID, param.getBeginRow(), param.getPageSize());
 				result.success(accountList);
+			}else if(accountDetail.getOfftype().equals(EnumType.OffType.Sub.ID)){
+				List<InoutReportDto> accountList = lotteryReportMapper.selectByInoutReport(startTime,
+						endTime, accountDetail.getSupusername(), EnumType.OffType.Agency.ID, param.getBeginRow(), param.getPageSize());
+				result.success(accountList);
 			}else{
-				result.fail("该账户不是代理账户");
+				result.fail("该账户无权限查询");
 			}
 			
 			LOG.info(result.getMessage());
@@ -226,8 +242,12 @@ public class LotteryReportController {
 				List<TradeReportDto> accountList = lotteryReportMapper.selectByTradeReport(startTime,
 						endTime, accountDetail.getUsername(), param.getPlayerUserName(), param.getBeginRow(), param.getPageSize());
 				result.success(accountList);
+			}else if(accountDetail.getOfftype().equals(EnumType.OffType.Sub.ID)){
+				List<TradeReportDto> accountList = lotteryReportMapper.selectByTradeReport(startTime,
+						endTime, accountDetail.getSupusername(), param.getPlayerUserName(), param.getBeginRow(), param.getPageSize());
+				result.success(accountList);
 			}else{
-				result.fail("该账户不是代理账户");
+				result.fail("该账户无权限查询");
 			}
 			LOG.info(result.getMessage());
 		} catch (Exception e) {

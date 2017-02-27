@@ -126,7 +126,7 @@ public class ToolsUtil {
 	
 	//查询范围判断
 	public static boolean checkQuery(String parameter){
-		String objectString = "M1,M2,Y3,Y4,Y5";
+		String objectString = "M1,M2";
 		String[] temp = objectString.split(",");
 		String[] para = parameter.split(",");
 		int count = 0;
@@ -144,25 +144,6 @@ public class ToolsUtil {
 		return false;
 	}
 	
-	//管理范围判断
-	public static boolean checkManage(String parameter){
-		String objectString = "M1,M2,M3,M4,M5";
-		String[] temp = objectString.split(",");
-		String[] para = parameter.split(",");
-		int count = 0;
-		for (int i=0;i<para.length;i++){
-			for (int j=0;j<temp.length;j++){
-				if (para[i].equals(temp[j])){
-					count++;
-					break;
-				}
-			}
-		}
-		if (count<para.length){
-			return true;
-		}
-		return false;
-	}
 	
 	public static void main(String args[]){
 		
