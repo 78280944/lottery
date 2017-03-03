@@ -235,6 +235,8 @@ public class AccountInfoController {
 				      LOG.info(result.getMessage());
 				      return result;	
 		    	}
+		    	
+		    	paraInfo.setLevel(offAccountInfo.getLevel());
 			    paraInfo.setState("1");//默认状态正常
 			    paraInfo.setInputdate(new Date());
 			    paraInfo.setLimited(Double.parseDouble("0.0"));

@@ -90,16 +90,9 @@ public class OffAccountInfoController {
 			String username = param.getUsername();
 			String ausername = param.getAusername();
 			String password = param.getPassword();
-			String level = param.getLevel();
 			String supusername = param.getSupusername();
 			Double percentage = null;
 			Double ratio = null;
-			//判断是否有权限新增下线
-			if (level.equals("3")){
-		        result.fail(MessageTool.Code_2004);
-		        LOG.info(result.getMessage());
-		        return result;	
-			}
 			
 			if (null != param.getRatio())
 				ratio = param.getRatio();
@@ -144,6 +137,20 @@ public class OffAccountInfoController {
 				    LOG.info(result.getMessage());
 				    return result;
 		    	}
+		    	//获取管理员level
+		    	OffAccountInfo OffAccountInfo1 = offAccountInfoMapper.selectByUsername(supusername);
+		    	if (OffAccountInfo1 == null){
+		    		result.fail(supusername,MessageTool.Code_2006);
+				    LOG.info(result.getMessage());
+				    return result;
+		    	}
+		    	String level = OffAccountInfo1.getLevel();
+				//判断是否有权限新增下线
+				if (level.equals("3")){
+			        result.fail(MessageTool.Code_2004);
+			        LOG.info(result.getMessage());
+			        return result;	
+				}
 		    	
 				//洗码比逻辑 
 		    	OffAccountInfo = offAccountInfoMapper.selectByUsername(paraInfo.getSupusername());

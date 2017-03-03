@@ -106,7 +106,16 @@ public class SubAccountInfoController {
 				    LOG.info(result.getMessage());
 				    return result;
 		    	}
+		    	//获取管理员level
+		    	OffAccountInfo OffAccountInfo1 = offAccountInfoMapper.selectByUsername(supusername);
+		    	if (OffAccountInfo1 == null){
+		    		result.fail(supusername,MessageTool.Code_2006);
+				    LOG.info(result.getMessage());
+				    return result;
+		    	}
 		    	
+		    	level = OffAccountInfo1.getLevel();		
+		    	paraInfo.setLevel(level);
 		    	paraInfo.setPassword(DigestUtils.md5Hex(password));
 			    paraInfo.setState("1");//默认状态正常
 			    paraInfo.setOfftype("2");
