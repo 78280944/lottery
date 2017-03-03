@@ -24,12 +24,12 @@
     <id column="ITEMID" jdbcType="INTEGER" property="itemid" />
     <result column="LOTTERYTYPE" jdbcType="VARCHAR" property="lotterytype" />
     <result column="ITEMNO" jdbcType="VARCHAR" property="itemno" />
-    <result column="ITEMNAME" jdbcType="VARCHAR" property="itemname" />
+    <result column="WINITEM" jdbcType="VARCHAR" property="winitem" />
+    <result column="DRAWITEM" jdbcType="VARCHAR" property="drawitem" />
     <result column="ITEMTYPE" jdbcType="VARCHAR" property="itemtype" />
     <result column="ITEMGROUP" jdbcType="VARCHAR" property="itemgroup" />
     <result column="ITEMSCALE" jdbcType="DOUBLE" property="itemscale" />
-    <result column="ITEMODDS" jdbcType="DOUBLE" property="itemodds" />
-    <result column="ITEMBONUS" jdbcType="DOUBLE" property="itembonus" />
+    <result column="ItemNameCN" jdbcType="VARCHAR" property="itemnamecn" />
   </resultMap>
   <resultMap id="LotteryOrderMap" type="com.lottery.orm.bo.LotteryOrder">  
     <id column="ORDERID" jdbcType="INTEGER" property="orderid" />
@@ -66,12 +66,9 @@
     <result column="ORIGINRESULT" jdbcType="VARCHAR" property="originresult" />
 	<collection property="roundItemList" ofType="com.lottery.orm.bo.LotteryRoundItem" column="ROUNDID">  
 		<id column="ROUNDID" jdbcType="INTEGER" property="roundid" />
-		<id column="ITEMNO" jdbcType="VARCHAR" property="itemno" />
-		<result column="ItemNameCN" jdbcType="VARCHAR" property="itemnamecn" />
-		<result column="ITEMSCALE" jdbcType="DOUBLE" property="itemscale" />
-		<result column="ITEMODDS" jdbcType="DOUBLE" property="itemodds" />
-		<result column="ITEMBONUS" jdbcType="DOUBLE" property="itembonus" />
-		<result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime" />
+	    <id column="ITEMNO" jdbcType="VARCHAR" property="itemno" />
+	    <result column="ITEMSCALE" jdbcType="DOUBLE" property="itemscale" />
+	    <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime" />
 	</collection>
   </resultMap>
 	
