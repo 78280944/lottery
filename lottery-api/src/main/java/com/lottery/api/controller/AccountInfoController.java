@@ -229,13 +229,19 @@ public class AccountInfoController {
 			      result.fail(username,MessageTool.Code_2005);
 		    }else{
 		    	//代理账户是否存在，用户名不能一致
-		    	OffAccountInfo offAccountInfo = offAccountInfoMapper.selectByUsername(paraInfo.getUsername());
-		    	if (offAccountInfo!=null){
+		    	OffAccountInfo temmpAccountInfo = offAccountInfoMapper.selectByUsername(paraInfo.getUsername());
+		    	if (temmpAccountInfo!=null){
 				      result.fail(username,MessageTool.Code_2005);
 				      LOG.info(result.getMessage());
 				      return result;	
 		    	}
 		    	
+		    	OffAccountInfo offAccountInfo = offAccountInfoMapper.selectByUsername(paraInfo.getSupusername());
+		    	if (offAccountInfo == null){
+		    		result.fail(supusername,MessageTool.Code_2006);
+				    LOG.info(result.getMessage());
+				    return result;
+		    	}
 		    	paraInfo.setLevel(offAccountInfo.getLevel());
 			    paraInfo.setState("1");//默认状态正常
 			    paraInfo.setInputdate(new Date());
