@@ -11,6 +11,7 @@ import org.joda.time.Period;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.lottery.orm.bo.LotteryRound;
@@ -22,19 +23,22 @@ import com.lottery.orm.util.HttpclientTool;
 @Component
 public class LotteryTask {
 	public final Logger log = Logger.getLogger(this.getClass());
-	private final String LOTTERY_API_URL = "http://c.apiplus.net/newly.do?token=ed91e13bc38ac8d1&code=cqklsf&format=json&extend=true";
+	//private final String LOTTERY_API_URL = "http://c.apiplus.net/newly.do?token=ed91e13bc38ac8d1&code=cqklsf&format=json&extend=true";
 	private final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private final Integer ROUND_INTERVAL_MINUTES = 10;//游戏间隔时间
 	
 	@Autowired
 	private LotteryRoundService lotteryRoundService;
 	
+	@Value("${lottery.apiUrl}")
+    private String lotteryApiUrl;
+	
 	/**
 	 * 获取广西快乐十分开奖结果
 	 */
 	public void getLotteryOriginResult() {
 		try{
-			String result = HttpclientTool.get(LOTTERY_API_URL);
+			String result = HttpclientTool.get(lotteryApiUrl);
 			if(StringUtils.isNotBlank(result)&&result.trim().startsWith("{")){
 				JSONObject jObj = new JSONObject(result);
 				//Date latestOpenTime = (new DateTime()).toDate();

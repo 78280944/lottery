@@ -10,6 +10,9 @@ public class RemarkDto {
 	    @ApiModelProperty(value = "分享链接")
 	    private String share; 
 	    
+	    @ApiModelProperty(value = "分享二维码")
+	    private String shareCode; 
+	    
 	    @ApiModelProperty(value = "规则说明")
 	    private String rule;
 
@@ -36,5 +39,14 @@ public class RemarkDto {
 		public void setRule(String rule) {
 			this.rule = rule;
 		}
+
+		public String getShareCode() {
+			return shareCode;
+		}
+
+		public void setShareCode(String shareCode) {
+			this.shareCode = shareCode;
+		}
+		
 
 }

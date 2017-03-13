@@ -140,7 +140,9 @@ public class LotteryOrderService {
 		if(playerPrize>0.0){
 			addTradeInfo(account, order, playerPrize, EnumType.RalativeType.PlayerWin.ID);//玩家派彩
 		}
-		addTradeInfo(account, order, playerReturn, EnumType.RalativeType.Return.ID);// 给玩家的返利
+		if(playerReturn>0.0){
+			addTradeInfo(account, order, playerReturn, EnumType.RalativeType.Return.ID);// 给玩家的返利
+		}
 		Double childPercent = 0.0;//下级代理占比
 		for(int i=parentAccounts.size()-1; i>=0; i-- ){
 			AccountDetail tempAccount = parentAccounts.get(i);
@@ -148,31 +150,32 @@ public class LotteryOrderService {
 			addTradeInfo(tempAccount, order, curWinloss, EnumType.RalativeType.AgencyWin.ID);// 代理输赢
 			childPercent = tempAccount.getPercentage();
 		}
-		
 		addTradeInfo(systemAccount, order, systemCommision, EnumType.RalativeType.Commision.ID);// 系统平台抽取佣金
 		return true;
 	}
 
 	// 新增一级代理佣金款项
 	private void addTradeInfo(AccountDetail account, LotteryOrder order, Double tradeAmount, String relativeType) {
-		BigDecimal accountAmount;
-		accountAmount = account.getMoney().add(new BigDecimal(tradeAmount));
-		TradeInfo tradeInfo = new TradeInfo();
-		tradeInfo.setAccountid(account.getAccountid());
-		tradeInfo.setTradetype(EnumType.TradeType.Trade.ID);
-		tradeInfo.setRelativetype(relativeType);
-		tradeInfo.setRelativeid(order.getOrderid());
-		tradeInfo.setTradeamount(tradeAmount);
-		tradeInfo.setAccountamount(accountAmount);
-		tradeInfo.setInputtime(new Date());
-		tradeInfoMapper.insertSelective(tradeInfo);
-
-		account.setMoney(accountAmount);
-		accountDetailMapper.updateByPrimaryKeySelective(account);
-
-		if (order.getAccountid() == account.getAccountid()) {// 更新玩家下单记录的账户余额
-			order.setAccountamount(accountAmount);
-			lotteryOrderMapper.updateByPrimaryKeySelective(order);
+		BigDecimal accountAmount = account.getMoney();
+		if(tradeAmount!=null){
+			accountAmount = accountAmount.add(new BigDecimal(tradeAmount));
+			TradeInfo tradeInfo = new TradeInfo();
+			tradeInfo.setAccountid(account.getAccountid());
+			tradeInfo.setTradetype(EnumType.TradeType.Trade.ID);
+			tradeInfo.setRelativetype(relativeType);
+			tradeInfo.setRelativeid(order.getOrderid());
+			tradeInfo.setTradeamount(tradeAmount);
+			tradeInfo.setAccountamount(accountAmount);
+			tradeInfo.setInputtime(new Date());
+			tradeInfoMapper.insertSelective(tradeInfo);
+	
+			account.setMoney(accountAmount);
+			accountDetailMapper.updateByPrimaryKeySelective(account);
+	
+			if (order.getAccountid() == account.getAccountid()) {// 更新玩家下单记录的账户余额
+				order.setAccountamount(accountAmount);
+				lotteryOrderMapper.updateByPrimaryKeySelective(order);
+			}
 		}
 	}
 

@@ -68,6 +68,18 @@ public class AccountInfoController {
 	
 	@Value("${jwt.secret}")
     private String tokenSecret;
+	
+	@Value("${lottery.shareUrl}")
+    private String shareUrl;
+	
+	@Value("${lottery.shareCodeImg}")
+    private String shareCodeImg;
+	
+	@Value("${lottery.ruleUrl}")
+    private String ruleUrl;
+	
+	@Value("${lottery.serviceTel}")
+    private String serviceTel;
 
 	
 	@ApiOperation(value = "获取玩家或者代理商、子代理商信息", notes = "获取玩家或者代理商、子代理商信息", httpMethod = "POST")
@@ -385,13 +397,11 @@ public class AccountInfoController {
 	public RemarkResult getAllAccountInfo() throws Exception {
 		RemarkResult result = new RemarkResult();
 		RemarkDto remark = new RemarkDto();
-		String online = MessageTool.getMsg(MessageTool.Online);
-		String share = MessageTool.getMsg(MessageTool.Share);
-		String rule = MessageTool.getMsg(MessageTool.Rule);
 			
-		remark.setOnline(online);
-		remark.setShare(share);
-		remark.setRule(rule);
+		remark.setOnline(serviceTel);
+		remark.setShare(shareUrl);
+		remark.setRule(ruleUrl);
+		remark.setShareCode(shareCodeImg);
 		result.success(remark);
 
 		return result;
