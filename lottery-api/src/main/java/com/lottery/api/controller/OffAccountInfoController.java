@@ -66,7 +66,7 @@ public class OffAccountInfoController {
     private AccountInfoService accountInfoService;
 	
 	@Autowired
-    private OffAccountInfoService OffAccountInfoService;
+    private OffAccountInfoService offAccountInfoService;
 	
 	@Autowired
 	private OffAccountInfoMapper offAccountInfoMapper;
@@ -178,7 +178,7 @@ public class OffAccountInfoController {
 			    paraInfo.setInputdate(new Date());
 			    paraInfo.setRiskamount(param.getRiskamount());
 			    paraInfo.setLimited(Double.parseDouble("0.0"));
-			    OffAccountInfoService.addOffAccountInfo(paraInfo);
+			    offAccountInfoService.addOffAccountInfo(paraInfo);
 			    
 			    result.success();
 		    }
@@ -354,10 +354,12 @@ public class OffAccountInfoController {
 				accountInfo.setIp(ip);
 				//修改用户状态
 			    accountInfoService.updateAccountInfo(accountInfo);
+			    
 			    //修改账户状态
 			    AccountDetail accountDetail = accountDetailMapper.selectByUserId(accountInfo.getUserid(), "3");
 			    accountDetail.setState(state);
 			    accountDetailMapper.updateByPrimaryKey(accountDetail);
+			   
 			    LOG.info("修改玩家状态记录详情为："+" 管理员："+supusername+" 账户类型："+offtype+" IP："+ip+" 修改玩家ID"+userid+" 状态修改为"+accountInfo.getState());
 			    result.success();
 			}
@@ -431,7 +433,8 @@ public class OffAccountInfoController {
 			}else{
 				offAccountInfo.setRiskamount(riskamount);
 				offAccountInfo.setIp(ip);
-				offAccountInfoMapper.updateByPrimaryKey(offAccountInfo);
+				offAccountInfoService.updateOffAccountInfo(offAccountInfo);
+				//offAccountInfoMapper.updateByPrimaryKey(offAccountInfo);
 			    LOG.info("修改风险限额记录详情为："+" 管理员："+supusername+" 账户类型："+offtype+" IP："+ip+" 修改下家ID"+userid+" 风险限额修改为"+offAccountInfo.getRiskamount());
 			    result.success();
 			}
@@ -478,7 +481,8 @@ public class OffAccountInfoController {
 				
 				offAccountInfo.setPercentage(percentage);
 				offAccountInfo.setIp(ip);
-				offAccountInfoMapper.updateByPrimaryKey(offAccountInfo);
+				offAccountInfoService.updateOffAccountInfo(offAccountInfo);
+				//offAccountInfoMapper.updateByPrimaryKey(offAccountInfo);
 			    LOG.info("修改代理占成记录详情为："+" 管理员："+supusername+" 账户类型："+offtype+" IP："+ip+" 修改下家ID"+userid+" 代理占成修改为"+offAccountInfo.getPercentage());
 			    result.success();
 			}
@@ -523,7 +527,8 @@ public class OffAccountInfoController {
                 }
 				offAccountInfo.setRatio(ratio);
 				offAccountInfo.setIp(ip);
-				offAccountInfoMapper.updateByPrimaryKey(offAccountInfo);
+				offAccountInfoService.updateOffAccountInfo(offAccountInfo);
+				//offAccountInfoMapper.updateByPrimaryKey(offAccountInfo);
 			    LOG.info("修改洗码比记录详情为："+" 管理员："+supusername+" 账户类型："+offtype+" IP："+ip+" 修改下家ID"+userid+" 代理占成修改为"+offAccountInfo.getRatio());
 			    result.success();
 			}
