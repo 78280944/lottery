@@ -69,7 +69,7 @@ public class OffAccountInfoService {
 		accountDetail.setSupusername(paraInfo.getSupusername());
 		accountDetail.setLevel(paraInfo.getLevel());
 		accountDetail.setOfftype(paraInfo.getOfftype());
-		accountDetailMapper.updateByPrimaryKeySelective(accountDetail);
+		accountDetailMapper.updateByUserId(accountDetail);
 	}
 	
 	// 更新子帐户

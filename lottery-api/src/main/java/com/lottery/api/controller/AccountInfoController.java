@@ -142,10 +142,10 @@ public class AccountInfoController {
 		    }else {
 		    	OffAccountInfo offparaInfo = mapper.map(param, OffAccountInfo.class);
 		    	OffAccountInfo offaccountInfo = offAccountInfoMapper.selectByLogin(offparaInfo);
-		    	String query = offaccountInfo.getQuery();
 		    	if (offaccountInfo!=null){
 			    	//判断子账户
 			    	if (offaccountInfo.getOfftype().equals("2")){
+			    		String query = offaccountInfo.getQuery();
 			    		offaccountInfo = offAccountInfoMapper.selectByUsername(offaccountInfo.getSupusername());
 			    		offaccountInfo.setQuery(query);
 			    	}
