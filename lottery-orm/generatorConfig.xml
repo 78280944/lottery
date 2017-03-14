@@ -99,14 +99,22 @@
 			enableSelectByExample="false" 
 			selectByExampleQueryId="false">
 			<generatedKey column="itemid" sqlStatement="MySql" identity="true"/> 
-	    </table> -->
+	    </table>
 	    <table tableName="lottery_round_item" domainObjectName="LotteryRoundItem"
 	    	enableCountByExample="false"
 			enableUpdateByExample="false" 
 			enableDeleteByExample="false"
 			enableSelectByExample="false" 
 			selectByExampleQueryId="false">
-			 </table>
+			 </table> -->
 	   
+	   <table tableName="lottery_order" domainObjectName="LotteryOrder"
+	    	enableCountByExample="false"
+			enableUpdateByExample="false" 
+			enableDeleteByExample="false"
+			enableSelectByExample="false" 
+			selectByExampleQueryId="false">
+			<generatedKey column="orderid" sqlStatement="MySql" identity="true"/> 
+	    </table>
 	</context>
 </generatorConfiguration>

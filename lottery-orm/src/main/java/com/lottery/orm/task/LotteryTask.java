@@ -7,15 +7,16 @@ import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
-import org.joda.time.Period;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.lottery.orm.bo.LotteryRound;
-import com.lottery.orm.service.JobTaskService;
+import com.lottery.orm.dao.CustomLotteryMapper;
 import com.lottery.orm.service.LotteryRoundService;
 import com.lottery.orm.util.EnumType;
 import com.lottery.orm.util.HttpclientTool;
@@ -29,6 +30,9 @@ public class LotteryTask {
 	
 	@Autowired
 	private LotteryRoundService lotteryRoundService;
+	
+	@Autowired
+	private CustomLotteryMapper customLotteryMapper;
 	
 	@Value("${lottery.apiUrl}")
     private String lotteryApiUrl;
@@ -50,15 +54,13 @@ public class LotteryTask {
 						if(i==0){
 							latestOpenObj = openObj;
 						}
-						LotteryRound openRound = new LotteryRound();
-						openRound.setLotterytype(EnumType.LotteryType.CornSeed.ID);//玉米籽
-						openRound.setLotteryterm(openObj.getString("expect"));//开奖游戏期次
-						openRound.setOriginresult(openObj.getString("opencode"));
-						openRound.setOpentime(format.parse(openObj.getString("opentime")));//更新开奖时间
-						if(lotteryRoundService.endLotteryRoundByTerm(openRound)){
+						LotteryRound openRound = customLotteryMapper.selectRoundByTypeAndTerm(EnumType.LotteryType.CornSeed.ID, openObj.getString("expect"));
+						if(openRound!=null&&!openRound.getRoundstatus().equals(EnumType.RoundStatus.End.ID)){
+							int endFlag = lotteryRoundService.endLotteryRound(openRound, openObj.getString("opencode"), format.parse(openObj.getString("opentime")));
+							if(endFlag>0){
+								lotteryRoundService.prizeLotteryRound(openRound);
+							}
 							log.info("更新开奖信息:"+openRound.getLotteryterm());
-						}else{
-							break;
 						}
 					}
 				}

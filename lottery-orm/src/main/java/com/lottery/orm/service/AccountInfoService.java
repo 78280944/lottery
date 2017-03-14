@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lottery.orm.bo.AccountDetail;
@@ -24,6 +25,7 @@ public class AccountInfoService {
 	private AccountDetailMapper accountDetailMapper;
 
 	// 添加账户
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor=Exception.class)
 	public void addAccountInfo(AccountInfo paraInfo) {
 		accountInfoMapper.insertSelective(paraInfo);
 
@@ -42,6 +44,7 @@ public class AccountInfoService {
 	}
 
 	// 更新账户
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor=Exception.class)
 	public void updateAccountInfo(AccountInfo paraInfo) {
 		accountInfoMapper.updateByPrimaryKey(paraInfo);
 		//获取accountid

@@ -115,6 +115,13 @@
 	 order by ordertime
   </select>
   
+  <select id="selectOrderByOrderId" resultMap="LotteryOrderMap">
+    select o.*,d.* 
+    from lottery_order o, lottery_order_detail d
+    where o.orderId=d.orderId and o.orderId = #{orderId,jdbcType=INTEGER}
+	 order by ordertime
+  </select>
+  
   <select id="selectRoundByTypeAndTerm" resultType="LotteryRound">
     select * 
     from lottery_round 

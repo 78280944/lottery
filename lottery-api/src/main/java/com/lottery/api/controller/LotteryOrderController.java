@@ -7,29 +7,36 @@ import org.apache.log4j.Logger;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.lottery.api.dto.EndOrderVo;
 import com.lottery.api.dto.HisOrderVo;
 import com.lottery.api.dto.OrderDetailVo;
 import com.lottery.api.dto.OrderParamVo;
 import com.lottery.api.dto.ReportParamVo;
 import com.lottery.orm.bo.AccountDetail;
+import com.lottery.orm.bo.LotteryItem;
 import com.lottery.orm.bo.LotteryOrder;
 import com.lottery.orm.bo.LotteryOrderDetail;
 import com.lottery.orm.bo.LotteryRound;
 import com.lottery.orm.dao.AccountDetailMapper;
+import com.lottery.orm.dao.CustomLotteryMapper;
+import com.lottery.orm.dao.LotteryOrderMapper;
 import com.lottery.orm.dao.LotteryReportMapper;
 import com.lottery.orm.dao.LotteryRoundMapper;
 import com.lottery.orm.dto.HistoryOrderDto;
 import com.lottery.orm.dto.LotteryOrderDto;
+import com.lottery.orm.result.BaseRestResult;
 import com.lottery.orm.result.HistoryOrderResult;
 import com.lottery.orm.result.OrderResult;
 import com.lottery.orm.service.LotteryOrderService;
 import com.lottery.orm.util.EnumType;
+import com.lottery.orm.util.MessageTool;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
@@ -45,9 +52,15 @@ public class LotteryOrderController {
 
 	@Autowired
 	private LotteryOrderService lotteryOrderService;
+	
+	@Autowired
+	private LotteryOrderMapper lotteryOrderMapper;
 
 	@Autowired
 	private LotteryRoundMapper lotteryRoundMapper;
+	
+	@Autowired
+	private CustomLotteryMapper customLotteryMapper;
 	
 	@Autowired
 	private AccountDetailMapper accountDetailMapper;
@@ -129,5 +142,33 @@ public class LotteryOrderController {
 		return result;
 
 	}
-
+	
+	@ApiOperation(value = "兑奖订单", notes = "游戏已开奖，由于各种因素导致某一笔订单没有兑奖，则手工通过该接口兑奖", httpMethod = "POST")
+	@RequestMapping(value = "/endLotteryOrder", method = RequestMethod.POST)
+	@ResponseBody
+	public BaseRestResult endLotteryOrder(
+			@ApiParam(value = "Json参数", required = true) @Validated @RequestBody EndOrderVo param) throws Exception {
+		BaseRestResult result = new BaseRestResult();
+		try {
+			LotteryOrder order = customLotteryMapper.selectOrderByOrderId(param.getOrderId());
+			if(order!=null){
+				LotteryRound round = lotteryRoundMapper.selectByPrimaryKey(order.getRoundid());
+				List<LotteryItem> itemList = customLotteryMapper.selectItemByLotteryType(EnumType.LotteryType.CornSeed.ID);
+				String updateResult = lotteryOrderService.updateOrderByRound(round, order, itemList);
+				if(!updateResult.equals("")){
+					result.fail(updateResult);
+				}else{
+					result.success();
+				}
+			}else{
+				result.fail("不存在该订单！");
+			}
+			
+			LOG.info(result.getMessage());
+		} catch (Exception e) {
+			result.fail(MessageTool.ErrorCode);
+			LOG.error(e.getMessage(), e);
+		}
+		return result;
+	}
 }

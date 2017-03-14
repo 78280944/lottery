@@ -7,9 +7,9 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.Minutes;
-import org.quartz.CronScheduleBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lottery.orm.bo.LotteryItem;
@@ -46,8 +46,9 @@ public class LotteryRoundService {
 	
 	@Autowired
 	private JobTaskService taskService;
-
+	
 	// 添加投注单
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor=Exception.class)
 	public boolean addLotteryRound(LotteryRound round) throws Exception {
 		
 		DateTime openTime = new DateTime(round.getOpentime());
@@ -130,21 +131,42 @@ public class LotteryRoundService {
 		}
 	}
 
-	// 游戏结束并兑奖
-	public boolean endLotteryRound(LotteryRound round) {
-		round.setResultstr(getCronLotteryResult(round.getOriginresult()));
+	// 游戏结束
+	public int endLotteryRound(LotteryRound round, String originResult, Date openTime){
+		round.setResultstr(getCronLotteryResult(originResult));
+		round.setOpentime(openTime);//更新开奖时间
 		round.setRoundstatus(EnumType.RoundStatus.End.ID);
 		round.setEndtime(new Date());
-		if (lotteryRoundMapper.updateByPrimaryKeySelective(round) > 0) {
-			List<LotteryItem> itemList = customLotteryMapper.selectItemByLotteryType(EnumType.LotteryType.CornSeed.ID);
-			List<LotteryOrder> orderList = customLotteryMapper.selectOrderByRoundId(round.getRoundid());
-			for (LotteryOrder order : orderList) {
-				lotteryOrderService.updateOrderByRound(round, order, itemList);
+		round.setOriginresult(originResult);
+		return lotteryRoundMapper.updateByPrimaryKeySelective(round);
+	}
+	
+	// 游戏兑奖
+	public void prizeLotteryRound(LotteryRound round){
+		List<LotteryItem> itemList = customLotteryMapper.selectItemByLotteryType(EnumType.LotteryType.CornSeed.ID);
+		List<LotteryOrder> orderList = customLotteryMapper.selectOrderByRoundId(round.getRoundid());
+		for (LotteryOrder order : orderList) {
+			try{
+				String updateResult = lotteryOrderService.updateOrderByRound(round, order, itemList);
+				if(!updateResult.equals("")){
+					log.error(updateResult);
+				}
+			}catch(Exception e){
+				log.error(e);
 			}
+		}
+	}
+	
+	/*// 游戏结束并兑奖
+	public boolean endLotteryOrder(LotteryOrder order) {
+		LotteryRound round = customLotteryMapper.selectRoundByRoundId(order.getRoundid());
+		if (round!=null) {
+			List<LotteryItem> itemList = customLotteryMapper.selectItemByLotteryType(EnumType.LotteryType.CornSeed.ID);
+			lotteryOrderService.updateOrderByRound(round, order, itemList);
 			return true;
 		}
 		return false;
-	}
+	}*/
 	
 	//根据广西快乐十分的开奖结果计算玉米籽的开奖结果
 	private String getCronLotteryResult(String originResult){
@@ -158,7 +180,7 @@ public class LotteryRoundService {
 		}
 	}
 	
-	// 游戏结束并兑奖
+	/*// 游戏结束并兑奖
 	public boolean endLotteryRoundByTerm(LotteryRound round) {
 		LotteryRound existRound = customLotteryMapper.selectRoundByTypeAndTerm(round.getLotterytype(), round.getLotteryterm());
 		if(existRound!=null&&!existRound.getRoundstatus().equals(EnumType.RoundStatus.End.ID)){
@@ -166,7 +188,7 @@ public class LotteryRoundService {
 			return endLotteryRound(round);
 		}
 		return false;
-	}
+	}*/
 	
 	// 游戏封盘
 	public boolean closeLotteryRound() {

@@ -37,7 +37,10 @@ public class LotteryOrder {
 	@ApiModelProperty(value = "返利")
     private Double returnamount;
 	
-	@ApiModelProperty(value = "超代佣金,即公司收�?")
+	@ApiModelProperty(value = "代理返利")
+	private Double agencyreturn;
+	
+	@ApiModelProperty(value = "公司损益")
 	private Double systemamount;
 
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
@@ -46,8 +49,16 @@ public class LotteryOrder {
 	@ApiModelProperty(value = "账户余额")
     private BigDecimal accountamount;
     
-	@ApiModelProperty(value = "投注单详�?")
+	@ApiModelProperty(value = "投注详单")
     List<LotteryOrderDetail> orderDetailList;
+
+	public Double getAgencyreturn() {
+		return agencyreturn;
+	}
+
+	public void setAgencyreturn(Double agencyreturn) {
+		this.agencyreturn = agencyreturn;
+	}
 
     public Integer getOrderid() {
 	return orderid;

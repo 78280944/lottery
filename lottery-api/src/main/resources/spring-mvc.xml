@@ -18,6 +18,7 @@
 	</bean>
 	
 	<mvc:resources location="/" mapping="/*.html"/>
+	<mvc:resources location="/" mapping="/*.json"/>
 	<mvc:resources location="/swagger/" mapping="/swagger/**"/>
 	
 	<!-- <bean id="validatemessageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">  

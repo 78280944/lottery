@@ -72,3 +72,8 @@ UPDATE `lottery`.`lottery_item` SET `DRAWITEM`='1,3' WHERE `ITEMID`='24';
 ALTER TABLE `lottery`.`lottery_round_item` 
 DROP COLUMN `ITEMBONUS`,
 DROP COLUMN `ITEMODDS`;
+
+
+ALTER TABLE `lottery`.`lottery_order` 
+ADD COLUMN `AGENCYRETURN` DOUBLE(18,2) NULL COMMENT '代理返利' AFTER `RETURNAMOUNT`;
+

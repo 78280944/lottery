@@ -2,6 +2,7 @@ package com.lottery.orm.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lottery.orm.bo.AccountDetail;
@@ -20,6 +21,7 @@ public class OffAccountInfoService {
 	private AccountDetailMapper accountDetailMapper;
 
 	// 添加账户
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor=Exception.class)
 	public void addOffAccountInfo(OffAccountInfo paraInfo) {
 		offAccountInfoMapper.insertSelective(paraInfo);
 		
@@ -37,6 +39,7 @@ public class OffAccountInfoService {
 	}
 
 	// 添加子帐户
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor=Exception.class)
 	public void addOffAccountInfo(OffAccountInfo paraInfo,String offtype) {
 		if (offtype.equals("2")){
 		    offAccountInfoMapper.insertSelective(paraInfo);
@@ -56,6 +59,7 @@ public class OffAccountInfoService {
 	}
 	
 	// 更新帐户
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor=Exception.class)
 	public void updateOffAccountInfo(OffAccountInfo paraInfo) {
 		offAccountInfoMapper.updateByPrimaryKey(paraInfo);
 

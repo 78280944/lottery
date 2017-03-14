@@ -1,13 +1,20 @@
 package com.lottery.api.controller;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.validation.constraints.Min;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.dozer.Mapper;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,11 +28,13 @@ import com.lottery.api.dto.UpdateRoundVo;
 import com.lottery.orm.bo.LotteryRound;
 import com.lottery.orm.dao.CustomLotteryMapper;
 import com.lottery.orm.dao.LotteryRoundMapper;
+import com.lottery.orm.result.BaseRestResult;
 import com.lottery.orm.result.HisRoundResult;
 import com.lottery.orm.result.RoundResult;
 import com.lottery.orm.service.LotteryOrderService;
 import com.lottery.orm.service.LotteryRoundService;
 import com.lottery.orm.util.EnumType;
+import com.lottery.orm.util.HttpclientTool;
 import com.lottery.orm.util.MessageTool;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -51,6 +60,9 @@ public class LotteryRoundController {
 
 	@Autowired
 	LotteryOrderService lotteryOrderService;
+	
+	@Value("${lottery.apiUrlByDate}")
+    private String apiUrlByDate;
 	
 	@ApiOperation(value = "新增一期游戏", notes = "新增游戏记录", httpMethod = "POST")
 	@RequestMapping(value = "/addLotteryRound", method = RequestMethod.POST)
@@ -146,20 +158,39 @@ public class LotteryRoundController {
 	@ApiOperation(value = "兑奖并结束游戏", notes = "兑奖并结束游戏", httpMethod = "POST")
 	@RequestMapping(value = "/endLotteryRound", method = RequestMethod.POST)
 	@ResponseBody
-	public RoundResult endLotteryRound(
+	public BaseRestResult endLotteryRound(
 			@ApiParam(value = "Json参数", required = true) @Validated @RequestBody UpdateRoundVo param) throws Exception {
-		RoundResult result = new RoundResult();
+		BaseRestResult result = new BaseRestResult();
 		try {
-			LotteryRound round = customLotteryMapper.selectRoundByRoundId(param.getRoundId());
-			if (round == null) {
-				result.fail("不存在该期游戏");
-			} else if (round.getRoundstatus().equals(EnumType.RoundStatus.End.ID)) {
-				result.fail("该期游戏已经开过奖了");
-			} else {
-				round.setOriginresult(param.getResultStr());
-				lotteryRoundService.endLotteryRound(round);
-				result.success(round);
+			String openResult = "";
+			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String apiResult = HttpclientTool.get(apiUrlByDate+param.getDate());
+			if(StringUtils.isNotBlank(apiResult)&&apiResult.trim().startsWith("{")){
+				JSONObject jObj = new JSONObject(apiResult);
+				if(jObj.has("data")){
+					JSONArray openArray = jObj.getJSONArray("data");//更新游戏开奖结果
+					for(int i=0; i<openArray.length(); i++){
+						JSONObject openObj = openArray.getJSONObject(i);
+						LotteryRound openRound = customLotteryMapper.selectRoundByTypeAndTerm(EnumType.LotteryType.CornSeed.ID, openObj.getString("expect"));
+						if(openRound!=null&&!openRound.getRoundstatus().equals(EnumType.RoundStatus.End.ID)){
+							int endFlag = lotteryRoundService.endLotteryRound(openRound, openObj.getString("opencode"), format.parse(openObj.getString("opentime")));
+							if(endFlag>0){
+								lotteryRoundService.prizeLotteryRound(openRound);
+							}
+							openResult += openRound.getLotteryterm() + ",";
+							LOG.info("更新开奖信息:"+openRound.getLotteryterm());
+						}
+					}
+					result.success();
+					result.setMessage("成功开奖期次:"+openResult);
+				}else{
+					result.fail();
+				}
+				
+			}else{
+				result.fail();
 			}
+			
 			LOG.info(result.getMessage());
 		} catch (Exception e) {
 			result.fail(MessageTool.ErrorCode);
