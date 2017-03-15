@@ -80,6 +80,12 @@ public class AccountInfoController {
 	
 	@Value("${lottery.serviceTel}")
     private String serviceTel;
+	
+	@Value("${lottery.androidAppVersion}")
+    private String androidAppVersion;
+	
+	@Value("${lottery.iosAppVersion}")
+    private String iosAppVersion;
 
 	
 	@ApiOperation(value = "获取玩家或者代理商、子代理商信息", notes = "获取玩家或者代理商、子代理商信息", httpMethod = "POST")
@@ -402,6 +408,8 @@ public class AccountInfoController {
 		remark.setShare(shareUrl);
 		remark.setRule(ruleUrl);
 		remark.setShareCode(shareCodeImg);
+		remark.setAndroidAppVersion(androidAppVersion);
+		remark.setIosAppVersion(iosAppVersion);
 		result.success(remark);
 
 		return result;

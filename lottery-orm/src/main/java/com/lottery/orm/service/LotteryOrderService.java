@@ -55,7 +55,6 @@ public class LotteryOrderService {
 	public LotteryOrder addLotteryOrder(AccountDetail accountDetail, LotteryOrder order) {
 		order.setOrdertime(new Date());
 		lotteryOrderMapper.insertSelective(order);
-		int test=1/0;
 		Double orderAmount = 0.0;
 		LotteryRound round = customLotteryMapper.selectRoundByRoundId(order.getRoundid());
 		List<LotteryRoundItem> itemList = round.getRoundItemList();

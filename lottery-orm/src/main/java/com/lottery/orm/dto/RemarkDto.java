@@ -15,6 +15,12 @@ public class RemarkDto {
 	    
 	    @ApiModelProperty(value = "规则说明")
 	    private String rule;
+	    
+	    @ApiModelProperty(value = "安卓App版本")
+	    private String androidAppVersion;
+	    
+	    @ApiModelProperty(value = "苹果App版本")
+	    private String iosAppVersion;
 
 		public String getOnline() {
 			return online;
@@ -47,6 +53,21 @@ public class RemarkDto {
 		public void setShareCode(String shareCode) {
 			this.shareCode = shareCode;
 		}
-		
+
+		public String getAndroidAppVersion() {
+			return androidAppVersion;
+		}
+
+		public void setAndroidAppVersion(String androidAppVersion) {
+			this.androidAppVersion = androidAppVersion;
+		}
+
+		public String getIosAppVersion() {
+			return iosAppVersion;
+		}
+
+		public void setIosAppVersion(String iosAppVersion) {
+			this.iosAppVersion = iosAppVersion;
+		}
 
 }
