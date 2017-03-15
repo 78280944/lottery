@@ -46,18 +46,16 @@ public class AccountInfoService {
 	// 更新账户
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor=Exception.class)
 	public void updateAccountInfo(AccountInfo paraInfo) {
-		accountInfoMapper.updateByPrimaryKey(paraInfo);
+		accountInfoMapper.updateByPrimaryKeySelective(paraInfo);
 		//获取accountid
 		AccountDetail accountDetail = accountDetailMapper.selectByUserId(paraInfo.getUserid(), "3");
 		accountDetail.setUserid(paraInfo.getUserid());
 	    accountDetail.setUsername(paraInfo.getUsername());
 	    accountDetail.setLimited(paraInfo.getLimited());
 	    accountDetail.setRatio(paraInfo.getRatio());
-	    accountDetail.setPercentage(0.0);
 	    accountDetail.setState(paraInfo.getState());
 	    accountDetail.setSupusername(paraInfo.getSupusername());
 	    accountDetail.setLevel(paraInfo.getLevel());
-	    accountDetail.setOfftype("3");
 	    accountDetailMapper.updateByPrimaryKeySelective(accountDetail);
 	}
 	

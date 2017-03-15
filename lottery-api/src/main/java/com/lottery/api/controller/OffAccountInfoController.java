@@ -309,6 +309,17 @@ public class OffAccountInfoController {
 			if(accountInfo==null){
 			      result.fail(MessageTool.Code_3001);
 			}else{
+				//洗码比逻辑 
+				OffAccountInfo supAccount = offAccountInfoMapper.selectByUsername(accountInfo.getSupusername());
+		    	if (supAccount==null){
+		    		result.fail(accountInfo.getSupusername(),MessageTool.Code_2005);
+		    		return result;
+		    	}
+		    	if (ratio>supAccount.getRatio()){
+				      result.fail("洗码比",MessageTool.Code_1008);
+				      LOG.info(result.getMessage());
+				      return result;	
+				}
 				accountInfo.setRatio(ratio);
 				accountInfo.setIp(ip);
 			    accountInfoService.updateAccountInfo(accountInfo);
@@ -468,7 +479,18 @@ public class OffAccountInfoController {
 			if(offAccountInfo==null){
 			      result.fail(MessageTool.Code_3001);
 			}else{
-				
+				//洗码比逻辑 
+				OffAccountInfo supAccount = offAccountInfoMapper.selectByUsername(offAccountInfo.getSupusername());
+		    	if (supAccount==null){
+		    		result.fail(offAccountInfo.getSupusername(),MessageTool.Code_2005);
+		    		return result;
+		    	}
+				//代理占比逻辑
+				if (percentage>supAccount.getPercentage()){
+				      result.fail("代理占成",MessageTool.Code_1008);
+				      LOG.info(result.getMessage());
+				      return result;	
+				}
 				//下线的洗码比对比
 				List<OffAccountInfo> offAccountInfos = offAccountInfoMapper.selectBySupuserAndPer(offAccountInfo.getUsername(),offAccountInfo.getOfftype());
                 if (offAccountInfos.size()>=1){
@@ -516,6 +538,17 @@ public class OffAccountInfoController {
 			if(offAccountInfo==null){
 			      result.fail(MessageTool.Code_3001);
 			}else{
+				//洗码比逻辑 
+				OffAccountInfo supAccount = offAccountInfoMapper.selectByUsername(offAccountInfo.getSupusername());
+		    	if (supAccount==null){
+		    		result.fail(offAccountInfo.getSupusername(),MessageTool.Code_2005);
+		    		return result;
+		    	}
+		    	if (ratio>supAccount.getRatio()){
+				      result.fail("洗码比",MessageTool.Code_1008);
+				      LOG.info(result.getMessage());
+				      return result;	
+				}
 				//下线的洗码比对比
 				List<OffAccountInfo> offAccountInfos = offAccountInfoMapper.selectBySupuserAndRatio(offAccountInfo.getUsername(),offAccountInfo.getOfftype());
                 if (offAccountInfos.size()>=1){
@@ -529,7 +562,7 @@ public class OffAccountInfoController {
 				offAccountInfo.setIp(ip);
 				offAccountInfoService.updateOffAccountInfo(offAccountInfo);
 				//offAccountInfoMapper.updateByPrimaryKey(offAccountInfo);
-			    LOG.info("修改洗码比记录详情为："+" 管理员："+supusername+" 账户类型："+offtype+" IP："+ip+" 修改下家ID"+userid+" 代理占成修改为"+offAccountInfo.getRatio());
+			    LOG.info("修改洗码比记录详情为："+" 管理员："+supusername+" 账户类型："+offtype+" IP："+ip+" 修改下家ID"+userid+" 代理洗码比修改为"+offAccountInfo.getRatio());
 			    result.success();
 			}
 			LOG.info(result.getMessage());

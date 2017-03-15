@@ -70,7 +70,7 @@ public class SubAccountInfoController {
 			String password = param.getPassword();
 			String supusername = param.getSupusername();	
 			String level = param.getLevel();
-			String query = param.getQuery();
+			String query = param.getQuery()==null?"":param.getQuery();
 			//String manage = param.getManage();
 			//参数合规性校验，必要参数不能为空
 			if (ToolsUtil.isEmptyTrim(username)||ToolsUtil.isEmptyTrim(password)){
@@ -86,7 +86,7 @@ public class SubAccountInfoController {
 			      return result;
 			}
 			
-			if (null!=query||!"".equals(query)){
+			if (!"".equals(query)){
 		        if (ToolsUtil.checkQuery(query)){
 			      result.fail("权限设置",MessageTool.Code_1005);
 			      LOG.info(result.getMessage());
@@ -119,7 +119,7 @@ public class SubAccountInfoController {
 		    	paraInfo.setPassword(DigestUtils.md5Hex(password));
 			    paraInfo.setState("1");//默认状态正常
 			    paraInfo.setOfftype("2");
-			    paraInfo.setManage("");
+			    paraInfo.setManage(query);
 			    paraInfo.setInputdate(new Date());
 			    offAccountInfoService.addOffAccountInfo(paraInfo,"2");
 			    result.success();
