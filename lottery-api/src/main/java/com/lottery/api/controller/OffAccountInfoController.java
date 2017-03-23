@@ -2,6 +2,7 @@ package com.lottery.api.controller;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -474,6 +475,12 @@ public class OffAccountInfoController {
 			      LOG.info(result.getMessage());
 			      return result;
 			}
+			if(ToolsUtil.checkUpdatePeriod()){
+				result.fail("当前时段无法修改代理占成,请在每周一的3点至9点结算期间修改!");
+				LOG.info(result.getMessage());
+			    return result;
+			}
+			
 			
 			OffAccountInfo offAccountInfo = offAccountInfoMapper.selectByPrimaryKey(param.getUserid());
 			if(offAccountInfo==null){

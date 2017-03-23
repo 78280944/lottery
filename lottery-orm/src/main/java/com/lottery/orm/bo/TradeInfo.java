@@ -6,7 +6,8 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class TradeInfo {
-    private Integer tradeid;
+
+	private Integer tradeid;
 
     private Integer accountid;
 
@@ -17,6 +18,8 @@ public class TradeInfo {
     private String relativetype;
 
     private Double tradeamount;
+    
+    private Double budgetamount;
 
     private BigDecimal accountamount;
     
@@ -72,6 +75,14 @@ public class TradeInfo {
     public void setTradeamount(Double tradeamount) {
         this.tradeamount = tradeamount;
     }
+    
+    public Double getBudgetamount() {
+		return budgetamount;
+	}
+
+	public void setBudgetamount(Double budgetamount) {
+		this.budgetamount = budgetamount;
+	}
 
     public BigDecimal getAccountamount() {
         return accountamount;

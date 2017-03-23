@@ -5,41 +5,41 @@ import java.math.BigDecimal;
 public class AccountDetail {
     private Integer accountid;
 
-    private Integer userid;
+	private Integer userid;
 
-    private String username;
+	private String username;
 
-    private Double limited;
+	private Double limited;
 
-    private Double ratio;
+	private Double ratio;
 
-    private Double percentage;
+	private Double percentage;
 
-    private String state;
+	private String state;
 
-    private String supusername;
+	private String supusername;
 
-    private String level;
+	private String level;
 
-    private String offtype;
+	private String offtype;
 
-    private BigDecimal money;
+	private BigDecimal money;
 
-    private String attribute1;
+	private String attribute1;
 
-    private String attribute2;
+	private String attribute2;
 
-    public Integer getAccountid() {
-        return accountid;
-    }
+	private Double budget;
 
-    public void setAccountid(Integer accountid) {
-        this.accountid = accountid;
-    }
+	public Integer getAccountid() {
+		return accountid;
+	}
 
+	public void setAccountid(Integer accountid) {
+		this.accountid = accountid;
+	}
 
-
-    public Integer getUserid() {
+	public Integer getUserid() {
 		return userid;
 	}
 
@@ -48,90 +48,99 @@ public class AccountDetail {
 	}
 
 	public String getUsername() {
-        return username;
-    }
+		return username;
+	}
 
-    public void setUsername(String username) {
-        this.username = username == null ? null : username.trim();
-    }
+	public void setUsername(String username) {
+		this.username = username == null ? null : username.trim();
+	}
 
-    public Double getLimited() {
-        return limited;
-    }
+	public Double getLimited() {
+		return limited;
+	}
 
-    public void setLimited(Double limited) {
-        this.limited = limited;
-    }
+	public void setLimited(Double limited) {
+		this.limited = limited;
+	}
 
-    public Double getRatio() {
-        return ratio;
-    }
+	public Double getRatio() {
+		return ratio;
+	}
 
-    public void setRatio(Double ratio) {
-        this.ratio = ratio;
-    }
+	public void setRatio(Double ratio) {
+		this.ratio = ratio;
+	}
 
-    public Double getPercentage() {
-        return percentage;
-    }
+	public Double getPercentage() {
+		return percentage;
+	}
 
-    public void setPercentage(Double percentage) {
-        this.percentage = percentage;
-    }
+	public void setPercentage(Double percentage) {
+		this.percentage = percentage;
+	}
 
-    public String getState() {
-        return state;
-    }
+	public String getState() {
+		return state;
+	}
 
-    public void setState(String state) {
-        this.state = state == null ? null : state.trim();
-    }
+	public void setState(String state) {
+		this.state = state == null ? null : state.trim();
+	}
 
-    public String getSupusername() {
-        return supusername;
-    }
+	public String getSupusername() {
+		return supusername;
+	}
 
-    public void setSupusername(String supusername) {
-        this.supusername = supusername == null ? null : supusername.trim();
-    }
+	public void setSupusername(String supusername) {
+		this.supusername = supusername == null ? null : supusername.trim();
+	}
 
-    public String getLevel() {
-        return level;
-    }
+	public String getLevel() {
+		return level;
+	}
 
-    public void setLevel(String level) {
-        this.level = level == null ? null : level.trim();
-    }
+	public void setLevel(String level) {
+		this.level = level == null ? null : level.trim();
+	}
 
-    public String getOfftype() {
-        return offtype;
-    }
+	public String getOfftype() {
+		return offtype;
+	}
 
-    public void setOfftype(String offtype) {
-        this.offtype = offtype == null ? null : offtype.trim();
-    }
+	public void setOfftype(String offtype) {
+		this.offtype = offtype == null ? null : offtype.trim();
+	}
 
-    public BigDecimal getMoney() {
-        return money;
-    }
+	public BigDecimal getMoney() {
+		return money;
+	}
 
-    public void setMoney(BigDecimal money) {
-        this.money = money;
-    }
+	public void setMoney(BigDecimal money) {
+		this.money = money;
+	}
 
-    public String getAttribute1() {
-        return attribute1;
-    }
+	public String getAttribute1() {
+		return attribute1;
+	}
 
-    public void setAttribute1(String attribute1) {
-        this.attribute1 = attribute1 == null ? null : attribute1.trim();
-    }
+	public void setAttribute1(String attribute1) {
+		this.attribute1 = attribute1 == null ? null : attribute1.trim();
+	}
 
-    public String getAttribute2() {
-        return attribute2;
-    }
+	public String getAttribute2() {
+		return attribute2;
+	}
 
-    public void setAttribute2(String attribute2) {
-        this.attribute2 = attribute2 == null ? null : attribute2.trim();
-    }
+	public void setAttribute2(String attribute2) {
+		this.attribute2 = attribute2 == null ? null : attribute2.trim();
+	}
+
+	public Double getBudget() {
+		return budget;
+	}
+
+	public void setBudget(Double budget) {
+		this.budget = budget;
+	}
+
 }

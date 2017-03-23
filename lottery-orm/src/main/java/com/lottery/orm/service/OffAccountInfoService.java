@@ -38,6 +38,7 @@ public class OffAccountInfoService {
 		accountDetail.setLevel(paraInfo.getLevel());
 		accountDetail.setOfftype(paraInfo.getOfftype());
 		accountDetail.setMoney(BigDecimal.valueOf(0.0));
+		accountDetail.setBudget(0.0);
 		accountDetailMapper.insertSelective(accountDetail);
 	}
 

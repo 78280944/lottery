@@ -5,7 +5,8 @@ import org.apache.ibatis.annotations.Param;
 import com.lottery.orm.bo.AccountDetail;
 
 public interface AccountDetailMapper {
-    int deleteByPrimaryKey(Integer accountid);
+
+	int deleteByPrimaryKey(Integer accountid);
 
     int insert(AccountDetail record);
 

@@ -36,7 +36,7 @@ public class TradeInfoController {
 	@ApiOperation(value = "新增入金交易记录", notes = "新增资金交易记录", httpMethod = "POST")
 	@RequestMapping(value = "/addInTradeInfo", method = RequestMethod.POST)
 	@ResponseBody
-	public RestResult addTradeInfo(
+	public RestResult addInTradeInfo(
 			@ApiParam(value = "Json参数", required = true) @Validated @RequestBody TradeParamVo param) throws Exception {
 		RestResult result = new RestResult();
 		try {

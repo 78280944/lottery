@@ -16,6 +16,7 @@ import com.lottery.orm.bo.AccountDetail;
 import com.lottery.orm.bo.LotteryItem;
 import com.lottery.orm.bo.LotteryOrder;
 import com.lottery.orm.bo.LotteryOrderDetail;
+import com.lottery.orm.bo.LotteryOrderResult;
 import com.lottery.orm.bo.LotteryRound;
 import com.lottery.orm.bo.LotteryRoundItem;
 import com.lottery.orm.bo.OffAccountInfo;
@@ -24,6 +25,7 @@ import com.lottery.orm.dao.AccountDetailMapper;
 import com.lottery.orm.dao.CustomLotteryMapper;
 import com.lottery.orm.dao.LotteryOrderDetailMapper;
 import com.lottery.orm.dao.LotteryOrderMapper;
+import com.lottery.orm.dao.LotteryOrderResultMapper;
 import com.lottery.orm.dao.OffAccountInfoMapper;
 import com.lottery.orm.dao.TradeInfoMapper;
 import com.lottery.orm.util.EnumType;
@@ -49,6 +51,9 @@ public class LotteryOrderService {
 	
 	@Autowired
 	private OffAccountInfoMapper offAccountInfoMapper;
+	
+	@Autowired
+	private LotteryOrderResultMapper lotteryOrderResultMapper;
 
 	// 添加投注单
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor=Exception.class)
@@ -83,6 +88,7 @@ public class LotteryOrderService {
 		Double playerPrize = 0.0;//奖金，其中包含派彩跟抽水
 		Double totalReturn = 0.0;//总返利
 		Double playerReturn = 0.0;// 给玩家的返利
+		Double agencyReturn = 0.0;//给代理的返利
 		AccountDetail account = accountDetailMapper.selectByPrimaryKey(order.getAccountid());
 		double playRatio = account.getRatio()==null?0.0:account.getRatio();
 		double maxRatio = 0.0;
@@ -132,6 +138,7 @@ public class LotteryOrderService {
 
 		totalReturn = (windOrder+lossOrder)*maxRatio;
 		playerReturn = (windOrder+lossOrder)*playRatio;
+		agencyReturn = totalReturn - playerReturn;
 		//AccountDetail systemAccount = parentAccounts.get(0);// 系统账户
 		AccountDetail systemAccount = accountDetailMapper.selectByPrimaryKey(1);// 系统账户
 		Double systemCommision = (windOrder+lossOrder) * 0.005;// 系统平台抽取佣金, 即公司损益
@@ -148,7 +155,7 @@ public class LotteryOrderService {
 		order.setReturnamount(playerReturn);
 		order.setPrizetime(new Date());
 		order.setCommisionamount(agencyWinloss);
-		order.setAgencyreturn(totalReturn-playerReturn);
+		order.setAgencyreturn(agencyReturn);
 		order.setSystemamount(systemCommision);
 		lotteryOrderMapper.updateByPrimaryKeySelective(order);
 		
@@ -180,10 +187,17 @@ public class LotteryOrderService {
 				curReturn = (windOrder+lossOrder)*curRatio;//当前代理返利
 				childRatio = tempAccount.getRatio();
 			}
+			//addTradeInfo(tempAccount, order, curWinloss+curReturn, EnumType.RalativeType.AgencyWin.ID);// 代理输赢
 			
-			addTradeInfo(tempAccount, order, curWinloss+curReturn, EnumType.RalativeType.AgencyWin.ID);// 代理输赢
+			LotteryOrderResult orderResult = new LotteryOrderResult();
+			orderResult.setAccountid(tempAccount.getAccountid());
+			orderResult.setOrderid(order.getOrderid());
+			orderResult.setInputtime(new Date());
+			orderResult.setWinamount(curWinloss+curReturn);
+			lotteryOrderResultMapper.insert(orderResult);
 			
 		}
+		addTradeInfo(parentAccounts.get(0), order, agencyWinloss+agencyReturn, EnumType.RalativeType.AgencyWin.ID);// 代理输赢
 		addTradeInfo(systemAccount, order, systemCommision, EnumType.RalativeType.Commision.ID);// 系统平台抽取佣金
 		return "";
 	}
@@ -212,7 +226,7 @@ public class LotteryOrderService {
 			}
 		}
 	}
-
+	
 	// 根据中奖结果判断是否中奖
 	private int isWinPrize(LotteryRound round, LotteryItem item) {
 		String[] winNumbers = item.getWinitem().split(",");

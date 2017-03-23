@@ -2,6 +2,7 @@ package com.lottery.api.util;
 
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -144,17 +145,29 @@ public class ToolsUtil {
 		return false;
 	}
 	
+	public static boolean checkUpdatePeriod() {
+		Calendar c = Calendar.getInstance();
+		c.setTime(new Date());
+		int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+		int hourOfDay = c.get(Calendar.HOUR_OF_DAY);
+		if (dayOfWeek == 2 && hourOfDay >= 3 && hourOfDay <= 9) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	
 	public static void main(String args[]){
-		
-		 System.out.println(DigestUtils.md5Hex("123"));
+		checkUpdatePeriod();
+		/* System.out.println(DigestUtils.md5Hex("123"));
 		  
 		AccountInfo ai = new AccountInfo();
 		ToolsUtil a = new ToolsUtil();
 		System.out.println("7--4-------"+a.checkQuery("Y1,Y2,9"));
 		System.out.println("7---------"+a.validatName("111111%^"));
 		Map map = a.getFiledName(ai);
-		Iterator entries = map.entrySet().iterator();  
+		Iterator entries = map.entrySet().iterator();  */
 		/*  
 		while (entries.hasNext()) {  
 		  

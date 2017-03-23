@@ -19,6 +19,7 @@
     <result column="WINAMOUNT" jdbcType="DECIMAL" property="winAmount" />
     <result column="SYSTEMAMOUNT" jdbcType="DECIMAL" property="systemAmount" />
     <result column="COMPANYWIN" jdbcType="DECIMAL" property="companyWin" />
+    <result column="BALANCEAMOUNT" jdbcType="DECIMAL" property="balanceAmount" />
   </resultMap>
   <resultMap id="TradeReportMap" type="com.lottery.orm.dto.TradeReportDto">
     <result column="ACCOUNTID" jdbcType="INTEGER" property="accountId" />
@@ -81,22 +82,28 @@
   </select>
   <select id="selectWinReportByAgency" resultMap="AgencyWinReportMap">
     select 
-    a.USERNAME, SUM(ORDERAMOUNT) as ORDERAMOUNT, SUM(-ACTUALAMOUNT) as ACTUALAMOUNT, SUM(RETURNAMOUNT+SYSTEMAMOUNT) as FEEAMOUNT, AVG(PERCENTAGE) as PERCENTAGE, SUM(r.TRADEAMOUNT) as WINAMOUNT, SUM(SYSTEMAMOUNT) as SYSTEMAMOUNT, SUM(s.TRADEAMOUNT) as COMPANYWIN
-    from account_detail a, lottery_order o,trade_info r,(select * from trade_info where RELATIVETYPE='AgencyWin' and ACCOUNTID=2) s
-    where a.ACCOUNTID = r.ACCOUNTID and o.ORDERID=r.RELATIVEID and o.ORDERID=s.RELATIVEID and r.RELATIVETYPE='AgencyWin' and o.PRIZETIME is not null
-	<if test="startTime != null and endTime != null">
-	and Date(ORDERTIME) between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
+    a.USERNAME, temp.ORDERAMOUNT, temp.ACTUALAMOUNT, temp.FEEAMOUNT, a.PERCENTAGE, temp.WINAMOUNT, temp.SYSTEMAMOUNT, temp.COMPANYWIN, temp.WINAMOUNT-a.BUDGET as BALANCEAMOUNT
+    from account_detail a left outer join 
+    (select SUM(o.ORDERAMOUNT) as ORDERAMOUNT, SUM(-o.ACTUALAMOUNT) as ACTUALAMOUNT, SUM(o.RETURNAMOUNT+o.SYSTEMAMOUNT) as FEEAMOUNT, 
+            SUM(o.SYSTEMAMOUNT) as SYSTEMAMOUNT, SUM(r.WINAMOUNT) as WINAMOUNT, SUM(r1.WINAMOUNT) as COMPANYWIN, r.ACCOUNTID
+       from lottery_order o inner join lottery_order_result r on o.ORDERID=r.ORDERID left outer join lottery_order_result r1 on (o.ORDERID=r1.ORDERID and r1.ACCOUNTID=2)
+		   where o.PRIZETIME is not null
+		<if test="startTime != null and endTime != null">
+		and Date(ORDERTIME) between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
+		</if>
+		<if test="startTime != null and endTime == null">
+		and Date(ORDERTIME) <![CDATA[>=]]> #{startTime,jdbcType=TIMESTAMP}
+		</if>
+		<if test="startTime == null and endTime != null">
+		and Date(ORDERTIME) <![CDATA[<=]]> #{endTime,jdbcType=TIMESTAMP}
+		</if>
+		group by r.ACCOUNTID
+    ) temp on a.ACCOUNTID = temp.ACCOUNTID
+    where a.OFFTYPE='1'
+    <if test="level != null and level!=''">
+	and a.level = #{level,jdbcType=VARCHAR}
 	</if>
-	<if test="startTime != null and endTime == null">
-	and Date(ORDERTIME) <![CDATA[>=]]> #{startTime,jdbcType=TIMESTAMP}
-	</if>
-	<if test="startTime == null and endTime != null">
-	and Date(ORDERTIME) <![CDATA[<=]]> #{endTime,jdbcType=TIMESTAMP}
-	</if>
-	<if test="level != null and level!=''">
-	and level = #{level,jdbcType=VARCHAR}
-	</if>
-	and a.OFFTYPE='1' and (a.username=#{supUsername,jdbcType=VARCHAR} or 
+	 and (a.username=#{supUsername,jdbcType=VARCHAR} or 
 	<![CDATA[ FIND_IN_SET(a.username, 
 	   (SELECT GROUP_CONCAT(Level SEPARATOR ',') FROM (
 	      SELECT @Ids := (SELECT GROUP_CONCAT(username SEPARATOR ',') FROM account_detail WHERE FIND_IN_SET(supusername, @Ids) ) Level
@@ -106,7 +113,6 @@
 	   ) temp2 )
 	)]]>
 	)
-    group by a.USERNAME
     order by a.USERNAME
 	<if test="beginRow != null and pageSize !=null">
 	limit #{beginRow,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}

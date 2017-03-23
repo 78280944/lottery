@@ -8,13 +8,14 @@
     <result column="RELATIVEID" jdbcType="INTEGER" property="relativeid" />
     <result column="RELATIVETYPE" jdbcType="VARCHAR" property="relativetype" />
     <result column="TRADEAMOUNT" jdbcType="DOUBLE" property="tradeamount" />
+    <result column="BUDGETAMOUNT" jdbcType="DOUBLE" property="budgetamount" />
     <result column="ACCOUNTAMOUNT" jdbcType="DECIMAL" property="accountamount" />
     <result column="INPUTTIME" jdbcType="TIMESTAMP" property="inputtime" />
     <result column="REMARK" jdbcType="VARCHAR" property="remark" />
   </resultMap>
   <sql id="Base_Column_List">
-    TRADEID, ACCOUNTID, TRADETYPE, RELATIVEID, RELATIVETYPE, TRADEAMOUNT, ACCOUNTAMOUNT, 
-    INPUTTIME, REMARK
+    TRADEID, ACCOUNTID, TRADETYPE, RELATIVEID, RELATIVETYPE, TRADEAMOUNT, BUDGETAMOUNT, 
+    ACCOUNTAMOUNT, INPUTTIME, REMARK
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -31,11 +32,13 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into trade_info (ACCOUNTID, TRADETYPE, RELATIVEID, 
-      RELATIVETYPE, TRADEAMOUNT, ACCOUNTAMOUNT, 
-      INPUTTIME, REMARK)
+      RELATIVETYPE, TRADEAMOUNT, BUDGETAMOUNT, 
+      ACCOUNTAMOUNT, INPUTTIME, REMARK
+      )
     values (#{accountid,jdbcType=INTEGER}, #{tradetype,jdbcType=VARCHAR}, #{relativeid,jdbcType=INTEGER}, 
-      #{relativetype,jdbcType=VARCHAR}, #{tradeamount,jdbcType=DOUBLE}, #{accountamount,jdbcType=DECIMAL}, 
-      #{inputtime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR})
+      #{relativetype,jdbcType=VARCHAR}, #{tradeamount,jdbcType=DOUBLE}, #{budgetamount,jdbcType=DOUBLE}, 
+      #{accountamount,jdbcType=DECIMAL}, #{inputtime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.lottery.orm.bo.TradeInfo">
     <selectKey keyProperty="tradeid" order="AFTER" resultType="java.lang.Integer">
@@ -57,6 +60,9 @@
       </if>
       <if test="tradeamount != null">
         TRADEAMOUNT,
+      </if>
+      <if test="budgetamount != null">
+        BUDGETAMOUNT,
       </if>
       <if test="accountamount != null">
         ACCOUNTAMOUNT,
@@ -83,6 +89,9 @@
       </if>
       <if test="tradeamount != null">
         #{tradeamount,jdbcType=DOUBLE},
+      </if>
+      <if test="budgetamount != null">
+        #{budgetamount,jdbcType=DOUBLE},
       </if>
       <if test="accountamount != null">
         #{accountamount,jdbcType=DECIMAL},
@@ -113,6 +122,9 @@
       <if test="tradeamount != null">
         TRADEAMOUNT = #{tradeamount,jdbcType=DOUBLE},
       </if>
+      <if test="budgetamount != null">
+        BUDGETAMOUNT = #{budgetamount,jdbcType=DOUBLE},
+      </if>
       <if test="accountamount != null">
         ACCOUNTAMOUNT = #{accountamount,jdbcType=DECIMAL},
       </if>
@@ -132,6 +144,7 @@
       RELATIVEID = #{relativeid,jdbcType=INTEGER},
       RELATIVETYPE = #{relativetype,jdbcType=VARCHAR},
       TRADEAMOUNT = #{tradeamount,jdbcType=DOUBLE},
+      BUDGETAMOUNT = #{budgetamount,jdbcType=DOUBLE},
       ACCOUNTAMOUNT = #{accountamount,jdbcType=DECIMAL},
       INPUTTIME = #{inputtime,jdbcType=TIMESTAMP},
       REMARK = #{remark,jdbcType=VARCHAR}

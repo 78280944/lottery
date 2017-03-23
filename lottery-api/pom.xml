@@ -46,6 +46,14 @@
 			<groupId>tomcat</groupId>
 			<artifactId>servlet-api</artifactId>
 		</dependency> -->
+		
+		<!-- web begin Spring MVC Test Framework 需要 servlet-api 3.0 以上 -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
+			<scope>provided</scope>
+		</dependency>
 
 		<!-- Log相关 -->
 		<dependency>

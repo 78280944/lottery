@@ -27,6 +27,8 @@ public class AgencyWinReportDto {
 	@ApiModelProperty(value = "公司输赢", required = true)
 	private Double companyWin;
 
+	@ApiModelProperty(value = "结算", required = true)
+	private Double balanceAmount;
 	
 	public String getUserName() {
 		return userName;
@@ -90,6 +92,14 @@ public class AgencyWinReportDto {
 
 	public void setCompanyWin(Double companyWin) {
 		this.companyWin = companyWin;
+	}
+
+	public Double getBalanceAmount() {
+		return balanceAmount;
+	}
+
+	public void setBalanceAmount(Double balanceAmount) {
+		this.balanceAmount = balanceAmount;
 	}
 
 }
