@@ -64,6 +64,8 @@
     <result column="OPENTIME" jdbcType="TIMESTAMP" property="opentime" />
     <result column="CLOSETIME" jdbcType="TIMESTAMP" property="closetime" />
     <result column="ORIGINRESULT" jdbcType="VARCHAR" property="originresult" />
+    <result column="ACTUALOPENTIME" jdbcType="TIMESTAMP" property="actualopentime" />
+    <result column="ACTUALCLOSETIME" jdbcType="TIMESTAMP" property="actualclosetime" />
 	<collection property="roundItemList" ofType="com.lottery.orm.bo.LotteryRoundItem" column="ROUNDID">  
 		<id column="ROUNDID" jdbcType="INTEGER" property="roundid" />
 	    <id column="ITEMNO" jdbcType="VARCHAR" property="itemno" />
@@ -102,7 +104,7 @@
 	{call GetParentAccount(#{supUserName,mode=IN,jdbcType=VARCHAR})}
 	</select>
 	
-	<select id="selectItemByLotteryType" resultMap="LotteryItemMap">
+	<select id="selectItemByLottery" resultMap="LotteryItemMap">
     select * 
     from lottery_item
     where LOTTERYTYPE = #{lotteryType,jdbcType=VARCHAR}
@@ -140,7 +142,7 @@
   <select id="selectRoundByTime" resultType="LotteryRound">
     select * 
     from lottery_round 
-    where Date(CLOSETIME) <![CDATA[<=]]> #{closeTime,jdbcType=TIMESTAMP} and ROUNDSTATUS = 'Open' 
+    where Date(CLOSETIME) <![CDATA[<=]]> #{closeTime,jdbcType=TIMESTAMP} and ROUNDSTATUS = 'Open' and lotteryType = #{lotteryType,jdbcType=VARCHAR}
 	 order by starttime desc
   </select>
 

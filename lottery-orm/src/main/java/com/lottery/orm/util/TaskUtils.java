@@ -3,6 +3,8 @@ package com.lottery.orm.util;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -75,5 +77,22 @@ public class TaskUtils {
             formatTimeStr = sdf.format(date);  
         }  
         return formatTimeStr;  
+    }
+	
+	public static String getCloseCron(Date  runTime){
+		Calendar c = Calendar.getInstance(); ;
+		c.setTime(runTime);
+		return c.get(Calendar.SECOND)+" "+c.get(Calendar.MINUTE)+" "+c.get(Calendar.HOUR_OF_DAY)+" * * ?";
+    } 
+	
+	/*public static String getOpenCron(Date  runTime){
+		Calendar c = Calendar.getInstance();
+		c.setTime(runTime);
+		return c.get(Calendar.SECOND)+" "+c.get(Calendar.MINUTE)+" "+c.get(Calendar.HOUR_OF_DAY)+" * * ?";
+    } */
+	public static String getOpenCron(Date  runTime){
+		Calendar c = Calendar.getInstance();
+		c.setTime(runTime);
+		return "0/5 * * * * ?";
     } 
 }

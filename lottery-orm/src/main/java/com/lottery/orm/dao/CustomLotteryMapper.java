@@ -17,7 +17,7 @@ public interface CustomLotteryMapper {
     
     List<AccountDetail> selectAccountBySupUserName(@Param("supUserName")String supUserName);
     
-    List<LotteryItem> selectItemByLotteryType(@Param("lotteryType")String lotteryType);
+    List<LotteryItem> selectItemByLottery(@Param("lotteryType")String lotteryType);
     
     List<LotteryOrder> selectOrderByRoundId(@Param("roundId")Integer roundId);
     

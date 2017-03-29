@@ -1,6 +1,7 @@
 package com.lottery.api.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -81,7 +82,9 @@ public class LotteryOrderController {
 				result.fail("不存在该期游戏");
 			} else if (!round.getRoundstatus().equals(EnumType.RoundStatus.Open.ID)) {
 				result.fail("该期游戏目前无法投注");
-			} else {
+			} else if(round.getClosetime().before(new Date())){
+				result.fail("该期游戏已过封盘时间,目前无法投注");
+			}else {
 				List<LotteryOrderDetail> orderDetails = new ArrayList<LotteryOrderDetail>();
 				for (OrderDetailVo orderDetailVo : param.getOrderDetails()) {
 					LotteryOrderDetail orderDetail = mapper.map(orderDetailVo, LotteryOrderDetail.class);
@@ -89,7 +92,7 @@ public class LotteryOrderController {
 				}
 				order.setOrderDetailList(orderDetails);
 				AccountDetail accountDetail = accountDetailMapper.selectByPrimaryKey(order.getAccountid());
-				String checkInfo = lotteryOrderService.checkLotteryOrder(accountDetail, order);
+				String checkInfo = lotteryOrderService.checkLotteryOrder(accountDetail, round, order);
 				if (checkInfo.length()==0) {
 					lotteryOrderService.addLotteryOrder(accountDetail, order);
 					LotteryOrderDto orderDto = mapper.map(order, LotteryOrderDto.class);
@@ -153,7 +156,7 @@ public class LotteryOrderController {
 			LotteryOrder order = customLotteryMapper.selectOrderByOrderId(param.getOrderId());
 			if(order!=null){
 				LotteryRound round = lotteryRoundMapper.selectByPrimaryKey(order.getRoundid());
-				List<LotteryItem> itemList = customLotteryMapper.selectItemByLotteryType(EnumType.LotteryType.CornSeed.ID);
+				List<LotteryItem> itemList = customLotteryMapper.selectItemByLottery(EnumType.Lottery.YMZ.ID);
 				String updateResult = lotteryOrderService.updateOrderByRound(round, order, itemList);
 				if(!updateResult.equals("")){
 					result.fail(updateResult);

@@ -83,7 +83,7 @@
        class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
        
     <bean id="springUtils" class="com.lottery.orm.util.SpringUtils" />
-	<bean id="schedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" />
+	<!-- <bean id="schedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" /> -->
 	
 	
 	<bean class="com.mangofactory.swagger.configuration.SpringSwaggerConfig" />

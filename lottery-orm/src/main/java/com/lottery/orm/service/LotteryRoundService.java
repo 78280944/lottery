@@ -16,11 +16,12 @@ import com.lottery.orm.bo.LotteryItem;
 import com.lottery.orm.bo.LotteryOrder;
 import com.lottery.orm.bo.LotteryRound;
 import com.lottery.orm.bo.LotteryRoundItem;
-import com.lottery.orm.bo.ScheduleJob;
+import com.lottery.orm.bo.TSTimeTask;
 import com.lottery.orm.dao.CustomLotteryMapper;
 import com.lottery.orm.dao.LotteryRoundItemMapper;
 import com.lottery.orm.dao.LotteryRoundMapper;
 import com.lottery.orm.dao.ScheduleJobMapper;
+import com.lottery.orm.dao.TSTimeTaskMapper;
 import com.lottery.orm.util.EnumType;
 import com.lottery.orm.util.TaskUtils;
 
@@ -45,7 +46,10 @@ public class LotteryRoundService {
 	private LotteryOrderService lotteryOrderService;
 	
 	@Autowired
-	private JobTaskService taskService;
+	private DynamicTask dynamicTask;
+	
+	@Autowired
+	private TSTimeTaskMapper TSTimeTaskMapper;
 	
 	// 添加投注单
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor=Exception.class)
@@ -62,7 +66,7 @@ public class LotteryRoundService {
 		round.setClosetime(closeTime.toDate());//开奖前2分钟封盘
 		LotteryRound existRound = customLotteryMapper.selectRoundByTypeAndTerm(round.getLotterytype(), round.getLotteryterm());
 		if(existRound==null){
-			List<LotteryItem> itemList = customLotteryMapper.selectItemByLotteryType(round.getLotterytype());
+			List<LotteryItem> itemList = customLotteryMapper.selectItemByLottery(EnumType.Lottery.YMZ.ID);
 			List<LotteryRoundItem> roundItemList = new ArrayList<LotteryRoundItem>();
 			lotteryRoundMapper.insertSelective(round);
 			if (round.getRoundid() > 0) {
@@ -83,58 +87,83 @@ public class LotteryRoundService {
 	}
 	
 	//添加游戏定时任务
-	public void addRoundTask(LotteryRound nextRound) throws Exception{
-		String cronStr = "";
+	private void addRoundTask(LotteryRound nextRound) throws Exception{
+		/*String cronStr = "";
 		try {
 			DateTime runGetOpenTime = new DateTime(nextRound.getOpentime()).plusSeconds(3);//执行任务时间最好比开奖晚1秒
-			cronStr = TaskUtils.getCron(runGetOpenTime.toDate());
-			Long task1 = new Long(2);
-			
-			ScheduleJob job = taskService.getTaskById(task1);
+			cronStr = TaskUtils.getOpenCron(runGetOpenTime.toDate());
+			ScheduleJob job = lotteryTaskService.getTaskByNameAndGroup("nextRound", nextRound.getLotterytype());
 			if (job != null) {
 				job.setCronExpression(cronStr);
-				if (ScheduleJob.STATUS_RUNNING.equals(job.getJobStatus())&&taskService.getRunningJob().contains(job)) {
-					if(taskService.updateJobCron(job)){
-						scheduleJobMapper.updateByPrimaryKeySelective(job);
-					}
-				}else{
-					job.setJobStatus(ScheduleJob.STATUS_RUNNING);
-					if(taskService.addJob(job)){
-						scheduleJobMapper.updateByPrimaryKeySelective(job);
-					}
+				if(taskService.updateJobCron(job)){
+					scheduleJobMapper.updateByPrimaryKeySelective(job);
 				}
-				
 			}
 			
-			cronStr = TaskUtils.getCron(nextRound.getClosetime());
-			Long task2 = new Long(3);
-			job = taskService.getTaskById(task2);
+			cronStr = TaskUtils.getCloseCron(nextRound.getClosetime());
+			job = taskService.getTaskByNameAndGroup("closeRound", nextRound.getLotterytype());
 			
 			if (job != null) {
 				job.setCronExpression(cronStr);
-				if (ScheduleJob.STATUS_RUNNING.equals(job.getJobStatus())&&taskService.getRunningJob().contains(job)) {
-					if(taskService.updateJobCron(job)){
-						scheduleJobMapper.updateByPrimaryKeySelective(job);
-					}
-				}else{
-					job.setJobStatus(ScheduleJob.STATUS_RUNNING);
-					if(taskService.addJob(job)){
-						scheduleJobMapper.updateByPrimaryKeySelective(job);
-					}
+				if(taskService.updateJobCron(job)){
+					scheduleJobMapper.updateByPrimaryKeySelective(job);
 				}
-				
 			}
 			
 		} catch (Exception e) {
 			log.error("更新获取开奖结果任务失败:"+nextRound.getLotteryterm()+":"+cronStr);
 			throw new Exception(e);
+		}*/
+		
+		String openCronStr = "";
+		String endCronStr = "";
+		//DateTime runGetOpenTime = new DateTime(nextRound.getOpentime()).plusSeconds(3);//执行任务时间最好比开奖晚1秒
+		DateTime runGetOpenTime = new DateTime(nextRound.getOpentime());
+		openCronStr = TaskUtils.getOpenCron(runGetOpenTime.toDate());
+		endCronStr = TaskUtils.getCloseCron(nextRound.getClosetime());
+		TSTimeTask openTask = null;
+		TSTimeTask endTask = null;
+		boolean openResult = false;
+		
+		boolean endResult = false;
+		if(nextRound.getLotterytype().equals(EnumType.LotteryType.CQ.ID)){
+			openTask = TSTimeTaskMapper.selectByTaskId("openCQCronTrigger");
+			openResult = dynamicTask.updateCronExpression(openTask.getTaskId(), openCronStr, runGetOpenTime.toDate());
+			
+			endTask = TSTimeTaskMapper.selectByTaskId("closeCQCronTrigger");
+			endResult = dynamicTask.updateCronExpression(endTask.getTaskId(), endCronStr);
+		}else if(nextRound.getLotterytype().equals(EnumType.LotteryType.TJ.ID)){
+			openTask = TSTimeTaskMapper.selectByTaskId("openTJCronTrigger");
+			openResult = dynamicTask.updateCronExpression(openTask.getTaskId(), openCronStr, runGetOpenTime.toDate());
+			
+			endTask = TSTimeTaskMapper.selectByTaskId("closeTJCronTrigger");
+			endResult = dynamicTask.updateCronExpression(endTask.getTaskId(), endCronStr);
+		}else if(nextRound.getLotterytype().equals(EnumType.LotteryType.GD.ID)){
+			openTask = TSTimeTaskMapper.selectByTaskId("openGDCronTrigger");
+			openResult = dynamicTask.updateCronExpression(openTask.getTaskId(), openCronStr, runGetOpenTime.toDate());
+			
+			endTask = TSTimeTaskMapper.selectByTaskId("closeGDCronTrigger");
+			endResult = dynamicTask.updateCronExpression(endTask.getTaskId(), endCronStr);
+		}
+		
+		if(openResult){
+			openTask.setCronExpression(openCronStr);
+			TSTimeTaskMapper.updateByPrimaryKeySelective(openTask);
+		}
+		
+		if(endResult){
+			endTask.setCronExpression(endCronStr);
+			TSTimeTaskMapper.updateByPrimaryKeySelective(endTask);
+		}else{
+			log.error("定时封盘任务失败:"+nextRound.getLotteryterm()+":"+endCronStr);
+			throw new Exception("定时封盘任务失败:"+nextRound.getLotteryterm()+":"+openCronStr+":"+endCronStr);
 		}
 	}
 
 	// 游戏结束
 	public int endLotteryRound(LotteryRound round, String originResult, Date openTime){
 		round.setResultstr(getCronLotteryResult(originResult));
-		round.setOpentime(openTime);//更新开奖时间
+		round.setActualopentime(openTime);//更新开奖时间
 		round.setRoundstatus(EnumType.RoundStatus.End.ID);
 		round.setEndtime(new Date());
 		round.setOriginresult(originResult);
@@ -143,7 +172,7 @@ public class LotteryRoundService {
 	
 	// 游戏兑奖
 	public void prizeLotteryRound(LotteryRound round){
-		List<LotteryItem> itemList = customLotteryMapper.selectItemByLotteryType(EnumType.LotteryType.CornSeed.ID);
+		List<LotteryItem> itemList = customLotteryMapper.selectItemByLottery(EnumType.Lottery.YMZ.ID);
 		List<LotteryOrder> orderList = customLotteryMapper.selectOrderByRoundId(round.getRoundid());
 		for (LotteryOrder order : orderList) {
 			try{
@@ -157,16 +186,6 @@ public class LotteryRoundService {
 		}
 	}
 	
-	/*// 游戏结束并兑奖
-	public boolean endLotteryOrder(LotteryOrder order) {
-		LotteryRound round = customLotteryMapper.selectRoundByRoundId(order.getRoundid());
-		if (round!=null) {
-			List<LotteryItem> itemList = customLotteryMapper.selectItemByLotteryType(EnumType.LotteryType.CornSeed.ID);
-			lotteryOrderService.updateOrderByRound(round, order, itemList);
-			return true;
-		}
-		return false;
-	}*/
 	
 	//根据广西快乐十分的开奖结果计算玉米籽的开奖结果
 	private String getCronLotteryResult(String originResult){
@@ -191,11 +210,11 @@ public class LotteryRoundService {
 	}*/
 	
 	// 游戏封盘
-	public boolean closeLotteryRound() {
-		List<LotteryRound> roundList =  customLotteryMapper.selectRoundByTime(EnumType.LotteryType.CornSeed.ID, new Date());
+	public boolean closeLotteryRound(String lotteryType) {
+		List<LotteryRound> roundList =  customLotteryMapper.selectRoundByTime(lotteryType, new Date());
 		if(roundList.size()>0){
 			for (LotteryRound round : roundList) {
-				round.setClosetime(new Date());
+				round.setActualclosetime(new Date());
 				round.setRoundstatus(EnumType.RoundStatus.Close.ID);
 				lotteryRoundMapper.updateByPrimaryKeySelective(round);
 			}

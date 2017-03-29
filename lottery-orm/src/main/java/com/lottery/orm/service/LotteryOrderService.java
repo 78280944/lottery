@@ -262,13 +262,13 @@ public class LotteryOrderService {
 		return -1;
 	}
 
-	public String checkLotteryOrder(AccountDetail accountDetail, LotteryOrder order) {
+	public String checkLotteryOrder(AccountDetail accountDetail, LotteryRound round, LotteryOrder order) {
 		String[] typeOrder = {"角","连","番","正","三中","特码","色","大小","单双"};
 		List<Map<String, String>> detailList = customLotteryMapper.selectOrderForCheck(order.getRoundid(), order.getAccountid());
 		Map<String, Double> tempMap = new HashMap<String, Double>();
 		
 		OffAccountInfo accountInfo = offAccountInfoMapper.selectByUsername(accountDetail.getSupusername());
-		List<LotteryItem> itemList = customLotteryMapper.selectItemByLotteryType(EnumType.LotteryType.CornSeed.ID);
+		List<LotteryItem> itemList = customLotteryMapper.selectItemByLottery(EnumType.Lottery.YMZ.ID);
 		Map<String, String> itemGroupMap = new HashMap<String, String>();
 		for (LotteryItem item : itemList) {
 			itemGroupMap.put(item.getItemno(), item.getItemgroup());

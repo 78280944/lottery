@@ -10,7 +10,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 public class RoundParamVo {
-
+	@ApiModelProperty(value = "游戏类型", required = true)
+    @NotBlank(message = "游戏类型不能为空")
+    private String lotteryType;
+	
     @ApiModelProperty(value = "游戏期次")
     @NotBlank(message = "游戏期次不能为空")
     private String lotteryTerm;
@@ -35,5 +38,12 @@ public class RoundParamVo {
 	public void setOpenTime(Date openTime) {
 		this.openTime = openTime;
 	}
+	
+	public String getLotteryType() {
+		return lotteryType;
+	}
 
+	public void setLotteryType(String lotteryType) {
+		this.lotteryType = lotteryType;
+	}
 }

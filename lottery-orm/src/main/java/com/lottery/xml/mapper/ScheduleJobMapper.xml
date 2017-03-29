@@ -185,4 +185,10 @@
 		<include refid="Base_Column_List" />
 		from task_schedule_job
 	</select>
+	<select id="selectByNameAndGroup" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from task_schedule_job
+		where job_name = #{jobName,jdbcType=VARCHAR} and job_group = #{jobGroup,jdbcType=VARCHAR}
+	</select>
 </mapper>

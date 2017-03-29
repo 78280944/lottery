@@ -1,8 +1,19 @@
 package com.lottery.orm.util;
 
 public interface EnumType {
+	enum Lottery {
+	    YMZ("01", "玉米籽");
+	    private Lottery(String ID, String NAME) {
+	      this.ID = ID;
+	      this.NAME = NAME;
+	    }
+
+	    public final String ID;
+	    public final String NAME;
+	    public final static String enumDesc = "游戏";
+	  }
   enum LotteryType {
-    CornSeed("01", "玉米籽");
+    CQ("01", "重庆快乐十分玉米籽"),GD("02", "广东快乐十分玉米籽"),TJ("03", "天津快乐十分玉米籽");
     private LotteryType(String ID, String NAME) {
       this.ID = ID;
       this.NAME = NAME;
@@ -10,7 +21,7 @@ public interface EnumType {
 
     public final String ID;
     public final String NAME;
-    public final static String enumDesc = "游戏类型";
+    public final static String enumDesc = "玉米籽类型";
   }
   enum ItemType {
     Type_01("01", "番摊玉米籽"), Type_02("02", "广西快乐十分");

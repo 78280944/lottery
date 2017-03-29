@@ -36,8 +36,8 @@ import com.lottery.orm.task.QuartzJobFactoryDisallowConcurrentExecution;
  * @author chenjianlin
  * @date 2014年4月25日 下午2:43:54
  */
-@Service
-public class JobTaskService {
+//@Service
+/*public class JobTaskService {
 	public final Logger log = Logger.getLogger(this.getClass());
 	@Autowired
 	private SchedulerFactoryBean schedulerFactoryBean;
@@ -45,35 +45,42 @@ public class JobTaskService {
 	@Autowired
 	private ScheduleJobMapper scheduleJobMapper;
 
-	/**
+	*//**
 	 * 从数据库中取 区别于getAllJob
 	 * 
 	 * @return
-	 */
+	 *//*
 	public List<ScheduleJob> getAllTask() {
 		return scheduleJobMapper.getAll();
 	}
 
-	/**
+	*//**
 	 * 添加到数据库中 区别于addJob
-	 */
+	 *//*
 	public void addTask(ScheduleJob job) {
 		job.setCreateTime(new Date());
 		scheduleJobMapper.insertSelective(job);
 	}
 
-	/**
+	*//**
 	 * 从数据库中查询job
-	 */
+	 *//*
 	public ScheduleJob getTaskById(Long jobId) {
 		return scheduleJobMapper.selectByPrimaryKey(jobId);
 	}
+	
+	*//**
+	 * 从数据库中查询job
+	 *//*
+	public ScheduleJob getTaskByNameAndGroup(String jobName, String jobGroup) {
+		return scheduleJobMapper.selectByNameAndGroup(jobName, jobGroup);
+	}
 
-	/**
+	*//**
 	 * 更改任务状态
 	 * 
 	 * @throws SchedulerException
-	 */
+	 *//*
 	public void changeStatus(Long jobId, String cmd) throws SchedulerException {
 		ScheduleJob job = getTaskById(jobId);
 		if (job == null) {
@@ -89,11 +96,11 @@ public class JobTaskService {
 		scheduleJobMapper.updateByPrimaryKeySelective(job);
 	}
 
-	/**
+	*//**
 	 * 更改任务 cron表达式
 	 * 
 	 * @throws SchedulerException
-	 */
+	 *//*
 	public void updateCron(Long jobId, String cron) throws SchedulerException {
 		ScheduleJob job = getTaskById(jobId);
 		if (job == null) {
@@ -107,12 +114,12 @@ public class JobTaskService {
 
 	}
 
-	/**
+	*//**
 	 * 添加任务
 	 * 
 	 * @param scheduleJob
 	 * @throws SchedulerException
-	 */
+	 *//*
 	public boolean addJob(ScheduleJob job) {
 		
 		if (job == null || !ScheduleJob.STATUS_RUNNING.equals(job.getJobStatus())) {
@@ -167,12 +174,12 @@ public class JobTaskService {
 		}
 	}
 
-	/**
+	*//**
 	 * 获取所有计划中的任务列表
 	 * 
 	 * @return
 	 * @throws SchedulerException
-	 */
+	 *//*
 	public List<ScheduleJob> getAllJob() throws SchedulerException {
 		Scheduler scheduler = schedulerFactoryBean.getScheduler();
 		GroupMatcher<JobKey> matcher = GroupMatcher.anyJobGroup();
@@ -198,12 +205,12 @@ public class JobTaskService {
 		return jobList;
 	}
 
-	/**
+	*//**
 	 * 所有正在运行的job
 	 * 
 	 * @return
 	 * @throws SchedulerException
-	 */
+	 *//*
 	public List<ScheduleJob> getRunningJob() throws SchedulerException {
 		Scheduler scheduler = schedulerFactoryBean.getScheduler();
 		List<JobExecutionContext> executingJobs = scheduler.getCurrentlyExecutingJobs();
@@ -228,36 +235,36 @@ public class JobTaskService {
 		return jobList;
 	}
 
-	/**
+	*//**
 	 * 暂停一个job
 	 * 
 	 * @param scheduleJob
 	 * @throws SchedulerException
-	 */
+	 *//*
 	public void pauseJob(ScheduleJob scheduleJob) throws SchedulerException {
 		Scheduler scheduler = schedulerFactoryBean.getScheduler();
 		JobKey jobKey = JobKey.jobKey(scheduleJob.getJobName(), scheduleJob.getJobGroup());
 		scheduler.pauseJob(jobKey);
 	}
 
-	/**
+	*//**
 	 * 恢复一个job
 	 * 
 	 * @param scheduleJob
 	 * @throws SchedulerException
-	 */
+	 *//*
 	public void resumeJob(ScheduleJob scheduleJob) throws SchedulerException {
 		Scheduler scheduler = schedulerFactoryBean.getScheduler();
 		JobKey jobKey = JobKey.jobKey(scheduleJob.getJobName(), scheduleJob.getJobGroup());
 		scheduler.resumeJob(jobKey);
 	}
 
-	/**
+	*//**
 	 * 删除一个job
 	 * 
 	 * @param scheduleJob
 	 * @throws SchedulerException
-	 */
+	 *//*
 	public void deleteJob(ScheduleJob scheduleJob) throws SchedulerException {
 		Scheduler scheduler = schedulerFactoryBean.getScheduler();
 		JobKey jobKey = JobKey.jobKey(scheduleJob.getJobName(), scheduleJob.getJobGroup());
@@ -265,24 +272,24 @@ public class JobTaskService {
 
 	}
 
-	/**
+	*//**
 	 * 立即执行job
 	 * 
 	 * @param scheduleJob
 	 * @throws SchedulerException
-	 */
+	 *//*
 	public void runAJobNow(ScheduleJob scheduleJob) throws SchedulerException {
 		Scheduler scheduler = schedulerFactoryBean.getScheduler();
 		JobKey jobKey = JobKey.jobKey(scheduleJob.getJobName(), scheduleJob.getJobGroup());
 		scheduler.triggerJob(jobKey);
 	}
 
-	/**
+	*//**
 	 * 更新job时间表达式
 	 * 
 	 * @param scheduleJob
 	 * @throws SchedulerException
-	 */
+	 *//*
 	public boolean updateJobCron(ScheduleJob scheduleJob) {
 		try{
 			Scheduler scheduler = schedulerFactoryBean.getScheduler();
@@ -306,4 +313,4 @@ public class JobTaskService {
 	public static void main(String[] args) {
 		CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule("xxxxx");
 	}
-}
+}*/

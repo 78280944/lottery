@@ -12,10 +12,12 @@
     <result column="OPENTIME" jdbcType="TIMESTAMP" property="opentime" />
     <result column="CLOSETIME" jdbcType="TIMESTAMP" property="closetime" />
     <result column="ORIGINRESULT" jdbcType="VARCHAR" property="originresult" />
+    <result column="ACTUALOPENTIME" jdbcType="TIMESTAMP" property="actualopentime" />
+    <result column="ACTUALCLOSETIME" jdbcType="TIMESTAMP" property="actualclosetime" />
   </resultMap>
   <sql id="Base_Column_List">
     ROUNDID, LOTTERYTYPE, LOTTERYTERM, RESULTSTR, STARTTIME, ENDTIME, ROUNDSTATUS, OPENTIME, 
-    CLOSETIME, ORIGINRESULT
+    CLOSETIME, ORIGINRESULT, ACTUALOPENTIME, ACTUALCLOSETIME
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -33,12 +35,12 @@
     </selectKey>
     insert into lottery_round (LOTTERYTYPE, LOTTERYTERM, RESULTSTR, 
       STARTTIME, ENDTIME, ROUNDSTATUS, 
-      OPENTIME, CLOSETIME, ORIGINRESULT
-      )
+      OPENTIME, CLOSETIME, ORIGINRESULT, 
+      ACTUALOPENTIME, ACTUALCLOSETIME)
     values (#{lotterytype,jdbcType=VARCHAR}, #{lotteryterm,jdbcType=VARCHAR}, #{resultstr,jdbcType=VARCHAR}, 
       #{starttime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP}, #{roundstatus,jdbcType=VARCHAR}, 
-      #{opentime,jdbcType=TIMESTAMP}, #{closetime,jdbcType=TIMESTAMP}, #{originresult,jdbcType=VARCHAR}
-      )
+      #{opentime,jdbcType=TIMESTAMP}, #{closetime,jdbcType=TIMESTAMP}, #{originresult,jdbcType=VARCHAR}, 
+      #{actualopentime,jdbcType=TIMESTAMP}, #{actualclosetime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.lottery.orm.bo.LotteryRound">
     <selectKey keyProperty="roundid" order="AFTER" resultType="java.lang.Integer">
@@ -73,6 +75,12 @@
       <if test="originresult != null">
         ORIGINRESULT,
       </if>
+      <if test="actualopentime != null">
+        ACTUALOPENTIME,
+      </if>
+      <if test="actualclosetime != null">
+        ACTUALCLOSETIME,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="lotterytype != null">
@@ -101,6 +109,12 @@
       </if>
       <if test="originresult != null">
         #{originresult,jdbcType=VARCHAR},
+      </if>
+      <if test="actualopentime != null">
+        #{actualopentime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actualclosetime != null">
+        #{actualclosetime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -134,6 +148,12 @@
       <if test="originresult != null">
         ORIGINRESULT = #{originresult,jdbcType=VARCHAR},
       </if>
+      <if test="actualopentime != null">
+        ACTUALOPENTIME = #{actualopentime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actualclosetime != null">
+        ACTUALCLOSETIME = #{actualclosetime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where ROUNDID = #{roundid,jdbcType=INTEGER}
   </update>
@@ -147,7 +167,9 @@
       ROUNDSTATUS = #{roundstatus,jdbcType=VARCHAR},
       OPENTIME = #{opentime,jdbcType=TIMESTAMP},
       CLOSETIME = #{closetime,jdbcType=TIMESTAMP},
-      ORIGINRESULT = #{originresult,jdbcType=VARCHAR}
+      ORIGINRESULT = #{originresult,jdbcType=VARCHAR},
+      ACTUALOPENTIME = #{actualopentime,jdbcType=TIMESTAMP},
+      ACTUALCLOSETIME = #{actualclosetime,jdbcType=TIMESTAMP}
     where ROUNDID = #{roundid,jdbcType=INTEGER}
   </update>
 </mapper>
