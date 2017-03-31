@@ -98,10 +98,10 @@
 		<property name="triggers">
 			<list>
 				<ref bean="openCQCronTrigger" />
-				<!-- <ref bean="openTJCronTrigger" />
-				<ref bean="openGDCronTrigger" /> -->
 				<ref bean="closeCQCronTrigger" />
-				<!-- <ref bean="closeTJCronTrigger" />
+				<!-- <ref bean="openTJCronTrigger" />
+				<ref bean="openGDCronTrigger" />
+				<ref bean="closeTJCronTrigger" />
 				<ref bean="closeGDCronTrigger" /> -->
 			</list>
 		</property>

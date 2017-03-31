@@ -3,7 +3,8 @@ package com.lottery.orm.dao;
 import com.lottery.orm.bo.LotteryOrderResult;
 
 public interface LotteryOrderResultMapper {
-    int deleteByPrimaryKey(Integer resultid);
+
+	int deleteByPrimaryKey(Integer resultid);
 
     int insert(LotteryOrderResult record);
 

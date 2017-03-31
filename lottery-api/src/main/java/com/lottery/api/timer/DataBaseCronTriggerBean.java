@@ -26,6 +26,7 @@ public class DataBaseCronTriggerBean extends CronTriggerFactoryBean{
 		if(task!=null&&task.getIsEffect().equals("1")
 				&&!task.getCronExpression().equals(this.getObject().getCronExpression())){
 			try {
+				if(task.getStartTime()!=null)	this.setStartDelay(task.getStartTime().getTime()-System.currentTimeMillis());
 				this.setCronExpression(task.getCronExpression());
 			} catch (Exception e) {
 				// TODO 异常必须被处理

@@ -148,6 +148,7 @@ public class LotteryRoundService {
 		
 		if(openResult){
 			openTask.setCronExpression(openCronStr);
+			openTask.setStartTime(runGetOpenTime.toDate());
 			TSTimeTaskMapper.updateByPrimaryKeySelective(openTask);
 		}
 		

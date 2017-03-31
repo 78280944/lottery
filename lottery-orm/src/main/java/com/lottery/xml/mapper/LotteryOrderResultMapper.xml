@@ -6,10 +6,13 @@
     <result column="ACCOUNTID" jdbcType="INTEGER" property="accountid" />
     <result column="ORDERID" jdbcType="INTEGER" property="orderid" />
     <result column="WINAMOUNT" jdbcType="DOUBLE" property="winamount" />
+    <result column="PRIZEAMOUNT" jdbcType="DOUBLE" property="prizeamount" />
+    <result column="RETURNAMOUNT" jdbcType="DOUBLE" property="returnamount" />
+    <result column="FEEAMOUNT" jdbcType="DOUBLE" property="feeamount" />
     <result column="INPUTTIME" jdbcType="TIMESTAMP" property="inputtime" />
   </resultMap>
   <sql id="Base_Column_List">
-    RESULTID, ACCOUNTID, ORDERID, WINAMOUNT, INPUTTIME
+    RESULTID, ACCOUNTID, ORDERID, WINAMOUNT, PRIZEAMOUNT, RETURNAMOUNT, FEEAMOUNT, INPUTTIME
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -26,8 +29,10 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into lottery_order_result (ACCOUNTID, ORDERID, WINAMOUNT, 
+      PRIZEAMOUNT, RETURNAMOUNT, FEEAMOUNT, 
       INPUTTIME)
     values (#{accountid,jdbcType=INTEGER}, #{orderid,jdbcType=INTEGER}, #{winamount,jdbcType=DOUBLE}, 
+      #{prizeamount,jdbcType=DOUBLE}, #{returnamount,jdbcType=DOUBLE}, #{feeamount,jdbcType=DOUBLE}, 
       #{inputtime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.lottery.orm.bo.LotteryOrderResult">
@@ -45,6 +50,15 @@
       <if test="winamount != null">
         WINAMOUNT,
       </if>
+      <if test="prizeamount != null">
+        PRIZEAMOUNT,
+      </if>
+      <if test="returnamount != null">
+        RETURNAMOUNT,
+      </if>
+      <if test="feeamount != null">
+        FEEAMOUNT,
+      </if>
       <if test="inputtime != null">
         INPUTTIME,
       </if>
@@ -58,6 +72,15 @@
       </if>
       <if test="winamount != null">
         #{winamount,jdbcType=DOUBLE},
+      </if>
+      <if test="prizeamount != null">
+        #{prizeamount,jdbcType=DOUBLE},
+      </if>
+      <if test="returnamount != null">
+        #{returnamount,jdbcType=DOUBLE},
+      </if>
+      <if test="feeamount != null">
+        #{feeamount,jdbcType=DOUBLE},
       </if>
       <if test="inputtime != null">
         #{inputtime,jdbcType=TIMESTAMP},
@@ -76,6 +99,15 @@
       <if test="winamount != null">
         WINAMOUNT = #{winamount,jdbcType=DOUBLE},
       </if>
+      <if test="prizeamount != null">
+        PRIZEAMOUNT = #{prizeamount,jdbcType=DOUBLE},
+      </if>
+      <if test="returnamount != null">
+        RETURNAMOUNT = #{returnamount,jdbcType=DOUBLE},
+      </if>
+      <if test="feeamount != null">
+        FEEAMOUNT = #{feeamount,jdbcType=DOUBLE},
+      </if>
       <if test="inputtime != null">
         INPUTTIME = #{inputtime,jdbcType=TIMESTAMP},
       </if>
@@ -87,6 +119,9 @@
     set ACCOUNTID = #{accountid,jdbcType=INTEGER},
       ORDERID = #{orderid,jdbcType=INTEGER},
       WINAMOUNT = #{winamount,jdbcType=DOUBLE},
+      PRIZEAMOUNT = #{prizeamount,jdbcType=DOUBLE},
+      RETURNAMOUNT = #{returnamount,jdbcType=DOUBLE},
+      FEEAMOUNT = #{feeamount,jdbcType=DOUBLE},
       INPUTTIME = #{inputtime,jdbcType=TIMESTAMP}
     where RESULTID = #{resultid,jdbcType=INTEGER}
   </update>

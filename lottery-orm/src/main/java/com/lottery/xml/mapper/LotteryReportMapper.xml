@@ -82,10 +82,10 @@
   </select>
   <select id="selectWinReportByAgency" resultMap="AgencyWinReportMap">
     select 
-    a.USERNAME, temp.ORDERAMOUNT, temp.ACTUALAMOUNT, temp.FEEAMOUNT, a.PERCENTAGE, temp.WINAMOUNT, temp.SYSTEMAMOUNT, temp.COMPANYWIN, temp.WINAMOUNT-a.BUDGET as BALANCEAMOUNT
+    a.USERNAME, temp.ORDERAMOUNT, temp.ACTUALAMOUNT, temp.FEEAMOUNT, a.PERCENTAGE, temp.WINAMOUNT, temp.SYSTEMAMOUNT, temp.COMPANYWIN, temp.BALANCEAMOUNT
     from account_detail a left outer join 
-    (select SUM(o.ORDERAMOUNT) as ORDERAMOUNT, SUM(-o.ACTUALAMOUNT) as ACTUALAMOUNT, SUM(o.RETURNAMOUNT+o.SYSTEMAMOUNT) as FEEAMOUNT, 
-            SUM(o.SYSTEMAMOUNT) as SYSTEMAMOUNT, SUM(r.WINAMOUNT) as WINAMOUNT, SUM(r1.WINAMOUNT) as COMPANYWIN, r.ACCOUNTID
+    (select SUM(o.ORDERAMOUNT) as ORDERAMOUNT, SUM(-o.ACTUALAMOUNT) as ACTUALAMOUNT, SUM(o.RETURNAMOUNT+o.AGENCYRETURN+o.SYSTEMAMOUNT) as FEEAMOUNT, 
+            SUM(o.SYSTEMAMOUNT) as SYSTEMAMOUNT, SUM(r.WINAMOUNT) as WINAMOUNT, SUM(r1.WINAMOUNT) as COMPANYWIN, SUM(o.AGENCYRETURN) as AGENCYRETURN,SUM(r.RETURNAMOUNT-r.FEEAMOUNT) as BALANCEAMOUNT, r.ACCOUNTID
        from lottery_order o inner join lottery_order_result r on o.ORDERID=r.ORDERID left outer join lottery_order_result r1 on (o.ORDERID=r1.ORDERID and r1.ACCOUNTID=2)
 		   where o.PRIZETIME is not null
 		<if test="startTime != null and endTime != null">

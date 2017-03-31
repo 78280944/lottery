@@ -3,7 +3,8 @@ package com.lottery.orm.dao;
 import com.lottery.orm.bo.TSTimeTask;
 
 public interface TSTimeTaskMapper {
-    int deleteByPrimaryKey(String id);
+
+	int deleteByPrimaryKey(String id);
 
     int insert(TSTimeTask record);
 

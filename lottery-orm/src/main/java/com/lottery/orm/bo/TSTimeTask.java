@@ -5,121 +5,132 @@ import java.util.Date;
 public class TSTimeTask {
     private String id;
 
-    private String createBy;
+	private String createBy;
 
-    private Date createDate;
+	private Date createDate;
 
-    private String createName;
+	private String createName;
 
-    private String cronExpression;
+	private String cronExpression;
 
-    private String isEffect;
+	private String isEffect;
 
-    private String isStart;
+	private String isStart;
 
-    private String taskDescribe;
+	private String taskDescribe;
 
-    private String taskId;
+	private String taskId;
 
-    private String updateBy;
+	private Date startTime;
 
-    private Date updateDate;
+	private String updateBy;
 
-    private String updateName;
+	private Date updateDate;
 
-    public String getId() {
-        return id;
-    }
+	private String updateName;
 
-    public void setId(String id) {
-        this.id = id == null ? null : id.trim();
-    }
+	public String getId() {
+		return id;
+	}
 
-    public String getCreateBy() {
-        return createBy;
-    }
+	public void setId(String id) {
+		this.id = id == null ? null : id.trim();
+	}
 
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy == null ? null : createBy.trim();
-    }
+	public String getCreateBy() {
+		return createBy;
+	}
 
-    public Date getCreateDate() {
-        return createDate;
-    }
+	public void setCreateBy(String createBy) {
+		this.createBy = createBy == null ? null : createBy.trim();
+	}
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
+	public Date getCreateDate() {
+		return createDate;
+	}
 
-    public String getCreateName() {
-        return createName;
-    }
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
 
-    public void setCreateName(String createName) {
-        this.createName = createName == null ? null : createName.trim();
-    }
+	public String getCreateName() {
+		return createName;
+	}
 
-    public String getCronExpression() {
-        return cronExpression;
-    }
+	public void setCreateName(String createName) {
+		this.createName = createName == null ? null : createName.trim();
+	}
 
-    public void setCronExpression(String cronExpression) {
-        this.cronExpression = cronExpression == null ? null : cronExpression.trim();
-    }
+	public String getCronExpression() {
+		return cronExpression;
+	}
 
-    public String getIsEffect() {
-        return isEffect;
-    }
+	public void setCronExpression(String cronExpression) {
+		this.cronExpression = cronExpression == null ? null : cronExpression.trim();
+	}
 
-    public void setIsEffect(String isEffect) {
-        this.isEffect = isEffect == null ? null : isEffect.trim();
-    }
+	public String getIsEffect() {
+		return isEffect;
+	}
 
-    public String getIsStart() {
-        return isStart;
-    }
+	public void setIsEffect(String isEffect) {
+		this.isEffect = isEffect == null ? null : isEffect.trim();
+	}
 
-    public void setIsStart(String isStart) {
-        this.isStart = isStart == null ? null : isStart.trim();
-    }
+	public String getIsStart() {
+		return isStart;
+	}
 
-    public String getTaskDescribe() {
-        return taskDescribe;
-    }
+	public void setIsStart(String isStart) {
+		this.isStart = isStart == null ? null : isStart.trim();
+	}
 
-    public void setTaskDescribe(String taskDescribe) {
-        this.taskDescribe = taskDescribe == null ? null : taskDescribe.trim();
-    }
+	public String getTaskDescribe() {
+		return taskDescribe;
+	}
 
-    public String getTaskId() {
-        return taskId;
-    }
+	public void setTaskDescribe(String taskDescribe) {
+		this.taskDescribe = taskDescribe == null ? null : taskDescribe.trim();
+	}
 
-    public void setTaskId(String taskId) {
-        this.taskId = taskId == null ? null : taskId.trim();
-    }
+	public String getTaskId() {
+		return taskId;
+	}
 
-    public String getUpdateBy() {
-        return updateBy;
-    }
+	public void setTaskId(String taskId) {
+		this.taskId = taskId == null ? null : taskId.trim();
+	}
 
-    public void setUpdateBy(String updateBy) {
-        this.updateBy = updateBy == null ? null : updateBy.trim();
-    }
+	public Date getStartTime() {
+		return startTime;
+	}
 
-    public Date getUpdateDate() {
-        return updateDate;
-    }
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
 
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
-    }
+	public String getUpdateBy() {
+		return updateBy;
+	}
 
-    public String getUpdateName() {
-        return updateName;
-    }
+	public void setUpdateBy(String updateBy) {
+		this.updateBy = updateBy == null ? null : updateBy.trim();
+	}
 
-    public void setUpdateName(String updateName) {
-        this.updateName = updateName == null ? null : updateName.trim();
-    }
+	public Date getUpdateDate() {
+		return updateDate;
+	}
+
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
+	}
+
+	public String getUpdateName() {
+		return updateName;
+	}
+
+	public void setUpdateName(String updateName) {
+		this.updateName = updateName == null ? null : updateName.trim();
+	}
+
 }

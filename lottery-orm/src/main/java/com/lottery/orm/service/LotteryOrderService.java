@@ -56,11 +56,16 @@ public class LotteryOrderService {
 	private LotteryOrderResultMapper lotteryOrderResultMapper;
 
 	// 添加投注单
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor=Exception.class)
+	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor=Exception.class)
 	public LotteryOrder addLotteryOrder(AccountDetail accountDetail, LotteryOrder order) {
+		Double orderAmount = 0.0;
+		for (LotteryOrderDetail orderDetail : order.getOrderDetailList()) {
+			orderAmount += orderDetail.getDetailamount();
+		}
+		order.setOrderamount(orderAmount);
 		order.setOrdertime(new Date());
 		lotteryOrderMapper.insertSelective(order);
-		Double orderAmount = 0.0;
+		
 		LotteryRound round = customLotteryMapper.selectRoundByRoundId(order.getRoundid());
 		List<LotteryRoundItem> itemList = round.getRoundItemList();
 		for (LotteryOrderDetail orderDetail : order.getOrderDetailList()) {
@@ -71,11 +76,10 @@ public class LotteryOrderService {
 			orderDetail.setItemscale(roundItem.getItemscale());
 			orderDetail.setOrderid(order.getOrderid());
 			lotteryOrderDetailMapper.insertSelective(orderDetail);
-			orderAmount += orderDetail.getDetailamount();
+			
 		}
-		order.setOrderamount(orderAmount);
-		lotteryOrderMapper.updateByPrimaryKeySelective(order);
-		addTradeInfo(accountDetail, order, -orderAmount, EnumType.RalativeType.Order.ID);//减去下注金额
+		//lotteryOrderMapper.updateByPrimaryKeySelective(order);
+		addTradeInfo(accountDetail, order, 0.0-orderAmount, EnumType.RalativeType.Order.ID);//减去下注金额
 		return order;
 	}
 
@@ -145,10 +149,13 @@ public class LotteryOrderService {
 		
 		Double playerWinloss = 0.0;//玩家的输赢,不包含返利的计算
 		Double agencyWinloss = 0.0; //代理的输赢,包含公司损益、返利的计算
+		Double agencyPrize = 0.0;//代理奖金
+		Double feeAmount = totalReturn + systemCommision;//洗码费=返利+公司损益
 		
 
 		playerWinloss = playerPrize - lossOrder;
-		agencyWinloss = (lossOrder - playerPrize) - totalReturn - systemCommision;
+		agencyPrize = 0.0 - playerWinloss;
+		agencyWinloss = agencyPrize - feeAmount;
 		
 		order.setPrizeamount(playerPrize);
 		order.setActualamount(playerWinloss);
@@ -175,9 +182,13 @@ public class LotteryOrderService {
 			AccountDetail tempAccount = parentAccounts.get(i);
 			double curPercentage = tempAccount.getPercentage()==null?0.0:tempAccount.getPercentage()-childPercent;
 			double curWinloss = 0.0;
+			double curPrize = 0.0;
+			double curFee = 0.0;
 			double curReturn =0.0;
 			if(curPercentage>0.0){
-				curWinloss = agencyWinloss*curPercentage;//当前代理输赢
+				curPrize = agencyPrize*curPercentage;
+				curFee = feeAmount*curPercentage;
+				//curWinloss = agencyWinloss*curPercentage;//当前代理输赢
 				childPercent = tempAccount.getPercentage();
 			}
 			
@@ -188,12 +199,15 @@ public class LotteryOrderService {
 				childRatio = tempAccount.getRatio();
 			}
 			//addTradeInfo(tempAccount, order, curWinloss+curReturn, EnumType.RalativeType.AgencyWin.ID);// 代理输赢
-			
+			curWinloss = curPrize - curFee + curReturn;
 			LotteryOrderResult orderResult = new LotteryOrderResult();
 			orderResult.setAccountid(tempAccount.getAccountid());
 			orderResult.setOrderid(order.getOrderid());
 			orderResult.setInputtime(new Date());
-			orderResult.setWinamount(curWinloss+curReturn);
+			orderResult.setPrizeamount(curPrize);
+			orderResult.setFeeamount(curFee);
+			orderResult.setReturnamount(curReturn);
+			orderResult.setWinamount(curWinloss);
 			lotteryOrderResultMapper.insert(orderResult);
 			
 		}
@@ -219,8 +233,8 @@ public class LotteryOrderService {
 	
 			account.setMoney(accountAmount);
 			accountDetailMapper.updateByPrimaryKeySelective(account);
-	
-			if (order.getAccountid() == account.getAccountid()) {// 更新玩家下单记录的账户余额
+			
+			if (order.getAccountid().equals(account.getAccountid())) {// 更新玩家下单记录的账户余额
 				order.setAccountamount(accountAmount);
 				lotteryOrderMapper.updateByPrimaryKeySelective(order);
 			}

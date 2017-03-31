@@ -475,8 +475,8 @@ public class OffAccountInfoController {
 			      LOG.info(result.getMessage());
 			      return result;
 			}
-			if(ToolsUtil.checkUpdatePeriod()){
-				result.fail("当前时段无法修改代理占成,请在每周一的3点至9点结算期间修改!");
+			if(!ToolsUtil.checkUpdatePeriod()){
+				result.fail("修改失败，请于结算时间段重新操作!");
 				LOG.info(result.getMessage());
 			    return result;
 			}
@@ -539,6 +539,12 @@ public class OffAccountInfoController {
 			      result.fail("用户ID",MessageTool.Code_2002);
 			      LOG.info(result.getMessage());
 			      return result;
+			}
+			
+			if(!ToolsUtil.checkUpdatePeriod()){
+				result.fail("修改失败，请于结算时间段重新操作!");
+				LOG.info(result.getMessage());
+			    return result;
 			}
 			
 			OffAccountInfo offAccountInfo = offAccountInfoMapper.selectByPrimaryKey(param.getUserid());

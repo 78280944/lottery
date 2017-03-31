@@ -11,13 +11,14 @@
     <result column="IS_START" jdbcType="VARCHAR" property="isStart" />
     <result column="TASK_DESCRIBE" jdbcType="VARCHAR" property="taskDescribe" />
     <result column="TASK_ID" jdbcType="VARCHAR" property="taskId" />
+    <result column="START_TIME" jdbcType="TIMESTAMP" property="startTime" />
     <result column="UPDATE_BY" jdbcType="VARCHAR" property="updateBy" />
     <result column="UPDATE_DATE" jdbcType="TIMESTAMP" property="updateDate" />
     <result column="UPDATE_NAME" jdbcType="VARCHAR" property="updateName" />
   </resultMap>
   <sql id="Base_Column_List">
     ID, CREATE_BY, CREATE_DATE, CREATE_NAME, CRON_EXPRESSION, IS_EFFECT, IS_START, TASK_DESCRIBE, 
-    TASK_ID, UPDATE_BY, UPDATE_DATE, UPDATE_NAME
+    TASK_ID, START_TIME, UPDATE_BY, UPDATE_DATE, UPDATE_NAME
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -35,12 +36,14 @@
     </selectKey>
     insert into t_s_timetask (CREATE_BY, CREATE_DATE, CREATE_NAME, 
       CRON_EXPRESSION, IS_EFFECT, IS_START, 
-      TASK_DESCRIBE, TASK_ID, UPDATE_BY, 
-      UPDATE_DATE, UPDATE_NAME)
+      TASK_DESCRIBE, TASK_ID, START_TIME, 
+      UPDATE_BY, UPDATE_DATE, UPDATE_NAME
+      )
     values (#{createBy,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{createName,jdbcType=VARCHAR}, 
       #{cronExpression,jdbcType=VARCHAR}, #{isEffect,jdbcType=VARCHAR}, #{isStart,jdbcType=VARCHAR}, 
-      #{taskDescribe,jdbcType=VARCHAR}, #{taskId,jdbcType=VARCHAR}, #{updateBy,jdbcType=VARCHAR}, 
-      #{updateDate,jdbcType=TIMESTAMP}, #{updateName,jdbcType=VARCHAR})
+      #{taskDescribe,jdbcType=VARCHAR}, #{taskId,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateName,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.lottery.orm.bo.TSTimeTask">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
@@ -71,6 +74,9 @@
       </if>
       <if test="taskId != null">
         TASK_ID,
+      </if>
+      <if test="startTime != null">
+        START_TIME,
       </if>
       <if test="updateBy != null">
         UPDATE_BY,
@@ -106,6 +112,9 @@
       </if>
       <if test="taskId != null">
         #{taskId,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updateBy != null">
         #{updateBy,jdbcType=VARCHAR},
@@ -145,6 +154,9 @@
       <if test="taskId != null">
         TASK_ID = #{taskId,jdbcType=VARCHAR},
       </if>
+      <if test="startTime != null">
+        START_TIME = #{startTime,jdbcType=TIMESTAMP},
+      </if>
       <if test="updateBy != null">
         UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
       </if>
@@ -167,6 +179,7 @@
       IS_START = #{isStart,jdbcType=VARCHAR},
       TASK_DESCRIBE = #{taskDescribe,jdbcType=VARCHAR},
       TASK_ID = #{taskId,jdbcType=VARCHAR},
+      START_TIME = #{startTime,jdbcType=TIMESTAMP},
       UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
       UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP},
       UPDATE_NAME = #{updateName,jdbcType=VARCHAR}
