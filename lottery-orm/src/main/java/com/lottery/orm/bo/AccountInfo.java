@@ -1,10 +1,13 @@
 package com.lottery.orm.bo;
 
 import java.util.Date;
+import java.math.BigDecimal;
 
 public class AccountInfo {
     
-    private Integer userid; 
+   
+
+	private Integer userid; 
 
     private String username;
 

@@ -237,7 +237,7 @@
     where username = #{username,jdbcType=VARCHAR} and userid != #{userid,jdbcType=INTEGER}
   </select>
   
-  <update id="updateAccountState" parameterType="com.lottery.orm.bo.AccountInfo" >
+  <update id="updateAccountState" parameterType="com.lottery.orm.bo.AccountInfo">
     update account_info
     set State = #{state,jdbcType=CHAR}
    	<![CDATA[where FIND_IN_SET(supusername, 
@@ -250,7 +250,7 @@
 	)]]>
   </update>   
   
-  <update id="updateAccountSupuserState" parameterType="com.lottery.orm.bo.AccountInfo" >
+  <update id="updateAccountSupuserState" parameterType="com.lottery.orm.bo.AccountInfo">
     update account_info
     set State = #{state,jdbcType=CHAR}
     where SupUserName = #{supusername,jdbcType=VARCHAR}

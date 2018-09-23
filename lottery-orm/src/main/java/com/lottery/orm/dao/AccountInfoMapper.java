@@ -7,8 +7,8 @@ import org.apache.ibatis.annotations.Param;
 import com.lottery.orm.bo.AccountInfo;
 
 public interface AccountInfoMapper {
-    
-    int deleteByPrimaryKey(Integer serialno);
+
+	int deleteByPrimaryKey(Integer serialno);
 
     int insert(AccountInfo record);
 
